@@ -1,0 +1,104 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ ******************************************************************************/
+
+DS[0][0][0]=1.5;
+DS[0][1][1]=1;
+DS[0][2][2]=1;
+DS[0][3][3]=1;
+DS[0][4][4]=1;
+DS[0][5][5]=1;
+DS[0][6][6]=1;
+DS[0][7][7]=1;
+DS[0][8][8]=1;
+DS[1][0][1]=1;
+DS[1][1][0]=1;
+DS[1][1][8]=1/Sqrt(3);
+DS[1][2][5]=0.5;
+DS[1][5][2]=0.5;
+DS[1][6][7]=0.5;
+DS[1][7][6]=0.5;
+DS[1][8][1]=1/Sqrt(3);
+DS[2][0][2]=1;
+DS[2][1][5]=0.5;
+DS[2][2][0]=1;
+DS[2][2][4]=0.5;
+DS[2][2][8]=-1/(2.*Sqrt(3));
+DS[2][3][7]=-0.5;
+DS[2][4][2]=0.5;
+DS[2][5][1]=0.5;
+DS[2][7][3]=-0.5;
+DS[2][8][2]=-1/(2.*Sqrt(3));
+DS[3][0][3]=1;
+DS[3][2][7]=-0.5;
+DS[3][3][0]=1;
+DS[3][3][8]=1/Sqrt(3);
+DS[3][5][6]=0.5;
+DS[3][6][5]=0.5;
+DS[3][7][2]=-0.5;
+DS[3][8][3]=1/Sqrt(3);
+DS[4][0][4]=1;
+DS[4][2][2]=0.5;
+DS[4][4][0]=1;
+DS[4][4][8]=1/Sqrt(3);
+DS[4][5][5]=-0.5;
+DS[4][6][6]=0.5;
+DS[4][7][7]=-0.5;
+DS[4][8][4]=1/Sqrt(3);
+DS[5][0][5]=1;
+DS[5][1][2]=0.5;
+DS[5][2][1]=0.5;
+DS[5][3][6]=0.5;
+DS[5][4][5]=-0.5;
+DS[5][5][0]=1;
+DS[5][5][4]=-0.5;
+DS[5][5][8]=-1/(2.*Sqrt(3));
+DS[5][6][3]=0.5;
+DS[5][8][5]=-1/(2.*Sqrt(3));
+DS[6][0][6]=1;
+DS[6][1][7]=0.5;
+DS[6][3][5]=0.5;
+DS[6][4][6]=0.5;
+DS[6][5][3]=0.5;
+DS[6][6][0]=1;
+DS[6][6][4]=0.5;
+DS[6][6][8]=-1/(2.*Sqrt(3));
+DS[6][7][1]=0.5;
+DS[6][8][6]=-1/(2.*Sqrt(3));
+DS[7][0][7]=1;
+DS[7][1][6]=0.5;
+DS[7][2][3]=-0.5;
+DS[7][3][2]=-0.5;
+DS[7][4][7]=-0.5;
+DS[7][6][1]=0.5;
+DS[7][7][0]=1;
+DS[7][7][4]=-0.5;
+DS[7][7][8]=-1/(2.*Sqrt(3));
+DS[7][8][7]=-1/(2.*Sqrt(3));
+DS[8][0][8]=1;
+DS[8][1][1]=1/Sqrt(3);
+DS[8][2][2]=-1/(2.*Sqrt(3));
+DS[8][3][3]=1/Sqrt(3);
+DS[8][4][4]=1/Sqrt(3);
+DS[8][5][5]=-1/(2.*Sqrt(3));
+DS[8][6][6]=-1/(2.*Sqrt(3));
+DS[8][7][7]=-1/(2.*Sqrt(3));
+DS[8][8][0]=1;
+DS[8][8][8]=-(1/Sqrt(3));

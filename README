@@ -1,0 +1,36 @@
+SQuIDS
+===========
+
+A user manual can be found in docs/source/;
+
+Prerequisites
+*************
+
+The following packages are required to build and use the client library, and 
+can probably be had from your favorite package manager:
+
+* gsl (>= 1.14): http://www.gnu.org/software/gsl/
+* C++ compiler with C++11 support.
+
+Examples
+*************
+
+Additionally for plotting:
+
+* gnuplot (>4.0): http://www.gnuplot.info/
+
+Documentation
+*************
+
+The latex and pdf files are included in SQUIDS/doc/ folder.
+
+
+Configuration
+*************
+
+The path for the GSL libraries can be specified running:
+
+./config.sh -GSL_INC=GSL_include_path -GSL_INC=GSL_library_path
+ 
+
+  

@@ -1,0 +1,49 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ ******************************************************************************/
+
+components[0]+=0.3333333333333333*m_real[0][0];
+components[4]+=0.5*m_real[0][0];
+components[8]+=1/(2.*sqrt(3))*m_real[0][0];
+components[0]+=-0.3333333333333333*m_imag[0][0];
+components[4]+=-0.5*m_imag[0][0];
+components[8]+=-1/(2.*sqrt(3))*m_imag[0][0];
+components[1]+=0.5*m_real[0][1];
+components[1]+=-0.5*m_imag[0][1];
+components[2]+=0.5*m_real[0][2];
+components[2]+=-0.5*m_imag[0][2];
+components[1]+=0.5*m_real[1][0];
+components[1]+=-0.5*m_imag[1][0];
+components[0]+=0.3333333333333333*m_real[1][1];
+components[4]+=-0.5*m_real[1][1];
+components[8]+=1/(2.*sqrt(3))*m_real[1][1];
+components[0]+=-0.3333333333333333*m_imag[1][1];
+components[4]+=0.5*m_imag[1][1];
+components[8]+=-1/(2.*sqrt(3))*m_imag[1][1];
+components[5]+=0.5*m_real[1][2];
+components[5]+=-0.5*m_imag[1][2];
+components[2]+=0.5*m_real[2][0];
+components[2]+=-0.5*m_imag[2][0];
+components[5]+=0.5*m_real[2][1];
+components[5]+=-0.5*m_imag[2][1];
+components[0]+=0.3333333333333333*m_real[2][2];
+components[8]+=-(1/sqrt(3))*m_real[2][2];
+components[0]+=-0.3333333333333333*m_imag[2][2];
+components[8]+=1/sqrt(3)*m_imag[2][2];

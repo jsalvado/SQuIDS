@@ -1,0 +1,46 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ ******************************************************************************/
+
+(suv_rot) . components[0]+=suv.components[0];
+(suv_rot) . components[1]+=suv.components[1];
+(suv_rot) . components[2]+=cos(th)*suv.components[2] - sin(th)*(cos(del)*suv.components[4] + sin(del)*suv.components[20]);
+(suv_rot) . components[3]+=suv.components[3];
+(suv_rot) . components[4]+=cos(del)*sin(th)*suv.components[2] + cos(th)*suv.components[4] - sin(del)*sin(th)*suv.components[10];
+(suv_rot) . components[5]+=suv.components[5];
+(suv_rot) . components[6]+=suv.components[6];
+(suv_rot) . components[7]+=cos(th)*suv.components[7] - sin(th)*(cos(del)*suv.components[9] + sin(del)*suv.components[21]);
+(suv_rot) . components[8]+=suv.components[8];
+(suv_rot) . components[9]+=cos(del)*sin(th)*suv.components[7] + cos(th)*suv.components[9] - sin(del)*sin(th)*suv.components[11];
+(suv_rot) . components[10]+=sin(del)*sin(th)*suv.components[4] + cos(th)*suv.components[10] - cos(del)*sin(th)*suv.components[20];
+(suv_rot) . components[11]+=sin(del)*sin(th)*suv.components[9] + cos(th)*suv.components[11] - cos(del)*sin(th)*suv.components[21];
+(suv_rot) . components[12]+=(2*sqrt(3)*(2 + cos(2*th))*suv.components[12] + sin(th)*(sqrt(6)*sin(th)*suv.components[18] + 12*cos(th)*(cos(del)*suv.components[14] + sin(del)*suv.components[22]) + 3*sqrt(10)*sin(th)*suv.components[24]))/(6.*sqrt(3));
+(suv_rot) . components[13]+=cos(th)*suv.components[13] - sin(th)*(cos(del)*suv.components[19] + sin(del)*suv.components[23]);
+(suv_rot) . components[14]+=(-2*sqrt(3)*cos(del)*sin(2*th)*suv.components[12] + 6*(cos(del)*cos(del)*cos(2*th) + sin(del)*sin(del))*suv.components[14] + cos(del)*sin(th)*(sqrt(6)*cos(th)*suv.components[18] - 12*sin(del)*sin(th)*suv.components[22] + 3*sqrt(10)*cos(th)*suv.components[24]))/6.;
+(suv_rot) . components[15]+=suv.components[15];
+(suv_rot) . components[16]+=suv.components[16];
+(suv_rot) . components[17]+=cos(th)*suv.components[17] + sin(th)*(-(sin(del)*suv.components[19]) + cos(del)*suv.components[23]);
+(suv_rot) . components[18]+=((23 + cos(2*th))*suv.components[18] - 2*sqrt(6)*sin(2*th)*(cos(del)*suv.components[14] + sin(del)*suv.components[22]) + 2*sin(th)*sin(th)*(2*sqrt(2)*suv.components[12] - sqrt(15)*suv.components[24]))/24.;
+(suv_rot) . components[19]+=cos(del)*sin(th)*suv.components[13] + sin(del)*sin(th)*suv.components[17] + cos(th)*suv.components[19];
+(suv_rot) . components[20]+=sin(del)*sin(th)*suv.components[2] + cos(del)*sin(th)*suv.components[10] + cos(th)*suv.components[20];
+(suv_rot) . components[21]+=sin(del)*sin(th)*suv.components[7] + cos(del)*sin(th)*suv.components[11] + cos(th)*suv.components[21];
+(suv_rot) . components[22]+=(12*cos(del)*(-(sin(del)*suv.components[14]) + cos(del)*suv.components[22]) + 12*cos(2*th)*sin(del)*(cos(del)*suv.components[14] + sin(del)*suv.components[22]) + sin(del)*sin(2*th)*(-4*sqrt(3)*suv.components[12] + sqrt(6)*suv.components[18] + 3*sqrt(10)*suv.components[24]))/12.;
+(suv_rot) . components[23]+=sin(del)*sin(th)*suv.components[13] - cos(del)*sin(th)*suv.components[17] + cos(th)*suv.components[23];
+(suv_rot) . components[24]+=(10*sqrt(3)*sin(th)*sin(th)*(4*suv.components[12] - sqrt(2)*suv.components[18]) - 60*sin(2*th)*(cos(del)*suv.components[14] + sin(del)*suv.components[22]) + 3*sqrt(10)*(3 + 5*cos(2*th))*suv.components[24])/(24.*sqrt(10));
