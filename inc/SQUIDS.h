@@ -56,6 +56,8 @@ class SQUIDS {
  protected:
   bool CoherentInt,NonCoherentInt,OtherInt,ScalarsInt,AnyNumerics;
   bool is_init;
+  bool adaptive_step;
+ 
   double *x;
   double *delx;
   double t;
@@ -67,6 +69,8 @@ class SQUIDS {
   int nsun;
   int nrhos;
   int nscalars;
+
+  int nsteps;
 
   int index_rho;
   int index_scalar;
@@ -91,9 +95,7 @@ class SQUIDS {
 
 
   // setting up GSL ODE solver
-  gsl_odeiv2_step *s;
-  gsl_odeiv2_control *c;
-  gsl_odeiv2_evolve *e;
+  gsl_odeiv2_step_type *step;
 
   gsl_odeiv2_system sys;
   gsl_odeiv2_driver *d;

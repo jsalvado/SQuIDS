@@ -33,6 +33,8 @@ int main(){
 
   R0.Set("rel_error",1e-5);
   R0.Set("abs_error",1e-5);
+  R0.Set("AdaptiveStep",false);
+  R0.Set("NumSteps",100);
 
   cout << "Rabi system with frequency of 10 initialized." << endl;
   cout << "give the value for the detuning: " << endl;

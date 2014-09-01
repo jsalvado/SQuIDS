@@ -18,6 +18,6 @@ rabi.o: rabi.cpp
 main.o: main.cpp 
 	$(GCC) -c $(CFLAGS) $(INCCFLAGS) main.cpp 
 prog: main.o 
-	$(GCC) $(CFLAGS) $(INCCFLAGS) main.o rabi.o -lSQUIDS  -lgsl -lgslcblas   -o out
+	$(GCC) $(CFLAGS) $(INCCFLAGS) main.o rabi.o -lSQUIDS  -lgsl -lgslcblas   -o out.exe
 clean:
 	rm -f *.o *.fo out

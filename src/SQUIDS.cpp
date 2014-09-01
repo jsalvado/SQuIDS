@@ -50,6 +50,8 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
   neu_and_aneu = false;
   AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
 
+  adaptive_step=true;
+
   /*
     Setting the number of energy bins, number of components for the density matrix and
     number of scalar functions
@@ -66,6 +68,7 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
   */
   tunit=1;
   t=0;
+  nsteps=1000;
 
   //Allocate memeroy for the system
   Nsystem = nx*size_state;
@@ -111,17 +114,13 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
   h_max    = tunit*5.0;
 
   // setting up GSL ODE solver
-  s = gsl_odeiv2_step_alloc(gsl_odeiv2_step_rkf45, numeqn);
-  c = gsl_odeiv2_control_y_new(abs_error,rel_error);
-  e = gsl_odeiv2_evolve_alloc(numeqn);
 
+  step = (gsl_odeiv2_step_type*)gsl_odeiv2_step_rkf45;
 
   sys.function = &RHS;
   sys.jacobian = NULL;
   sys.dimension = (size_t)numeqn;
   sys.params = this;
-
-  //  gsl_odeiv2_step_set_driver(s,d);
 
 
   is_init=true;
@@ -157,9 +156,7 @@ SQUIDS::~SQUIDS(void){
 
 void SQUIDS::free(void){
   if(is_init){
-    gsl_odeiv2_evolve_free(e);
-    gsl_odeiv2_control_free(c);
-    gsl_odeiv2_step_free(s);
+    gsl_odeiv2_driver_free(d);
 
     delete x;
     delete delx;
@@ -273,19 +270,20 @@ int SQUIDS::Get_i(double xi){
 
 void SQUIDS::Set(string name,const gsl_odeiv2_step_type * opt){
   if(name=="GSL_Step" || name=="GSL_step" || name=="step"){ 
-    gsl_odeiv2_step_free(s);
-    s = gsl_odeiv2_step_alloc(opt, numeqn);  
+    step = (gsl_odeiv2_step_type *) opt;  
   }
 }
 
 void SQUIDS::Set(string name,bool opt){
-  if(name=="CoherentInteractions" || name=="coherentinteractoins" || name=="CohInt" || name=="H1"){
+  if(name=="AdaptiveStep"){
+    adaptive_step=opt;
+  }else if(name=="CoherentInteractions" || name=="coherentinteractoins" || name=="CohInt"||name=="H1"){
     CoherentInt=opt;
     AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
   }else if(name=="NonCoherentInteractions" || name=="noncoherentinteractoins" || name=="NonCohInt"){
     NonCoherentInt=opt;
     AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
-  }else if(name=="OtherInt" || name=="otherint" || name=="OInt"){
+  }else if(name=="OtherInt" || name=="otherint" || name=="OInt" ){
     OtherInt=opt;
     AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
   }else if(name=="ScalarInteractions" || name=="scalarinteractions" || name=="ScalInt"){
@@ -304,18 +302,14 @@ void SQUIDS::Set(string name,double opt){
   if(!params.Set(name,opt)){
     if(name=="h_min"){
       h_min=opt;
-    }else if(name=="h_max"){
+    }else  if(name=="h_max"){
       h_max=opt;
     }else if(name=="h"){
       h=opt;
     }else if(name=="rel_error"){
       rel_error=opt;
-      gsl_odeiv2_control_free(c);
-      c = gsl_odeiv2_control_y_new(abs_error,rel_error);
     }else if(name=="abs_error"){
       abs_error=opt;
-      gsl_odeiv2_control_free(c);
-      c = gsl_odeiv2_control_y_new(abs_error,rel_error);
     }else  if(name=="t" || name=="T"){
       t=opt;
       t_ini=opt;
@@ -340,6 +334,8 @@ void SQUIDS::Set(string name,int opt){
       this->free();
       ini(nx,opt,nrhos,nscalars);
     }
+  }else if(name=="NumSteps"){
+    nsteps=opt;
   }else if(name=="nrhos"){
     if(opt!=nrhos){
       this->free();
@@ -368,21 +364,9 @@ int SQUIDS::Derive(double at){
       index_rho=i;
       // Density matrix
       // Coherent interaction
-      if(CoherentInt){
-  	//dstate[ei].rho[i] = state[ei].rho[i]*(-1);
-	//dstate[ei].rho[i] = SU.iCommutator(HI(ei,t),state[ei].rho[i]);
-  dstate[ei].rho[i] = SU.iCommutator(state[ei].rho[i],HI(ei,t));
-  //double rho2 = state[ei].rho[i]*state[ei].rho[i];
-  //std::cout << t/params.km << " " << rho2 << std::endl;
-  //if( rho2 > 100.0 ) exit(1);
-  /*
-  if( rho2 > 1.001 and rho2 < 2 ) {
-    std::cout << dstate[ei].rho[i] << std::endl;
-    std::cout << HI(ei,t) << std::endl;
-  }
-  */
-	//cout << ei << " " << i << " drho  " << dstate[ei].rho[i] << endl;
-      }
+      if(CoherentInt)
+	dstate[ei].rho[i] = SU.iCommutator(state[ei].rho[i],HI(ei,t));
+      
       // Non coherent interaction
       if(NonCoherentInt)
   	dstate[ei].rho[i] -= SU.ACommutator(GammaRho(ei,t),state[ei].rho[i]);
@@ -412,79 +396,43 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     int gsl_status = GSL_SUCCESS;
     t=ti;
 
-    // defining ODE extra variables
-
-    double x;                       // ODE independent variable
-    double x_aux;                   // ODE2 independent variable
-    double x_ini = ti;  // initial position
-    double x_end = tf;  // final position
-    // step sizes
-
-
-    //    gsl_odeiv2_driver_set_hmax(d,h_max);
-
-
 #ifdef CalNeuOscSUN_DEBUG
     printf("GSL paramers :\n");
-
-    printf("x_ini : %lf \n", x_ini/tunit);
-    printf("x_end : %lf \n", x_end/tunit);
+    
+    printf("x_ini : %lf \n", ti/tunit);
+    printf("x_end : %lf \n", tf/tunit);
     printf("h : %g \n", h/tunit);
     printf("h_min : %g \n", h_min/tunit);
 #endif
 
 
     // initial position
-    x = x_ini;
-    //x_aux = x_ini;
-
+    
+    t=ti;
+    
     // ODE system error control
-    c = gsl_odeiv2_control_y_new(abs_error,rel_error);
+    d = gsl_odeiv2_driver_alloc_y_new(&sys,step,h,abs_error,rel_error);
+    gsl_odeiv2_driver_set_hmin(d,h_min);
+    gsl_odeiv2_driver_set_hmax(d,h_max);
+    gsl_odeiv2_driver_set_nmax(d,0);
 
-#ifdef CalNeuOscSUN_DEBUG
-    int count = 0;
-    int count_step = 100000;
-#endif
 
 #ifdef CalNeuOscSUN_DEBUG
     printf("Start calculation.\n");
 #endif
-
+    
     double * gsl_sys = system;
-
-    while (x < x_end){
-      t=x;
-      double x_inter = x + (x_end-x_ini)/1000.0;
-
-      gsl_status = gsl_odeiv2_evolve_apply(e,c,s,&sys,&x,x_inter,&h,system);
-
-
-#ifdef CalNeuOscSUN_DEBUG
-      if(count%count_step == 0){
-	printf("x_current : %lf \n", x/tunit);
-	printf("h : %g \n", h/tunit);
-      }
-#endif
-
-      if( gsl_status != GSL_SUCCESS ){
-	fprintf(stderr,"CalNeuOscGSL: Error in GSL ODE solver.\n");
-	break;
-      }
-
-      if(h < h_min){
-        h = h_min;
-      }
-
-      if(h > h_max){
-        h = h_max;
-      }
-
-#ifdef CalNeuOscSUN_DEBUG
-      count++;
-#endif
+    
+    if(adaptive_step){
+      gsl_status = gsl_odeiv2_driver_apply(d, &t, tf, system);
+    }else{
+      gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, (tf-ti)/nsteps , nsteps , system);
     }
-
-    x = x_end;
+      
+    if( gsl_status != GSL_SUCCESS ){
+      fprintf(stderr,"SQUIDS::EvolveSUN: Error in GSL ODE solver.\n");
+    }
+    
 
 #ifdef CalNeuOscSUN_DEBUG
     printf("End calculation. x_final :  %lf \n",x/tunit);
