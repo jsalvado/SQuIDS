@@ -76,17 +76,6 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
 
 
 
-void vacuum::EvolveProjectors(double t){
-  SU_vector h0(nsun);
-  for(int i = 0; i < nsun; i++){
-    for(int ei = 0; ei < nx; ei++){
-      h0=H0(x[ei]);
-      evol_b0_proj[i*nx + ei] = b0_proj[i].SUEvolve(h0,t-t_ini);
-      evol_b1_proj[i*nx + ei] = b1_proj[i].SUEvolve(h0,t-t_ini);
-      //evol_b0_proj[i*nx + ei] = b0_proj[i].SUEvolve(h0,t-t_ini);      
-    }
-  }
-}
 
 
 

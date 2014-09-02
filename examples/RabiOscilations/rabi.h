@@ -34,7 +34,7 @@ class rabi: public SQUIDS {
   SU_vector *evol_b0_proj;
   SU_vector *evol_b1_proj;
 
-  void EvolveProjectors(double t);
+  void PreDerive(double t);
   rabi(void){};
   rabi(double a, double b, double c){init(a,b,c);};
   void init(double, double,double );

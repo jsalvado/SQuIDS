@@ -106,7 +106,6 @@ class SQUIDS {
   double abs_error;
   double rel_error;
 
-  //  void EvolveProjectors(double t);
 
  public:
   SU_state *dstate;
@@ -162,7 +161,7 @@ class SQUIDS {
   //Other possible interaction terms for the scalar fucntions.
   virtual double InteractionsScalar(int ix,double t){return 0.0;}
 
-  virtual void EvolveProjectors(double){};  
+  virtual void PreDerive(double){};  
 
   //***************************************************************
   //it returns the double pointer to the structure that contains the system

@@ -19,6 +19,6 @@ vacuum.o: vacuum.cpp
 main.o: main.cpp
 	$(GCC) -c $(CFLAGS) $(INCCFLAGS) main.cpp 
 out: main.o
-	$(GCC) $(CFLAGS) $(INCCFLAGS) main.o vacuum.o -lSQUIDS  -lgsl -lgslcblas   -o out
+	$(GCC) $(CFLAGS) $(INCCFLAGS) main.o vacuum.o -lSQUIDS  -lgsl -lgslcblas   -o out.exe
 clean:
-	rm -f *.o *.fo out
+	rm -f *.o *.fo out.exe

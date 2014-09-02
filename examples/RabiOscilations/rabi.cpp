@@ -41,7 +41,7 @@ void rabi::init(double D_E, double wi, double Am){
 }
 
 
-void rabi::EvolveProjectors(double t){
+void rabi::PreDerive(double t){
   SU_vector h0(nsun);
   for(int i = 0; i < nsun; i++){
     for(int ei = 0; ei < nx; ei++){

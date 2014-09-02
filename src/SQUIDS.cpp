@@ -111,7 +111,7 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
 
   h        = tunit*1e-16;
   h_min    = tunit*1e-40;
-  h_max    = tunit*5.0;
+  h_max    = tunit*1e10;
 
   // setting up GSL ODE solver
 
@@ -358,7 +358,7 @@ void SQUIDS::Set(string name,int opt){
 int SQUIDS::Derive(double at){
   t=at;
 
-  EvolveProjectors(at);
+  PreDerive(at);
   for(int ei = 0; ei < nx; ei++){
     for(int i = 0; i < nrhos; i++){
       index_rho=i;
@@ -439,7 +439,7 @@ int SQUIDS::EvolveSUN(double ti, double tf){
 #endif
 
   }else{
-    EvolveProjectors(tf);
+    PreDerive(tf);
     t=tf;
   }
   return GSL_SUCCESS;
