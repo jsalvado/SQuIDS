@@ -166,8 +166,7 @@ void SQUIDS::free(void){
     delete system;
 
   }else{
-    cerr << "free call error, is not initialized" << endl;
-    exit(1);
+    throw std::runtime_error("free call error, is not initialized");
   }
 }
 
@@ -189,8 +188,7 @@ int SQUIDS::Set_xrange(double xi, double xf, string type){
   }else if(type=="log" || type=="Log"){
     double xmin_log,xmax_log;
     if (xi < 1.0e-10 ){
-      cerr << "SQUIDS::Set_xrange : Xmin too small for log scale" << endl;
-      exit(1);
+      throw std::runtime_error("SQUIDS::Set_xrange : Xmin too small for log scale");
     }else{
         xmin_log = log(xi);
     }
@@ -203,8 +201,7 @@ int SQUIDS::Set_xrange(double xi, double xf, string type){
       x[e1]=exp(X);
     }
   }else{
-    cerr << "SQUIDS::Set_xrange : Not well deffined X range" << endl;
-    exit(1);
+    throw std::runtime_error("SQUIDS::Set_xrange : Not well deffined X range");
   }
 
   for(int e1 = 1; e1 < nx; e1++){
@@ -228,7 +225,7 @@ double SQUIDS::GetExpectationValueD(SU_vector & op, int nrh,  double xi){
       break;
     }else{
       if(i==nx-1){
-	cerr << "SQUIDS::GetExpectationValueD : x value not in the array.";
+	throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
       }
     }
   }
@@ -248,8 +245,7 @@ int SQUIDS::Get_i(double xi){
 
   if(xi>xr || xi<xl){
     cout << xr << "  " << xl << endl;
-    cerr << " Error IDS::Get_i :  value " << xi  <<" out of bounds" << endl;
-    exit(1);
+    throw std::runtime_error(" Error IDS::Get_i :  value  out of bounds");
   }
 
   while((nr-nl)>1){
@@ -292,8 +288,7 @@ void SQUIDS::Set(string name,bool opt){
   }else if(name=="AntiNeutrinos" || name=="antinu" || name=="AntiNu" || name=="anu"){
     neu_and_aneu=opt;
   }else{
-    cerr << "DMKS::Set : Option (" << name <<  ") not found. " << endl;
-    exit(1);
+    throw std::runtime_error("DMKS::Set : Option (" + name + ") not found." );
   }
 }
 
@@ -316,8 +311,7 @@ void SQUIDS::Set(string name,double opt){
     }else if(name=="Units" || name=="units" || name=="tunits"|| name=="Tunits"){
       tunit=opt;
     }else{
-      cerr << "DMKS::Set : Option (" << name <<  ") not found. " << endl;
-      exit(1);
+      throw std::runtime_error("DMKS::Set : Option (" +name+ ") not found. ");
     }
   }
 }
@@ -347,8 +341,7 @@ void SQUIDS::Set(string name,int opt){
       ini(nx,nsun,nrhos,opt);
     }
   }else{
-    cerr << "DMKS::Set : Option (" << name <<  ") not found. " << endl;
-    exit(1);
+    throw std::runtime_error("DMKS::Set : Option (" + name + ") not found. ");
   }
 }
 

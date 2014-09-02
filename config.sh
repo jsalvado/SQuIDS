@@ -9,25 +9,29 @@ done
 GSLINC_PATH=${GSLINC##-GSL_INC=}
 GSLLIB_PATH=${GSLLIB##-GSL_LIB=}
 
+if [ ! -d ./lib/ ]; then
+    mkdir lib;
+fi
+
 echo '
 # Compiler
 CC=gcc
-CXX=g++
+CXX=g++ 
 AR=ar
 LD=ld
 
 CURRENT_DIR = $(shell pwd)
 PATH_SQUIDS=$(CURRENT_DIR)/..
 
-# Directories
+CXXFLAGS= -std=c++11
 
+# Directories
 ' > ./src/Makefile
 if [ -n "$GSLINC" ]; then
 echo "LIBDIR=-L${GSLLIB_PATH}" >> ./src/Makefile
 echo "INCDIR=-L${GSLINC_PATH}" >> ./src/Makefile
 fi
 echo '
-
 LIBDIR+=$(PATH_SQUIDS)/lib
 INCDIR+=$(PATH_SQUIDS)/inc
 SUINCDIR=$(PATH_SQUIDS)/inc/SU_inc
@@ -69,13 +73,13 @@ $(STAT_PRODUCT) : $(OBJECTS)
 	mv $(STAT_PRODUCT) $(PATH_SQUIDS)/lib/$(STAT_PRODUCT)
 
 const.o: const.cpp
-	$(CXX) -c $(CFLAGS) $(INCCFLAGS) const.cpp
+	$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(INCCFLAGS) const.cpp
 SQUIDS.o: SQUIDS.cpp
-	$(CXX) -c $(CFLAGS) $(INCCFLAGS) SQUIDS.cpp
+	$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(INCCFLAGS) SQUIDS.cpp
 SUNalg.o: SUNalg.cpp
-	$(CXX) -c -Warray-bounds $(CFLAGS) $(INCCFLAGS) SUNalg.cpp
+	$(CXX) $(CXXFLAGS) -c -Warray-bounds $(CFLAGS) $(INCCFLAGS) SUNalg.cpp
 
 .PHONY: clean
 clean:
-	rm -f *.o *.fo *.so
+	rm -f *.o *.so *.dylib ../lib/*.a ../lib/*.so ../lib/*.dylib 
 ' >> ./src/Makefile
