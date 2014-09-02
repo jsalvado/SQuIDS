@@ -85,6 +85,8 @@ public:
   //*************
   // Functions
   //*************
+  //returns a vector with the components of the SU_vector.
+  vector<double> GetComponents(void);
   //multiplication for double.
   SU_vector Rescale(double);
   //Change of bases with a rotation on the components given by the integers,

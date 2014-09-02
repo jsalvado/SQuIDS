@@ -317,12 +317,20 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
 };
 
 
-
 /*
 -----------------------------------------------------------------------
 Operations
 -----------------------------------------------------------------------
 */
+
+
+vector<double> SU_vector::GetComponents(){
+  vector<double> x ( dim*dim );
+  for ( int i = 0; i < dim*dim ; i ++ )
+    x[i] = components[i];
+  return x;
+}
+
 
 
 SU_vector SU_vector::Rescale(double x){
