@@ -29,6 +29,7 @@
 #include <iostream>
 #include <float.h>
 #include <math.h>
+#include <memory>
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>

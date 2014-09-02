@@ -116,14 +116,11 @@ void SU_vector::InitSU_vector(int d){
   size = SQR(d);
   dim = d;
   if(isinit_d){
-    cerr << "SU_vector::InitSU_vector :";
-    cerr << "Initialization not allowed, vector already initialized by reference" << endl;
-    exit(1);
+    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
   }
 
   if(MAXSIZE<size || size<0){
-    cerr << "SU_vector::InitSU_vector : Not allowed size, only up to SU(6)" << endl;
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
   components = new double[size];
   isinit=true;
@@ -145,8 +142,7 @@ void SU_vector::InitSU_vector(int d,double* comp){
   dim = d;
   size = SQR(d);
   if(MAXSIZE<size || size<0){
-    cerr << "SU_vector::InitSU_vector : Not allowed size, only up to SU(6)" << endl;
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
   components = comp;
   isinit=false;
@@ -158,19 +154,15 @@ void SU_vector::InitSU_vector(gsl_matrix_complex* m){
   size = m->size1*m->size1;
   dim=m->size1;
   if(isinit_d){
-    cerr << "SU_vector::InitSU_vector :";
-    cerr << "Initialization not allowed, vector already initialized by reference" << endl;
-    exit(1);
+    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
   }
 
   if(MAXSIZE<size || size<0){
-    cerr << "SU_vector::InitSU_vector : Not allowed size, only up to SU(6)" << endl;
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
   
   if((dim%(int)sqrt(size))!=0){
-    cerr << "SU_vector::InitSU_vector : error wrong matrix.";
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : error wrong matrix.");
   }
   components=new double[size];
   isinit=true;
@@ -200,8 +192,7 @@ void SU_vector::InitSU_vector(gsl_matrix_complex* m){
 #include "MatrixToSU5.txt"
     break;
   default:
-    cerr << "GLS_MATRIX_COMPLEX to SU_vector :: Error. " << endl;
-    exit(1);
+    throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
   }
 };
 
@@ -210,20 +201,16 @@ void SU_vector::InitSU_vector(std::vector<double> comp){
   size = (int)comp.size();
   dim = (int)sqrt(comp.size());
   if(isinit_d){
-    cerr << "SU_vector::InitSU_vector :";
-    cerr << "Initialization not allowed, vector already initialized by reference" << endl;
-    exit(1);
+    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
   }
 
   if(MAXSIZE<size || size<0){
-    cerr << "SU_vector::InitSU_vector : Not allowed size, only up to SU(6)" << endl;
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
 
 
   if(dim*dim!=size){
-    cerr << "SU_vector::InitSU_vector : Error whrong vector size" << endl;
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : Error whrong vector size");
   }
 
   components=new double[size];
@@ -236,14 +223,11 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
   dim = d;
   size = SQR(dim);
   if(isinit_d){
-    cerr << "SU_vector::InitSU_vector :";
-    cerr << "Initialization not allowed, vector already initialized by reference" << endl;
-    exit(1);
+    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
   }
 
   if(MAXSIZE<size || size<0){
-    cerr << "SU_vector::InitSU_vector : Not allowed size, only up to SU(6)" << endl;
-    exit(1);
+    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
 
   if(!isinit){
@@ -256,8 +240,7 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
 
   if(Type=="Proj"||Type=="proj"||Type=="Projector"||Type=="projector"){
     if(ii>dim|| ii<0){
-      cerr << "SU_vector::SU_vector : input parameter out of range for projectors" << endl;
-      exit(1);
+      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for projectors");
     }
 
     for(int i=0; i<dim; i++){
@@ -275,7 +258,7 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
     }
   }else if(Type =="PosProjector"){
     if(ii>dim|| ii<0){
-      cerr << "SU_vector::SU_vector : input parameter out of range for positive projectors " << endl;
+      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for positive projectors ");
       exit(1);
     }
     for(int i=0; i<dim; i++){
@@ -290,8 +273,7 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
     }
   }else if(Type == "NegProjector"){
     if(ii>dim|| ii<0){
-      cerr << "SU_vector::SU_vector : input parameter out of range for negative projectors " << endl;
-      exit(1);
+      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for negative projectors ");
     }
     for(int i=0; i<dim; i++){
       for(int j=0; j<dim; j++){
@@ -306,13 +288,12 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
   }else if(Type == "Component" || Type == "component" || Type  == "Comp" || Type == "comp"
 	   || Type == "Generator" || Type == "Gen" || Type == "generator" || Type == "gen"){
     if(ii>size|| ii<0){
-      cerr << "SU_vector::SU_vector : input parameter out of range for generators" << endl;
-      exit(1);
+      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for generators");
     }
     components[ii] = 1.0;
     return;
   }else{
-    cerr << "SU_vector::SU_vector :  Option not available" << endl;
+    throw std::runtime_error("SU_vector::SU_vector :  Option not available");
   }
 
   // the following rules are valid ONLY when the initial
@@ -331,8 +312,7 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
 #include "MatrixToSU5.txt"
     break;
   default:
-    cerr << "GLS_MATRIX_COMPLEX to SU_vector :: Error. " << endl;
-    exit(1);
+    throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
   }    
 };
 
@@ -627,12 +607,10 @@ SU_vector operator*(const SU_vector &other, const double x){
 
 SU_vector & SU_vector::operator=(const SU_vector &other){
   if(size!=other.size){
-    cerr << " SU_vector::operator= Error not equal size " << size << "  " << other.size << endl;
-    exit(1);
+    throw std::runtime_error(" SU_vector::operator= Error not equal size ");
   }
   if(this==&other){
-    cerr << " SU_vector::operator= invalid self-assignment " << endl;
-    exit(1);
+    throw std::runtime_error(" SU_vector::operator= invalid self-assignment ");
   }
 
   dim = other.dim;
@@ -702,8 +680,7 @@ SU_vector SU_vector::SUEvolve(SU_vector & suv1, double t){
 #include "EvolutionSU5.txt"
     break;
   default:
-    cerr << "SUEvolution :: Error : dim = " << dim << "." << endl;
-    exit(1);
+    throw std::runtime_error("SUEvolution :: Error : dim  ");
   };
   return suv_new;
 }
@@ -719,9 +696,7 @@ ostream& operator<<(ostream& os, const SU_vector& V){
 
 SU_vector SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
-    cerr << "SU_alg: Commutator error, not right dimensions: " 
-	 << dim <<"  " << suv1.dim << "  " << suv2.dim  << endl; 
-    exit(1);
+    throw std::runtime_error("SU_alg: Commutator error, not right dimensions ");
   }
   SU_vector suv_new(dim);
 
@@ -739,7 +714,7 @@ SU_vector SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
 #include "iConmutatorSU5.txt"
     break;
   default:
-    cerr << "SUiConmutator :: Error." << endl;
+    throw std::runtime_error("SUiConmutator :: Error.");
     exit(1);
   };
   return suv_new;
@@ -747,9 +722,7 @@ SU_vector SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
 
 SU_vector SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
-    cerr << "SU_alg: Anti Commutator error, not right dimensions:  "  
-	 << dim <<"  " << suv1.dim << "  " << suv2.dim  << endl; 
-    exit(1);
+    throw std::runtime_error("SU_alg: Anti Commutator error, not right dimensions ");
   }
   SU_vector suv_new(dim);
   switch (dim){
@@ -766,7 +739,7 @@ SU_vector SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
 #include "AnticonmutatorSU5.txt"
     break;
   default:
-    cerr << "SUAnticonmutator :: Error." << endl;
+    throw std::runtime_error("SUAnticonmutator :: Error.");
     exit(1);
   };
   return suv_new;
