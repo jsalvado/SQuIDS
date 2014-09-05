@@ -156,7 +156,7 @@ SQUIDS::~SQUIDS(void){
 
 void SQUIDS::free(void){
   if(is_init){
-    gsl_odeiv2_driver_free(d);
+
 
     delete x;
     delete delx;
@@ -435,6 +435,8 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     PreDerive(tf);
     t=tf;
   }
+
+  gsl_odeiv2_driver_free(d);  
   return GSL_SUCCESS;
 }
 
