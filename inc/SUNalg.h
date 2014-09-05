@@ -86,6 +86,7 @@ public:
   //*************
   // Functions
   //*************
+  void SetAllComponents(double );  
   //returns a vector with the components of the SU_vector.
   vector<double> GetComponents(void);
   //multiplication for double.
