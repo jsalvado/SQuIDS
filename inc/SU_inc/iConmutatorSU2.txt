@@ -19,6 +19,6 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-(suv_new) . components[1]+=2*suv1.components[3]*suv2.components[2] - 2*suv1.components[2]*suv2.components[3];
-(suv_new) . components[2]+=-2*suv1.components[3]*suv2.components[1] + 2*suv1.components[1]*suv2.components[3];
-(suv_new) . components[3]+=2*suv1.components[2]*suv2.components[1] - 2*suv1.components[1]*suv2.components[2];
+(suv_new) . components[1]=2*suv1.components[3]*suv2.components[2] - 2*suv1.components[2]*suv2.components[3];
+(suv_new) . components[2]=-2*suv1.components[3]*suv2.components[1] + 2*suv1.components[1]*suv2.components[3];
+(suv_new) . components[3]=2*suv1.components[2]*suv2.components[1] - 2*suv1.components[1]*suv2.components[2];
