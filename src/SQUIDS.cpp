@@ -297,8 +297,22 @@ void SQUIDS::Set(string name,double opt){
   if(!params.Set(name,opt)){
     if(name=="h_min"){
       h_min=opt;
+      if(h<h_min){
+	if(h_max<50.0*h_min){
+	  h=(h_min+h_max)/2.0;
+	}else{
+	  h=h_min*10.0;
+	}
+      }
     }else  if(name=="h_max"){
       h_max=opt;
+      if(h>h_max){
+	if(h_max<50.0*h_min){
+	  h=(h_min+h_max)/2.0;
+	}else{
+	  h=h_min*10.0;
+	}
+      }
     }else if(name=="h"){
       h=opt;
     }else if(name=="rel_error"){
