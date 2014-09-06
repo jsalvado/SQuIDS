@@ -30,6 +30,7 @@
 #include <float.h>
 #include <math.h>
 #include <memory>
+#include <stdexcept>
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
@@ -85,6 +86,7 @@ public:
   //*************
   // Functions
   //*************
+  void SetAllComponents(double );  
   //returns a vector with the components of the SU_vector.
   vector<double> GetComponents(void);
   //multiplication for double.
@@ -148,10 +150,11 @@ public:
 class SU_alg{
 private:
   int dim;
+  SU_vector suv_new;
 public:
   SU_alg(void){};
-  SU_alg(int d){dim=d;};
-  void init(int d){dim=d;}
+  SU_alg(int d){dim=d; suv_new.InitSU_vector(dim);};
+  void init(int d){dim=d; suv_new.InitSU_vector(dim);}
   SU_vector iCommutator(const SU_vector&,const SU_vector&);
   SU_vector ACommutator(const SU_vector&,const SU_vector&);
 };

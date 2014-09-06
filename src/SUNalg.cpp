@@ -341,6 +341,11 @@ Operations
 -----------------------------------------------------------------------
 */
 
+void SU_vector::SetAllComponents(double x){  
+  for(int i = 0; i< size; i++)
+    components[i] = x;
+}
+
 
 vector<double> SU_vector::GetComponents(){
   vector<double> x ( dim*dim );
@@ -724,8 +729,8 @@ SU_vector SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
     throw std::runtime_error("SU_alg: Commutator error, not right dimensions ");
   }
-  SU_vector suv_new(dim);
 
+  suv_new.SetAllComponents(0.0);
   switch (dim){
   case 2:
 #include "iConmutatorSU2.txt"
@@ -750,7 +755,8 @@ SU_vector SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
     throw std::runtime_error("SU_alg: Anti Commutator error, not right dimensions ");
   }
-  SU_vector suv_new(dim);
+  //SU_vector suv_new(dim);
+  suv_new.SetAllComponents(0.0);
   switch (dim){
   case 2:
 #include "AnticonmutatorSU2.txt"
