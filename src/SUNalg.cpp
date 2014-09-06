@@ -130,6 +130,9 @@ void SU_vector::InitSU_vector(int d){
 void SU_vector::InitSU_vector(const SU_vector& V){
   dim=V.dim;
   size=V.size;
+  if(isinit){
+    delete[] components;
+  }
   components=new double[size];
   for(int i=0;i<size;i++){
     components[i]=V.components[i];
@@ -144,6 +147,9 @@ void SU_vector::InitSU_vector(int d,double* comp){
   if(MAXSIZE<size || size<0){
     throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
+  if(isinit){
+    delete[] components;
+  }
   components = comp;
   isinit=false;
   isinit_d=true;
@@ -155,6 +161,9 @@ void SU_vector::InitSU_vector(gsl_matrix_complex* m){
   dim=m->size1;
   if(isinit_d){
     throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
+  }
+  if(isinit){
+    delete[] components;
   }
 
   if(MAXSIZE<size || size<0){
@@ -204,6 +213,10 @@ void SU_vector::InitSU_vector(std::vector<double> comp){
     throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
   }
 
+  if(isinit){
+    delete[] components;
+  }
+
   if(MAXSIZE<size || size<0){
     throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
   }
@@ -225,6 +238,11 @@ void SU_vector::InitSU_vector(string Type,int ii,int d){
   if(isinit_d){
     throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
   }
+  if(isinit){
+    delete[] components;
+    isinit=false;
+  }
+
 
   if(MAXSIZE<size || size<0){
     throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");

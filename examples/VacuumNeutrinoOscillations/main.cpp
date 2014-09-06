@@ -26,9 +26,10 @@
  ******************************************************************************/
 
 
-
 #include "vacuum.h"
 #include <fstream>
+
+#define Kilometer 0.197
 
 int main(){
   vacuum* V0=new vacuum;
@@ -36,13 +37,14 @@ int main(){
   string plt;
   V0->init(Nenergy,3,0.0005,10);
 
-  // if this is comment the parameters are the values by default
+  // if this is commented the parameters are the values by default
   // V0->SetVacuum("dm21sq",0.01);
   // V0->SetVacuum("dm31sq",0);
   // V0->SetVacuum("th13",0);
   // V0->SetVacuum("th23",0);
+  // V0->SetVacuum("th23",0);
 
-  V0->EvolveSUN(0,100);
+  V0->EvolveSUN(0,1000*Kilometer);
 
   ofstream file("oscillations.dat");
 
@@ -61,6 +63,6 @@ int main(){
     return 0;
   }
   
-  delete V0;
+  delete[] V0;
   return 0;
 }

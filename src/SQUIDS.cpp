@@ -423,7 +423,7 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     }
       
     if( gsl_status != GSL_SUCCESS ){
-      fprintf(stderr,"SQUIDS::EvolveSUN: Error in GSL ODE solver.\n");
+      throw std::runtime_error("SQUIDS::EvolveSUN: Error in GSL ODE solver.");
     }
     
 
