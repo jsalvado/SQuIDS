@@ -1,5 +1,5 @@
 # Compiler
-GCC=g++
+GCC=g++ -g
 
 PATH_SQUIDS=../..
 # Directories

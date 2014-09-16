@@ -444,13 +444,12 @@ int SQUIDS::EvolveSUN(double ti, double tf){
 #ifdef CalNeuOscSUN_DEBUG
     printf("End calculation. x_final :  %lf \n",x/tunit);
 #endif
-
+    gsl_odeiv2_driver_free(d);  
   }else{
     PreDerive(tf);
     t=tf;
   }
 
-  gsl_odeiv2_driver_free(d);  
   return GSL_SUCCESS;
 }
 

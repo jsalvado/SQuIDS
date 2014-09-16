@@ -66,6 +66,9 @@ SU_vector::SU_vector( const SU_vector& V){
   components=new double[size];
   for(int i=0;i<size;i++)
     components[i]=V.components[i];
+  isinit = true;
+  isinit_d = false;
+
 }
 
 SU_vector::SU_vector(int d,double* comp){
@@ -725,11 +728,11 @@ ostream& operator<<(ostream& os, const SU_vector& V){
 }
 
 
-SU_vector &  SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
+SU_vector  SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
     throw std::runtime_error("SU_alg: Commutator error, not right dimensions ");
   }
-
+  //SU_vector suv_new(dim);
   suv_new.SetAllComponents(0.0);
   switch (dim){
   case 2:
@@ -751,7 +754,7 @@ SU_vector &  SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
   return suv_new;
 };
 
-SU_vector &  SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
+SU_vector  SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
     throw std::runtime_error("SU_alg: Anti Commutator error, not right dimensions ");
   }

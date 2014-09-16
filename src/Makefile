@@ -1,7 +1,7 @@
 
 # Compiler
 CC=gcc
-CXX=g++ 
+CXX=g++ -g
 AR=ar
 LD=ld
 

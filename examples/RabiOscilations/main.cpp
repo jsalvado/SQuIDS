@@ -47,6 +47,10 @@ int main(){
 
   cout << "Computing rabi" << endl;
   ofstream file("rabi.dat");
+
+  Rd.EvolveSUN(0,tf); 
+
+
   for(double t=0;t<tf;t+=dt){
     progressbar(100*t/tf);
     R0.EvolveSUN(t,t+dt);
