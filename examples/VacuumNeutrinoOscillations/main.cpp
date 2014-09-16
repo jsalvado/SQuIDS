@@ -32,9 +32,13 @@
 #define Kilometer 0.197
 
 int main(){
+  //declaration of the object
   vacuum* V0=new vacuum;
+  //Number of energy bins
   int Nenergy=1000;
+  //Name of the output file
   string plt;
+  //Initialization of the object
   V0->init(Nenergy,3,0.0005,10);
 
   // if this is commented the parameters are the values by default

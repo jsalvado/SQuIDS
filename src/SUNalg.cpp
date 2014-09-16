@@ -725,7 +725,7 @@ ostream& operator<<(ostream& os, const SU_vector& V){
 }
 
 
-SU_vector SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
+SU_vector &  SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
     throw std::runtime_error("SU_alg: Commutator error, not right dimensions ");
   }
@@ -751,7 +751,7 @@ SU_vector SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
   return suv_new;
 };
 
-SU_vector SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
+SU_vector &  SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
   if(suv1.dim!=dim || suv2.dim!=dim){ 
     throw std::runtime_error("SU_alg: Anti Commutator error, not right dimensions ");
   }

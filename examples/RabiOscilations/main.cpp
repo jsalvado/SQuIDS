@@ -25,7 +25,7 @@ int main(){
   double Om,w,A,del;
 
   double dt=0.01;
-  double tf=120;
+  double tf=120000;
 
 
 
