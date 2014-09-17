@@ -1,7 +1,7 @@
 
 # Compiler
 CC=gcc
-CXX=g++ -g
+CXX=g++ 
 AR=ar
 LD=ld
 
@@ -17,7 +17,7 @@ LIBDIR+=$(PATH_SQUIDS)/lib
 INCDIR+=$(PATH_SQUIDS)/inc
 SUINCDIR=$(PATH_SQUIDS)/inc/SU_inc
 CFLAGS= -O3 -fPIC
-LDFLAGS= -lgsl -lgslcblas
+LDFLAGS= -Wl,-rpath -Wl,$(LIBDIR) -lgsl -lgslcblas
 INCCFLAGS=-I$(INCDIR) -I$(SUINCDIR)
 
 # Project files
