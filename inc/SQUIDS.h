@@ -46,11 +46,11 @@
 #include <gsl/gsl_odeiv2.h>
 
 
-typedef struct
+struct SU_state
 {
-    SU_vector *rho;
-    double *scalar;
-} SU_state;
+  std::unique_ptr<SU_vector[]> rho;
+  double* scalar; //not owned
+};
 
 
 
@@ -61,8 +61,8 @@ class SQUIDS {
   bool is_init;
   bool adaptive_step;
  
-  double *x;
-  double *delx;
+  std::unique_ptr<double[]> x;
+  std::unique_ptr<double[]> delx;
   double t;
   double t_ini;
   double t_end;
@@ -83,14 +83,14 @@ class SQUIDS {
 
   bool neu_and_aneu;
 
-  double* system;
-  double* deriv_system;
+  std::unique_ptr<double[]> system;
+  double* deriv_system; //not owned
 
   int Nsystem;
 
   Const params;
 
-  SU_state *state;
+  std::unique_ptr<SU_state[]> state;
 
 
   int numeqn;
@@ -98,10 +98,9 @@ class SQUIDS {
 
 
   // setting up GSL ODE solver
-  gsl_odeiv2_step_type *step;
+  gsl_odeiv2_step_type* step; //not owned
 
   gsl_odeiv2_system sys;
-  gsl_odeiv2_driver *d;
 
   double h;
   double h_min;
@@ -109,13 +108,19 @@ class SQUIDS {
   double abs_error;
   double rel_error;
 
+    
+  //***************************************************************
+  //sets the deriv system pointer
+  void set_deriv_system_pointer(double*);
+  //interface function called by GSL
+  friend int RHS(double ,const double*,double*,void*);
 
  public:
-  SU_state *dstate;
+  std::unique_ptr<SU_state[]> dstate;
   //****************
   //Constructors
   //****************
-  SQUIDS(void);
+  SQUIDS();
   //***************************************************************
   //int -> Number of components in the array "x"
   //int -> Dimension of SU(n)
@@ -124,10 +129,7 @@ class SQUIDS {
   SQUIDS(int,int ,int,int);
 
   //***************************************************************
-  //Deallocates all the memory
-  void free(void);
-
-  virtual ~SQUIDS(void);
+  virtual ~SQUIDS();
 
   //***************************************************************
   //Initializer, the same argumens as the constructor
@@ -164,20 +166,7 @@ class SQUIDS {
   //Other possible interaction terms for the scalar fucntions.
   virtual double InteractionsScalar(int ix,double t){return 0.0;}
 
-  virtual void PreDerive(double){};  
-
-  //***************************************************************
-  //it returns the double pointer to the structure that contains the system
-  double* system_pointer(void){return system;};
-  //it returns the double pointer to the structure that contains the derivatives
-  double* deriv_system_pointer(void){return deriv_system;};
-
-
-  //***************************************************************
-  //sets the deriv system pointer
-  void set_deriv_system_pointer(double*);
-  void set_system_pointer(double*);
-
+  virtual void PreDerive(double){};
 
   //***************************************************************
   //Computes all the derivatives.
@@ -213,7 +202,7 @@ class SQUIDS {
   void Set(string,bool);
   void Set(string,double);
   void Set(string,int);
-  void Set(string,const gsl_odeiv2_step_type *);
+  void Set(string,const gsl_odeiv2_step_type*);
   
 
   //***************************************************************

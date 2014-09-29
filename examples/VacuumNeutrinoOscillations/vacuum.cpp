@@ -39,10 +39,10 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
   Set_xrange(Ein, Efin,"log");
 
 
-  evol_b0_proj=new SU_vector[nx*nsun];
-  evol_b1_proj=new SU_vector[nx*nsun];
-  b0_proj=new SU_vector[nsun];
-  b1_proj=new SU_vector[nsun];
+  evol_b0_proj.reset(new SU_vector[nx*nsun]);
+  evol_b1_proj.reset(new SU_vector[nx*nsun]);
+  b0_proj.reset(new SU_vector[nsun]);
+  b1_proj.reset(new SU_vector[nsun]);
 
   for(int i = 0; i < nsun; i++){
     b0_proj[i].InitSU_vector("Proj",i,nsun);

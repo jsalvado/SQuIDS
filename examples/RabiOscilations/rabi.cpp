@@ -10,10 +10,10 @@ void rabi::init(double D_E, double wi, double Am){
 
   Set("H1",true);  
 
-  evol_b0_proj=new SU_vector[nx*nsun];
-  evol_b1_proj=new SU_vector[nx*nsun];
-  b0_proj=new SU_vector[nsun];
-  b1_proj=new SU_vector[nsun];
+  evol_b0_proj.reset(new SU_vector[nx*nsun]);
+  evol_b1_proj.reset(new SU_vector[nx*nsun]);
+  b0_proj.reset(new SU_vector[nsun]);
+  b1_proj.reset(new SU_vector[nsun]);
 
   for(int i = 0; i < nsun; i++){
     b0_proj[i].InitSU_vector("Proj",i,nsun);
@@ -36,7 +36,7 @@ void rabi::init(double D_E, double wi, double Am){
   suH0 = b0_proj[1]*Delta_E;
 
   // set initial conditions for the density mattrix.
-  state->rho[0] = b0_proj[0];
+  state[0].rho[0] = b0_proj[0];
     
 }
 

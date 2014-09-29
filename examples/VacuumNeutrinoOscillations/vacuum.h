@@ -42,10 +42,10 @@ class vacuum: public SQUIDS {
  private:
   SU_vector DM2;
  public:
-  SU_vector *b0_proj;
-  SU_vector *b1_proj;
-  SU_vector *evol_b0_proj;
-  SU_vector *evol_b1_proj;
+  std::unique_ptr<SU_vector[]> b0_proj;
+  std::unique_ptr<SU_vector[]> b1_proj;
+  std::unique_ptr<SU_vector[]> evol_b0_proj;
+  std::unique_ptr<SU_vector[]> evol_b1_proj;
 
 
   vacuum(void){};

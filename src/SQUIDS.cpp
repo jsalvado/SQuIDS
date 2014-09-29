@@ -73,7 +73,7 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
   //Allocate memeroy for the system
   Nsystem = nx*size_state;
   numeqn=Nsystem;
-  system=new double[Nsystem];
+  system.reset(new double[Nsystem]);
 
   /*
     Initializing the SU algebra object, needed to compute algebraic operations like commutators,
@@ -84,15 +84,15 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
 
 
   //Allocate memory
-  x=new double[nx];
-  delx=new double[nx];
+  x.reset(new double[nx]);
+  delx.reset(new double[nx]);
 
-  state=new SU_state[nx];
-  dstate=new SU_state[nx];
+  state.reset(new SU_state[nx]);
+  dstate.reset(new SU_state[nx]);
 
   for(int ei = 0; ei < nx; ei++){
-    state[ei].rho=new SU_vector[nrhos];
-    dstate[ei].rho=new SU_vector[nrhos];
+    state[ei].rho.reset(new SU_vector[nrhos]);
+    dstate[ei].rho.reset(new SU_vector[nrhos]);
   }
 
   for(int ei = 0; ei < nx; ei++){
@@ -136,42 +136,10 @@ void SQUIDS::set_deriv_system_pointer(double *p){
   }
 }
 
-void SQUIDS::set_system_pointer(double *p){
-  system=p;
-  for(int ei = 0; ei < nx; ei++){
-    for(int i=0;i<nrhos;i++){
-      state[ei].rho[i].InitSU_vector(nsun,&(p[ei*size_state+i*size_rho]));
-    }
-    state[ei].scalar=&(p[ei*size_state+nrhos*size_rho]);
-  }
-}
-
-
-
-SQUIDS::~SQUIDS(void){
-  if(is_init)
-    free();
-}
-
-
-void SQUIDS::free(void){
-  if(is_init){
-
-
-    delete x;
-    delete delx;
-
-
-
-    delete system;
-
-  }else{
-    throw std::runtime_error("free call error, is not initialized");
-  }
-}
+SQUIDS::~SQUIDS(){}
 
 /*
-  This functions set's the grid of points in where we have a
+  This functions sets the grid of points in where we have a
   density matrix and a set of scalars
  */
 
@@ -333,27 +301,19 @@ void SQUIDS::Set(string name,double opt){
 
 void SQUIDS::Set(string name,int opt){
   if(name=="nx"){
-    if(opt!=nx){
-      this->free();
+    if(opt!=nx)
       ini(opt,nsun,nrhos,nscalars);
-    }
   }else if(name=="nsun"){
-    if(opt!=nsun){
-      this->free();
+    if(opt!=nsun)
       ini(nx,opt,nrhos,nscalars);
-    }
   }else if(name=="NumSteps"){
     nsteps=opt;
   }else if(name=="nrhos"){
-    if(opt!=nrhos){
-      this->free();
+    if(opt!=nrhos)
       ini(nx,nsun,opt,nscalars);
-    }
   }else if(name=="nscalars"){
-    if(opt!=nscalars){
-      this->free();
+    if(opt!=nscalars)
       ini(nx,nsun,nrhos,opt);
-    }
   }else{
     throw std::runtime_error("DMKS::Set : Option (" + name + ") not found. ");
   }
@@ -372,21 +332,21 @@ int SQUIDS::Derive(double at){
       // Density matrix
       // Coherent interaction
       if(CoherentInt)
-	dstate[ei].rho[i] = SU.iCommutator(state[ei].rho[i],HI(ei,t));
+        dstate[ei].rho[i] = SU.iCommutator(state[ei].rho[i],HI(ei,t));
       
       // Non coherent interaction
       if(NonCoherentInt)
-  	dstate[ei].rho[i] -= SU.ACommutator(GammaRho(ei,t),state[ei].rho[i]);
+        dstate[ei].rho[i] -= SU.ACommutator(GammaRho(ei,t),state[ei].rho[i]);
       // Other possible interaction, for example involving the Scalars or non linear terms in rho.
       if(OtherInt)
-  	dstate[ei].rho[i] += InteractionsRho(ei,t);
+        dstate[ei].rho[i] += InteractionsRho(ei,t);
       //Scalars
     }
     if(ScalarsInt){
       for(int is=0;is<nscalars;is++){
-  	index_scalar=is;
-  	dstate[ei].scalar[is] = -state[ei].scalar[is]*GammaScalar(ei,t);
-  	dstate[ei].scalar[is] += InteractionsScalar(ei,t);
+        index_scalar=is;
+        dstate[ei].scalar[is] = -state[ei].scalar[is]*GammaScalar(ei,t);
+        dstate[ei].scalar[is] += InteractionsScalar(ei,t);
       }
     }
   }
@@ -418,7 +378,7 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     t=ti;
     
     // ODE system error control
-    d = gsl_odeiv2_driver_alloc_y_new(&sys,step,h,abs_error,rel_error);
+    gsl_odeiv2_driver* d = gsl_odeiv2_driver_alloc_y_new(&sys,step,h,abs_error,rel_error);
     gsl_odeiv2_driver_set_hmin(d,h_min);
     gsl_odeiv2_driver_set_hmax(d,h_max);
     gsl_odeiv2_driver_set_nmax(d,0);
@@ -428,14 +388,15 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     printf("Start calculation.\n");
 #endif
     
-    double * gsl_sys = system;
+    double* gsl_sys = system.get();
     
     if(adaptive_step){
-      gsl_status = gsl_odeiv2_driver_apply(d, &t, tf, system);
+      gsl_status = gsl_odeiv2_driver_apply(d, &t, tf, gsl_sys);
     }else{
-      gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, (tf-ti)/nsteps , nsteps , system);
+      gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, (tf-ti)/nsteps , nsteps , gsl_sys);
     }
-      
+    
+    gsl_odeiv2_driver_free(d);
     if( gsl_status != GSL_SUCCESS ){
       throw std::runtime_error("SQUIDS::EvolveSUN: Error in GSL ODE solver.");
     }
@@ -444,7 +405,6 @@ int SQUIDS::EvolveSUN(double ti, double tf){
 #ifdef CalNeuOscSUN_DEBUG
     printf("End calculation. x_final :  %lf \n",x/tunit);
 #endif
-    gsl_odeiv2_driver_free(d);  
   }else{
     PreDerive(tf);
     t=tf;
@@ -458,6 +418,6 @@ int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
   SQUIDS *dms=(SQUIDS*)par;
   dms->set_deriv_system_pointer(state_dbl_out);
   dms->Derive(t);
-  return  0;
+  return 0;
 }
 

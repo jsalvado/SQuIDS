@@ -29,10 +29,10 @@ class rabi: public SQUIDS {
 
  public:
   SU_vector d0;
-  SU_vector *b0_proj;
-  SU_vector *b1_proj;
-  SU_vector *evol_b0_proj;
-  SU_vector *evol_b1_proj;
+  std::unique_ptr<SU_vector[]> b0_proj;
+  std::unique_ptr<SU_vector[]> b1_proj;
+  std::unique_ptr<SU_vector[]> evol_b0_proj;
+  std::unique_ptr<SU_vector[]> evol_b1_proj;
 
   void PreDerive(double t);
   rabi(void){};
