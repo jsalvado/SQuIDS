@@ -33,13 +33,13 @@
 
 int main(){
   //declaration of the object
-  vacuum* V0=new vacuum;
+  vacuum V0;
   //Number of energy bins
   int Nenergy=1000;
   //Name of the output file
   string plt;
   //Initialization of the object
-  V0->init(Nenergy,3,0.0005,10);
+  V0.init(Nenergy,3,0.0005,10);
 
   // if this is commented the parameters are the values by default
   // V0->SetVacuum("dm21sq",0.01);
@@ -48,14 +48,14 @@ int main(){
   // V0->SetVacuum("th23",0);
   // V0->SetVacuum("th23",0);
 
-  V0->EvolveSUN(0,1000*Kilometer);
+  V0.EvolveSUN(0,1000*Kilometer);
 
   ofstream file("oscillations.dat");
 
   for(double lE=log(0.0005); lE<log(10); lE+=0.0001){
     double E=exp(lE);
-    file << E << "  " << V0->Get_flux(0,E) << "  " << 
-      V0->Get_flux(1,E) << "  " << V0->Get_flux(2,E) << endl;
+    file << E << "  " << V0.Get_flux(0,E) << "  " <<
+      V0.Get_flux(1,E) << "  " << V0.Get_flux(2,E) << endl;
   }
 
   cout << endl <<  "Done! " << endl <<  "Do you want to run the gnuplot script? yes/no" << endl;
@@ -67,6 +67,5 @@ int main(){
     return 0;
   }
   
-  delete[] V0;
   return 0;
 }

@@ -1,4 +1,4 @@
-#!/usr/bin/gnuplot -persist
+#!/usr/bin/env gnuplot -persist
 #set key box
 set key opaque
 
