@@ -55,7 +55,7 @@ if [ "$OS_NAME" = Darwin ]; then
 	GUESS_CXX=clang++
 	GUESS_LD=clang++
 	DYN_SUFFIX=.dylib
-	DYN_OPT='-dynamiclib -install_name $(PREFIX)/lib/$(shell basename $(DYN_PRODUCT)) -compatibility_version $(VERSION) -current_version $(VERSION)'
+	DYN_OPT='-dynamiclib -compatibility_version $(VERSION) -current_version $(VERSION)'
 fi
 
 CC=${CC-$GUESS_CC}
