@@ -1,0 +1,10 @@
+4 components stored
+components zero initialized: 1
+9 components stored
+components zero initialized: 1
+16 components stored
+components zero initialized: 1
+25 components stored
+components zero initialized: 1
+36 components stored
+components zero initialized: 1

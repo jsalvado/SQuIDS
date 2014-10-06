@@ -1,0 +1,60 @@
+Dimension 2
+Internal storage
+4 entries allocated
+4 components stored
+components are correctly set
+Memory aliasing: 0
+External storage
+4 entries allocated
+4 components stored
+components are correctly set
+Memory aliasing: 0
+
+Dimension 3
+Internal storage
+9 entries allocated
+9 components stored
+components are correctly set
+Memory aliasing: 0
+External storage
+9 entries allocated
+9 components stored
+components are correctly set
+Memory aliasing: 0
+
+Dimension 4
+Internal storage
+16 entries allocated
+16 components stored
+components are correctly set
+Memory aliasing: 0
+External storage
+16 entries allocated
+16 components stored
+components are correctly set
+Memory aliasing: 0
+
+Dimension 5
+Internal storage
+25 entries allocated
+25 components stored
+components are correctly set
+Memory aliasing: 0
+External storage
+25 entries allocated
+25 components stored
+components are correctly set
+Memory aliasing: 0
+
+Dimension 6
+Internal storage
+36 entries allocated
+36 components stored
+components are correctly set
+Memory aliasing: 0
+External storage
+36 entries allocated
+36 components stored
+components are correctly set
+Memory aliasing: 0
+

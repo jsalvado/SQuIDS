@@ -1,0 +1,62 @@
+Dimension 2
+no storage -> no storage, matching sizes
+0 entries allocated
+0 components stored
+components are correctly set
+source dimension: 0
+internal storage -> no storage, matching sizes
+0 entries allocated
+4 components stored
+components are correctly set
+source dimension: 0
+internal storage -> internal storage, matching sizes
+0 entries allocated
+4 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 0
+internal storage -> internal storage, non-matching sizes
+0 entries allocated
+9 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 0
+internal storage -> external storage, matching sizes
+0 entries allocated
+4 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 0
+Destination memeory has not moved: 1
+internal storage -> external storage, non-matching sizes
+Assignment failed: Non-matching dimensions in assignment to SU_vector with external storage
+Destination memeory has not moved: 1
+external storage -> no storage, matching sizes
+0 entries allocated
+4 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 1
+external storage -> internal storage, matching sizes
+0 entries allocated
+4 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 0
+external storage -> internal storage, non-matching sizes
+0 entries allocated
+9 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 0
+external storage -> external storage, matching sizes
+0 entries allocated
+4 components stored
+components are correctly set
+source dimension: 2
+Memory aliasing: 0
+Destination memeory has not moved: 1
+external storage -> external storage, non-matching sizes
+Assignment failed: Non-matching dimensions in assignment to SU_vector with external storage
+Destination memeory has not moved: 1
+
