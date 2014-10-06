@@ -34,7 +34,7 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
   ini(n,ns,1,0);
   //initialize the SU_vector that contines the delta_m
-  DM2.InitSU_vector(nsun);
+  DM2=SU_vector(nsun);
   //set the energy range in log scale
   Set_xrange(Ein, Efin,"log");
 
@@ -45,13 +45,13 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
   b1_proj.reset(new SU_vector[nsun]);
 
   for(int i = 0; i < nsun; i++){
-    b0_proj[i].InitSU_vector("Proj",i,nsun);
-    b1_proj[i].InitSU_vector("Proj",i,nsun);
+    b0_proj[i]=SU_vector::Projector(nsun,i);
+    b1_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i].RotateToB1(&params);
 
     for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei].InitSU_vector("Proj",i,nsun);
-      evol_b1_proj[i*nx + ei].InitSU_vector("Proj",i,nsun);
+      evol_b0_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
+      evol_b1_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
       evol_b1_proj[i*nx + ei].RotateToB1(&params);
     }
   }

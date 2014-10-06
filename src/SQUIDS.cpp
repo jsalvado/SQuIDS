@@ -80,7 +80,7 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
     anticommutators, rotations and evolutions
   */
 
-  SU.init(nsun);
+  //SU=SU_alg(nsun);
 
 
   //Allocate memory
@@ -97,7 +97,9 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
 
   for(int ei = 0; ei < nx; ei++){
     for(int i=0;i<nrhos;i++){
-      state[ei].rho[i].InitSU_vector(nsun,&(system[ei*size_state+i*size_rho]));
+      //state[ei].rho[i].InitSU_vector(nsun,&(system[ei*size_state+i*size_rho]));
+      state[ei].rho[i]=SU_vector(nsun,&(system[ei*size_state+i*size_rho]));
+      dstate[ei].rho[i]=SU_vector(nsun,nullptr);
     }
     if(nscalars>0){
       state[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
@@ -130,7 +132,9 @@ void SQUIDS::set_deriv_system_pointer(double *p){
   deriv_system=p;
   for(int ei = 0; ei < nx; ei++){
     for(int i=0;i<nrhos;i++){
-      dstate[ei].rho[i].InitSU_vector(nsun,&(p[ei*size_state+i*size_rho]));
+      //dstate[ei].rho[i].InitSU_vector(nsun,&(p[ei*size_state+i*size_rho])); //JS
+      //dstate[ei].rho[i]=SU_vector(nsun,&(p[ei*size_state+i*size_rho])); //CW1
+      dstate[ei].rho[i].SetBackingStore(&(p[ei*size_state+i*size_rho])); //CW2
     }
     dstate[ei].scalar=&(p[ei*size_state+nrhos*size_rho]);
   }
@@ -326,17 +330,18 @@ int SQUIDS::Derive(double at){
   t=at;
 
   PreDerive(at);
+  //std::cout << "----\n";
   for(int ei = 0; ei < nx; ei++){
     for(int i = 0; i < nrhos; i++){
       index_rho=i;
       // Density matrix
       // Coherent interaction
       if(CoherentInt)
-        dstate[ei].rho[i] = SU.iCommutator(state[ei].rho[i],HI(ei,t));
+        dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,t));
       
       // Non coherent interaction
       if(NonCoherentInt)
-        dstate[ei].rho[i] -= SU.ACommutator(GammaRho(ei,t),state[ei].rho[i]);
+        dstate[ei].rho[i] -= ACommutator(GammaRho(ei,t),state[ei].rho[i]);
       // Other possible interaction, for example involving the Scalars or non linear terms in rho.
       if(OtherInt)
         dstate[ei].rho[i] += InteractionsRho(ei,t);

@@ -197,10 +197,18 @@ SUNalg.o: SUNalg.cpp $(INCDIR)/SUNalg.h Makefile
 clean:
 	rm -f *.o *.so *.dylib ../lib/*.a ../lib/*.so ../lib/*.dylib
 
+doxygen:
+	doxygen
+
+test: $(DYN_PRODUCT) $(STAT_PRODUCT)
+	@cd ../test ; ./run_tests
+
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
 	@mkdir -p $(PREFIX)/include/SQuIDS
 	@cp $(INCDIR)/*.h $(PREFIX)/include/SQuIDS
+	@mkdir -p $(PREFIX)/include/SQuIDS/detail
+	@cp $(INCDIR)/detail/*.h $(PREFIX)/include/SQuIDS/detail
 	@echo Installing libraries in $(PREFIX)/lib
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig

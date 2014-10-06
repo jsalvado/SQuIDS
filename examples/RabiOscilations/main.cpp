@@ -2,6 +2,10 @@
 #include <fstream>
 
 void progressbar( int percent){
+  static int last=-1;
+  if(percent==last)
+    return;
+  last=percent;
   std::string bar;
   
   for(int i = 0; i < 50; i++){

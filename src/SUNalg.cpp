@@ -45,7 +45,6 @@ SU_vector implementation
 */
 
 
-
 /*
 -----------------------------------------------------------------------
 Constructors
@@ -53,132 +52,86 @@ Constructors
 */
 
 
-SU_vector::SU_vector(){
-  dim = 0;
-  size = 0;
-  isinit = false;
-  isinit_d = false;
-};
+SU_vector::SU_vector():
+dim(0),
+size(0),
+components(nullptr),
+isinit(false),
+isinit_d(false){}
 
-SU_vector::SU_vector( const SU_vector& V){
-  dim=V.dim;
-  size=V.size;
-  components=new double[size];
-  for(int i=0;i<size;i++)
-    components[i]=V.components[i];
-  isinit = true;
-  isinit_d = false;
-
+SU_vector::SU_vector(const SU_vector& V):
+dim(V.dim),
+size(V.size),
+components(new double[size]),
+isinit(true),
+isinit_d(false){
+  std::copy(V.components,V.components+size,components);
 }
 
-SU_vector::SU_vector(int d,double* comp){
-  isinit = false;
-  isinit_d = false;
-  InitSU_vector(d,comp);
-};
-
-SU_vector::SU_vector(int d){
-  isinit = false;
-  isinit_d = false;
-  InitSU_vector(d);
-};
-
-SU_vector::SU_vector(std::vector<double> comp){
-  isinit = false;
-  isinit_d = false;
-  InitSU_vector(comp);
-};
-
-SU_vector::SU_vector(string Type,int ii,int d){
-  isinit = false;
-  isinit_d = false; 
-  InitSU_vector(Type,ii,d);
-};
-
-SU_vector::SU_vector(gsl_matrix_complex* m){
-  isinit = false;
-  isinit_d = false;  
-  InitSU_vector(m);
-};
-
-
-SU_vector::~SU_vector(){
-  if(isinit){
-    delete [] components;
-    isinit=false;
+SU_vector::SU_vector(SU_vector&& V):
+dim(V.dim),
+size(V.size),
+components(V.components),
+isinit(V.isinit),
+isinit_d(V.isinit_d){
+  if(V.isinit){
+    V.dim=0;
+    V.size=0;
+    V.components=nullptr;
+    V.isinit=false;
   }
+}
+
+SU_vector::SU_vector(unsigned int d,double* comp):
+dim(d),
+size(dim*dim),
+components(comp),
+isinit(false),
+isinit_d(true)
+{
+  if(size>MAXSIZE)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int, double*): Invalid size: only up to SU(6) is supported");
 };
 
-/*
------------------------------------------------------------------------
-Initializers
------------------------------------------------------------------------
-*/
-
-void SU_vector::InitSU_vector(int d){
-  size = SQR(d);
-  dim = d;
-  if(isinit_d){
-    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
-  }
-
-  if(MAXSIZE<size || size<0){
-    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
-  }
-  components = new double[size];
-  isinit=true;
-  memset(components, 0.0, sizeof(double)*size);
+SU_vector::SU_vector(unsigned int d):
+dim(d),
+size(dim*dim),
+components(new double[size]),
+isinit(true),
+isinit_d(false)
+{
+  if(size>MAXSIZE)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: only up to SU(6) is supported");
+  std::fill(components,components+size,0.0);
 };
 
-void SU_vector::InitSU_vector(const SU_vector& V){
-  dim=V.dim;
-  size=V.size;
-  if(isinit){
-    delete[] components;
-  }
-  components=new double[size];
-  for(int i=0;i<size;i++){
-    components[i]=V.components[i];
-  }
-
-  isinit = true;
+SU_vector::SU_vector(std::vector<double> comp):
+dim(sqrt(comp.size())),
+size(comp.size()),
+components(new double[size]),
+isinit(true),
+isinit_d(false)
+{
+  if(dim*dim!=size)
+    throw std::runtime_error("SU_vector::SU_vector(std::vector<double>): Vector size must be a square");
+  if(size>MAXSIZE)
+    throw std::runtime_error("SU_vector::SU_vector(std::vector<double>): Invalid size: only up to SU(6) is supported");
+  std::copy(comp.begin(),comp.end(),components);
 };
 
-void SU_vector::InitSU_vector(int d,double* comp){
-  dim = d;
-  size = SQR(d);
-  if(MAXSIZE<size || size<0){
-    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
-  }
-  if(isinit){
-    delete[] components;
-  }
-  components = comp;
-  isinit=false;
-  isinit_d=true;
+SU_vector::SU_vector(gsl_matrix_complex* m):
+dim(m->size1),
+size(dim*dim),
+components(new double[size]),
+isinit(true),
+isinit_d(false)
+{
+  if(m->size1!=m->size2)
+    throw std::runtime_error("SU_vector::SU_vector(gsl_matrix_complex*): Matrix must be square");
+  if(size>MAXSIZE)
+    throw std::runtime_error("SU_vector::SU_vector(gsl_matrix_complex*): Invalid size: only up to SU(6) is supported");
   
-};
-
-void SU_vector::InitSU_vector(gsl_matrix_complex* m){
-  size = m->size1*m->size1;
-  dim=m->size1;
-  if(isinit_d){
-    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
-  }
-  if(isinit){
-    delete[] components;
-  }
-
-  if(MAXSIZE<size || size<0){
-    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
-  }
-  
-  if((dim%(int)sqrt(size))!=0){
-    throw std::runtime_error("SU_vector::InitSU_vector : error wrong matrix.");
-  }
-  components=new double[size];
-  isinit=true;
-  memset(components, 0.0, sizeof(double)*size);
+  std::fill(components,components+size,0.0);
   
   double m_real[dim][dim]; double m_imag[dim][dim];
   for(int i=0; i<dim; i++){
@@ -189,153 +142,168 @@ void SU_vector::InitSU_vector(gsl_matrix_complex* m){
   }
   // the following rules are valid ONLY when the initial
   // matrix is hermitian
-    
+  
   switch (dim){
-  case 2:
+    case 2:
 #include "MatrixToSU2.txt"
-    break;
-  case 3:
+      break;
+    case 3:
 #include "MatrixToSU3.txt"
-    break;
-  case 4:
+      break;
+    case 4:
 #include "MatrixToSU4.txt"
-    break;
-  case 5:
+      break;
+    case 5:
 #include "MatrixToSU5.txt"
-    break;
-  default:
-    throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
+      break;
+    default:
+      throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
   }
 };
 
-
-void SU_vector::InitSU_vector(std::vector<double> comp){
-  size = (int)comp.size();
-  dim = (int)sqrt(comp.size());
-  if(isinit_d){
-    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
-  }
-
-  if(isinit){
-    delete[] components;
-  }
-
-  if(MAXSIZE<size || size<0){
-    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
-  }
-
-
-  if(dim*dim!=size){
-    throw std::runtime_error("SU_vector::InitSU_vector : Error whrong vector size");
-  }
-
-  components=new double[size];
-  isinit=true;
-  for(int i = 0; i< size; i++)
-    components[i] = comp[i];
-};
-
-void SU_vector::InitSU_vector(string Type,int ii,int d){
-  dim = d;
-  size = SQR(dim);
-  if(isinit_d){
-    throw std::runtime_error( "SU_vector::InitSU_vector : Initialization not allowed, vector already initialized by reference");
-  }
+SU_vector::~SU_vector(){
   if(isinit){
     delete[] components;
     isinit=false;
   }
+};
 
 
-  if(MAXSIZE<size || size<0){
-    throw std::runtime_error("SU_vector::InitSU_vector : Not allowed size, only up to SU(6)");
+
+void SU_vector::SetBackingStore(double* comp){
+  if(isinit)
+    delete[] components;
+  components = comp;
+  isinit=false;
+  isinit_d=true;
+}
+
+namespace{
+  struct sq_array_2D{
+    unsigned int d;
+    double* data;
+    //sq_array_2D(unsigned int d):d(d){}
+    
+    struct index_proxy{
+      double* data;
+      double operator[](unsigned int j) const{
+        return(data[j]);
+      }
+    };
+    index_proxy operator[](unsigned int i) const{
+      return(index_proxy{data+d*i});
+    }
+  };
+  
+void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
+  switch (dim){
+    case 2:
+#include "MatrixToSU2.txt"
+      break;
+    case 3:
+#include "MatrixToSU3.txt"
+      break;
+    case 4:
+#include "MatrixToSU4.txt"
+      break;
+    case 5:
+#include "MatrixToSU5.txt"
+      break;
+    default:
+      throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
   }
+}
+}
 
-  if(!isinit){
-    components=new double[size];
-    memset(components, 0.0, sizeof(double)*size);
-    isinit=true;
+SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
+  if(d>sqrt(MAXSIZE))
+    throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid size: only up to SU(6) is supported");
+  if(ii>=d)
+    throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
+  
+  double m_real[d][d]; double m_imag[d][d];
+  for(int i=0; i<d; i++){
+    for(int j=0; j<d; j++){
+      m_real[i][j] = KRONECKER(i,j)*KRONECKER(i,ii);
+      m_imag[i][j] = 0.0;
+    }
   }
   
-  double m_real[dim][dim]; double m_imag[dim][dim];
+  SU_vector v(d);
+  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  return(v);
+}
 
-  if(Type=="Proj"||Type=="proj"||Type=="Projector"||Type=="projector"){
-    if(ii>dim|| ii<0){
-      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for projectors");
+SU_vector SU_vector::Identity(unsigned int d){
+  if(d>sqrt(MAXSIZE))
+    throw std::runtime_error("SU_vector::Identity(unsigned int): Invalid size: only up to SU(6) is supported");
+  
+  double m_real[d][d]; double m_imag[d][d];
+  for(int i=0; i<d; i++){
+    for(int j=0; j<d; j++){
+      m_real[i][j] = KRONECKER(i,j);
+      m_imag[i][j] = 0.0;
     }
-
-    for(int i=0; i<dim; i++){
-      for(int j=0; j<dim; j++){
-	m_real[i][j] = KRONECKER(i,j)*KRONECKER(i,ii);
-	m_imag[i][j] = 0.0;
-      }
-    }
-  }else if(Type == "Identity"){
-    for(int i=0; i<dim; i++){
-      for(int j=0; j<dim; j++){
-	m_real[i][j] = KRONECKER(i,j);
-	m_imag[i][j] = 0.0;
-      }
-    }
-  }else if(Type =="PosProjector"){
-    if(ii>dim|| ii<0){
-      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for positive projectors ");
-      exit(1);
-    }
-    for(int i=0; i<dim; i++){
-      for(int j=0; j<dim; j++){
-	if(i<ii)
-	  m_real[i][j] = KRONECKER(i,j);
-	else
-	  m_real[i][j] = 0.0;
-	
-	m_imag[i][j] = 0.0;
-      }
-    }
-  }else if(Type == "NegProjector"){
-    if(ii>dim|| ii<0){
-      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for negative projectors ");
-    }
-    for(int i=0; i<dim; i++){
-      for(int j=0; j<dim; j++){
-	if(dim-i<ii)
-	  m_real[i][j] = KRONECKER(i,j);
-	else
-	  m_real[i][j] = 0.0;
-    	
-	m_imag[i][j] = 0.0;
-      }
-    }
-  }else if(Type == "Component" || Type == "component" || Type  == "Comp" || Type == "comp"
-	   || Type == "Generator" || Type == "Gen" || Type == "generator" || Type == "gen"){
-    if(ii>size|| ii<0){
-      throw std::runtime_error("SU_vector::SU_vector : input parameter out of range for generators");
-    }
-    components[ii] = 1.0;
-    return;
-  }else{
-    throw std::runtime_error("SU_vector::SU_vector :  Option not available");
   }
+  
+  SU_vector v(d);
+  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  return(v);
+}
 
-  // the following rules are valid ONLY when the initial
-  // matrix is hermitian
-  switch (dim){
-  case 2:
-#include "MatrixToSU2.txt"
-    break;
-  case 3:
-#include "MatrixToSU3.txt"
-    break;
-  case 4:
-#include "MatrixToSU4.txt"
-    break;
-  case 5:
-#include "MatrixToSU5.txt"
-    break;
-  default:
-    throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
-  }    
-};
+SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
+  if(d>sqrt(MAXSIZE))
+    throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid size: only up to SU(6) is supported");
+  if(ii>=d)
+    throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
+  
+  double m_real[d][d]; double m_imag[d][d];
+  for(int i=0; i<d; i++){
+    for(int j=0; j<d; j++){
+      if(i<ii)
+        m_real[i][j] = KRONECKER(i,j);
+      else
+        m_real[i][j] = 0.0;
+      m_imag[i][j] = 0.0;
+    }
+  }
+  
+  SU_vector v(d);
+  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  return(v);
+}
+
+SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
+  if(d>sqrt(MAXSIZE))
+    throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid size: only up to SU(6) is supported");
+  if(ii>=d)
+    throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
+  
+  double m_real[d][d]; double m_imag[d][d];
+  for(int i=0; i<d; i++){
+    for(int j=0; j<d; j++){
+      if(d-i<ii)
+        m_real[i][j] = KRONECKER(i,j);
+      else
+        m_real[i][j] = 0.0;
+      m_imag[i][j] = 0.0;
+    }
+  }
+  
+  SU_vector v(d);
+  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  return(v);
+}
+
+SU_vector SU_vector::Component(unsigned int d, unsigned int ii){
+  if(d>sqrt(MAXSIZE))
+    throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid size: only up to SU(6) is supported");
+  if(ii>=d)
+    throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
+  SU_vector v(d);
+  v.components[ii] = 1.0;
+  return(v);
+}
 
 
 /*
@@ -350,7 +318,7 @@ void SU_vector::SetAllComponents(double x){
 }
 
 
-vector<double> SU_vector::GetComponents(){
+vector<double> SU_vector::GetComponents() const{
   vector<double> x ( dim*dim );
   for ( int i = 0; i < dim*dim ; i ++ )
     x[i] = components[i];
@@ -362,19 +330,21 @@ vector<double> SU_vector::GetComponents(){
 SU_vector SU_vector::Rescale(double x){
   for(int i=0; i< size; i++){
     components[i] = x*components[i];
-  };
+  }
   return *this;
 };
 
-SU_vector SU_vector::Rotate(int i, int j, double th, double del){
+SU_vector SU_vector::Rotate(unsigned int i, unsigned int j, double th, double del){
   SU_vector suv=*this;
   SU_vector suv_rot(dim);
 
+  assert(i<j && "Components selected for rotation must be in ascending order");
+  
   switch (dim){
   case 2:
     if (i == 1 and j == 2){
 #include "RotationSU2_12.txt"
-    };
+    }
     break;
   case 3:
     switch (i){
@@ -386,15 +356,15 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
       case 3:
 #include "RotationSU3_13.txt"
 	break;
-      };
+      }
       break;
     case 2:
       switch (j){
       case 3:
 #include "RotationSU3_23.txt"
 	break;
-      };
-    };
+      }
+    }
     break;
   case 4:
     switch (i){
@@ -409,7 +379,7 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
       case 4:
 #include "RotationSU4_14.txt"
 	break;
-      };
+      }
       break;
     case 2:
       switch (j){
@@ -419,14 +389,14 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
       case 4:
 #include "RotationSU4_24.txt"
 	break;
-      };
+      }
       break;  
     case 3:
       switch (j){
       case 4:
 #include "RotationSU4_34.txt"
 	break;
-      };
+      }
       break;
     }
     break;
@@ -446,7 +416,7 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
       case 5:
 #include "RotationSU5_15.txt"
 	break;                            
-      };
+      }
       break;
     case 2:
       switch (j){
@@ -459,7 +429,7 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
       case 5:
 #include "RotationSU5_25.txt"
 	break;
-      };
+      }
       break;  
     case 3:
       switch (j){
@@ -469,25 +439,24 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
       case 5:
 #include "RotationSU5_35.txt"
 	break;
-      };
+      }
       break;
     case 4:
       switch (j){
       case 5:
 #include "RotationSU5_45.txt"
 	break;
-      };
+      }
       break;
     }
     break;
   default:
-    printf("SUN_rotation error. \n");
-    exit(0);
-  };
+    throw std::runtime_error("SUN_rotation error. \n");
+  }
     
   for(int i=0; i < size; i++){
     components[i] = suv_rot.components[i];
-  };
+  }
     
   return *this;
 };
@@ -495,18 +464,18 @@ SU_vector SU_vector::Rotate(int i, int j, double th, double del){
 void SU_vector::RotateToB0(const Const* param){
   Const param2;
   param2.th12= -param->th12;
-  param2.th13=  -param->th13;
-  param2.th23=  -param->th23;
-  param2.th14=  -param->th14;
-  param2.th24=  -param->th24;
-  param2.th34=  -param->th34;
-  param2.th15=  -param->th15;
-  param2.th25=  -param->th25;
-  param2.th35=  -param->th35;
-  param2.th45=  -param->th45;
-  param2.th16=  -param->th16;
-  param2.th26=  -param->th26;
-  param2.th36=  -param->th36;
+  param2.th13= -param->th13;
+  param2.th23= -param->th23;
+  param2.th14= -param->th14;
+  param2.th24= -param->th24;
+  param2.th34= -param->th34;
+  param2.th15= -param->th15;
+  param2.th25= -param->th25;
+  param2.th35= -param->th35;
+  param2.th45= -param->th45;
+  param2.th16= -param->th16;
+  param2.th26= -param->th26;
+  param2.th36= -param->th36;
   param2.th46= -param->th46; 
   param2.th56= -param->th56; 
   RotateToB1(&param2);
@@ -558,7 +527,6 @@ void SU_vector::RotateToB1(const Const* param){
     break;
   default:
     printf("SUN_rotation error. \n");
-    exit(1);
   };
   
   for(int i=0; i < SQR(dim); i++){
@@ -591,70 +559,88 @@ double SU_vector::SUTrace(SU_vector& suv1,const SU_vector& suv2){
   return id_trace+2.0*gen_trace;
 };
 
-void SU_vector::SUPrint(void) const {
-  for(int i=0; i< SQR(dim); i++){
-    std::cout << components[i] << " ";
-  };
-  std::cout << std::endl;
-};
 
-
-bool SU_vector::operator==(const SU_vector &other){
-  bool equal = true;
+bool SU_vector::operator==(const SU_vector& other){
+  if(dim != other.dim) //vectors of different sizes cannot be equal
+    return false;
+  //if one vector contains data and the other does not they cannot be equal
+  if((isinit || isinit_d) != (other.isinit || other.isinit_d))
+    return false;
+  //if both vectors are empty, consider them equal
+  if(!isinit && !isinit_d)
+    return true;
+  //test whether all components are equal
   for(int i=0; i < SQR(dim); i++){
-    if (components[i] != other.components[i]){
-      equal = false;
-      break;
-    }
+    if (components[i] != other.components[i])
+      return false;
   };
-  if (dim != other.dim)
-    equal = false;
-    
-  return equal;
+  return true;
 };
 
 double SU_vector::operator*(const SU_vector &other){
   return SUTrace(*this,other);
 };
 
-SU_vector SU_vector::operator*(const double x){
-  SU_vector su_new(dim);
-  for(int i=0; i < SQR(dim); i++){
-    su_new.components[i] = x*components[i];
-  };
-  return su_new;
-};
+detail::MultiplicationProxy SU_vector::operator*(double x) const{
+  return(detail::MultiplicationProxy{*this,x});
+}
 
-SU_vector operator*(const double x, const SU_vector &other){
-  int dim = other.Dim();
-  SU_vector su_new(dim);
-  for(int i=0; i < SQR(dim); i++){
-    su_new[i] = x*other[i];
-  };
-  return su_new;
-};
-
-SU_vector operator*(const SU_vector &other, const double x){
-  return x*other;
-};
+detail::MultiplicationProxy operator*(double x, const SU_vector& v){
+  return(detail::MultiplicationProxy{v,x});
+}
 
 
-SU_vector & SU_vector::operator=(const SU_vector &other){
+SU_vector & SU_vector::operator=(const SU_vector& other){
+  if(this==&other)
+    return(*this);
   if(size!=other.size){
-    throw std::runtime_error(" SU_vector::operator= Error not equal size ");
+    if(isinit_d) //can't resize
+      throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
+    //can resize
+    if(isinit)
+      delete[] components;
+    dim=other.dim;
+    size=other.size;
+    components=new double[size];
+    isinit=true;
   }
-  if(this==&other){
-    throw std::runtime_error(" SU_vector::operator= invalid self-assignment ");
-  }
-
-  dim = other.dim;
-  size = other.size;
   
-  for(int i=0; i < size; i++){
-    components[i] = other.components[i];
-  };
+  std::copy(other.components,other.components+size,components);
   return *this;
 };
+
+SU_vector& SU_vector::operator=(SU_vector&& other){
+  if(this==&other)
+    return(*this);
+  if(isinit){ //this vector owns storage
+    std::swap(dim,other.dim);
+    std::swap(size,other.size);
+    std::swap(components,other.components);
+    std::swap(isinit,other.isinit);
+    std::swap(isinit_d,other.isinit_d);
+  }
+  else if(isinit_d){ //this vector has non-owned storage
+    //conservatively assume that we cannot shift our storage, so fall back on an actual copy
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
+    std::copy(other.components,other.components+size,components);
+  }
+  else{
+    //this vector has no storage, so just take everything from other
+    dim = other.dim;
+    size = other.size;
+    components = other.components;
+    isinit = other.isinit;
+    isinit_d = other.isinit_d;
+    if(other.isinit){ //other must relinquish ownership
+      other.dim=0;
+      other.size=0;
+      other.components=nullptr;
+      other.isinit=false;
+    }
+  }
+  return(*this);
+}
 
 SU_vector & SU_vector::operator+=(const SU_vector &other){
   for(int i=0; i < SQR(dim); i++){
@@ -670,112 +656,32 @@ SU_vector & SU_vector::operator-=(const SU_vector &other){
   return *this;
 };
 
-SU_vector SU_vector::operator+(const SU_vector &other){
-  SU_vector su_new(dim);
-  for(int i=0; i < SQR(dim); i++){
-    su_new.components[i] = components[i] + other.components[i];
-  };
-  return su_new;
-};
-
-SU_vector SU_vector::operator-(const SU_vector &other){
-  SU_vector su_new(dim);
- 
-  for(int i=0; i < SQR(dim); i++){
-    su_new.components[i] = components[i] - other.components[i];
-  };
- 
-  return su_new;
-};
-
-
-SU_vector SU_vector::SUEvolve(SU_vector & suv1, double t){
-  SU_vector suv2(dim);
-  for(int i=0; i < size; i++){
-    suv2.components[i] = components[i];
-  };
-  SU_vector suv_new(dim);
-
-  // here we will asumme that suv1 is the
-  // evolution, suv1 should be diagonal(linear combination of the SU(n) weights). 
-  // The given expressions are only valid when suv1 is a projector-like SU-vector.
-  
-  switch (dim){
-  case 2:
-#include "EvolutionSU2.txt"
-    break;
-  case 3:
-#include "EvolutionSU3.txt"
-    break;
-  case 4:
-#include "EvolutionSU4.txt"
-    break;
-  case 5:
-#include "EvolutionSU5.txt"
-    break;
-  default:
-    throw std::runtime_error("SUEvolution :: Error : dim  ");
-  };
-  return suv_new;
+detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const{
+  return(detail::AdditionProxy{*this,other});
 }
 
+detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const{
+  return(detail::SubtractionProxy{*this,other});
+}
+
+detail::EvolutionProxy SU_vector::SUEvolve(const SU_vector& suv1,double t) const{
+  return(detail::EvolutionProxy{suv1,*this,t});
+}
 
 ostream& operator<<(ostream& os, const SU_vector& V){
   for(int i=0; i< V.size-1; i++)
     os << V.components[i] << "  ";
-  os <<V.components[V.size-1];
+  os << V.components[V.size-1];
   return os;
 }
 
-
-SU_vector  SU_alg::iCommutator(const SU_vector& suv1,const SU_vector& suv2){
-  if(suv1.dim!=dim || suv2.dim!=dim){ 
-    throw std::runtime_error("SU_alg: Commutator error, not right dimensions ");
-  }
-  //SU_vector suv_new(dim);
-  suv_new.SetAllComponents(0.0);
-  switch (dim){
-  case 2:
-#include "iConmutatorSU2.txt"
-    break;
-  case 3:
-#include "iConmutatorSU3.txt"
-    break;
-  case 4:
-#include "iConmutatorSU4.txt"
-    break;
-  case 5:
-#include "iConmutatorSU5.txt"
-    break;
-  default:
-    throw std::runtime_error("SUiConmutator :: Error.");
-    exit(1);
-  };
-  return suv_new;
-};
-
-SU_vector  SU_alg::ACommutator(const SU_vector& suv1,const SU_vector& suv2){
-  if(suv1.dim!=dim || suv2.dim!=dim){ 
-    throw std::runtime_error("SU_alg: Anti Commutator error, not right dimensions ");
-  }
-  //SU_vector suv_new(dim);
-  suv_new.SetAllComponents(0.0);
-  switch (dim){
-  case 2:
-#include "AnticonmutatorSU2.txt"
-    break;
-  case 3:
-#include "AnticonmutatorSU3.txt"
-    break;
-  case 4:
-#include "AnticonmutatorSU4.txt"
-    break;
-  case 5:
-#include "AnticonmutatorSU5.txt"
-    break;
-  default:
-    throw std::runtime_error("SUAnticonmutator :: Error.");
-    exit(1);
-  };
-  return suv_new;
-};
+detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
+  if(suv1.dim!=suv2.dim)
+    throw std::runtime_error("Commutator error, non-matching dimensions ");
+  return(detail::iCommutatorProxy{suv1,suv2});
+}
+detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
+  if(suv1.dim!=suv2.dim)
+    throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
+  return(detail::ACommutatorProxy{suv1,suv2});
+}

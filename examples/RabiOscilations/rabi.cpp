@@ -16,21 +16,22 @@ void rabi::init(double D_E, double wi, double Am){
   b1_proj.reset(new SU_vector[nsun]);
 
   for(int i = 0; i < nsun; i++){
-    b0_proj[i].InitSU_vector("Proj",i,nsun);
-    b1_proj[i].InitSU_vector("Proj",i,nsun);
+    //b0_proj[i].InitSU_vector("Proj",i,nsun);
+    b0_proj[i]=SU_vector::Projector(nsun,i);
+    //b1_proj[i].InitSU_vector("Proj",i,nsun);
+    b1_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i].RotateToB1(&params);
 
     for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei].InitSU_vector("Proj",i,nsun);
-      evol_b1_proj[i*nx + ei].InitSU_vector("Proj",i,nsun);
+      evol_b0_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
+      evol_b1_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
       evol_b1_proj[i*nx + ei].RotateToB1(&params);
     }
   }
 
-
-  suH0.InitSU_vector(nsun);
-  d.InitSU_vector(nsun);
-  d0.InitSU_vector(nsun);
+  suH0=SU_vector(nsun);
+  d=SU_vector(nsun);
+  d0=SU_vector(nsun);
 
   d0=(b1_proj[0]-b1_proj[1]);
   suH0 = b0_proj[1]*Delta_E;
@@ -42,13 +43,10 @@ void rabi::init(double D_E, double wi, double Am){
 
 
 void rabi::PreDerive(double t){
-  SU_vector h0(nsun);
   for(int i = 0; i < nsun; i++){
     for(int ei = 0; ei < nx; ei++){
-      //h0=H0(x[ei]);
       evol_b0_proj[i*nx + ei] = b0_proj[i].SUEvolve(suH0,t-t_ini);
       evol_b1_proj[i*nx + ei] = b1_proj[i].SUEvolve(suH0,t-t_ini);
-      //evol_b0_proj[i*nx + ei] = b0_proj[i].SUEvolve(h0,t-t_ini);      
     }
   }
 }
@@ -62,8 +60,7 @@ SU_vector rabi::H0(double x){
 
 SU_vector rabi::HI(int ix,double t){
   d=(evol_b1_proj[0]-evol_b1_proj[1]);
-  //  cout << d << endl;
-  return (d*A)*cos(w*t);
+  return (A*cos(w*t))*d;
 }
 
 

@@ -94,7 +94,7 @@ class SQUIDS {
 
 
   int numeqn;
-  SU_alg SU;
+  //SU_alg SU;
 
 
   // setting up GSL ODE solver
