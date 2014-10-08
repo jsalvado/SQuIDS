@@ -316,7 +316,7 @@ public:
   /// arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
   SU_vector& operator-=(const ProxyType& proxy){
-    return(assignProxy<detail::IncrementWrapper>(proxy));
+    return(assignProxy<detail::DecrementWrapper>(proxy));
   }
   
   ///\brief Set the external storage used by this SU_vector
