@@ -1,0 +1,185 @@
+#include <iostream>
+#include <SQuIDs/SUNalg.h>
+#include "alloc_counting.h"
+
+//Addition is simple, so while we're here also thoroughly test arithmetic optimizations
+//Things to test:
+//adding SU_vectors without optimization
+//adding with fused assignment
+//	assignment to vector of correct size
+//		owned storage -> no allocation
+//		external storage -> no allocation
+//	assignment to vector of incorrect size
+//		no storage -> resize
+//		owned storage -> resize
+//		external storage -> exception
+//	aliased assignment
+//		same vectors
+//		vectors using the same external storage
+//adding an SU_vector and a proxy
+
+void check_all_components_equal(const SU_vector& v, double expected){
+	auto components=v.GetComponents();
+	std::cout << "components " <<
+	(std::all_of(components.begin(),components.end(),[=](double c){ return(c==expected); })?
+	 "are":"are not") << " correctly set\n";
+}
+
+void test_pure_add(unsigned int dim, bool matchingSizes){
+	const double d1=6.36, d2=7.75, sum=d1+d2;
+	SU_vector v1(dim), v2(matchingSizes?dim:(dim>2?dim-1:dim+1));
+	std::cout << "Adding vectors with sizes " << v1.Dim() << " and " << v2.Dim() << '\n';
+	v1.SetAllComponents(d1);
+	v2.SetAllComponents(d2);
+	try{
+		SU_vector v3(v1+v2);
+		check_all_components_equal(v3,sum);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+}
+
+void test_fused_assign_add(unsigned int dim, SU_vector& dest, const std::string& dStoreType){
+	const double d1=4.97, d2=2.14, sum=d1+d2;
+	SU_vector v1(dim), v2(dim);
+	std::cout << "Assigning sum of vectors with sizes " << v1.Dim() << " and " << v2.Dim()
+		<< " to vector with size " << dest.Dim() << " (" << dStoreType << ")\n";
+	v1.SetAllComponents(d1);
+	v2.SetAllComponents(d2);
+	try{
+		alloc_counting::reset_allocation_counters();
+		dest=v1+v2;
+		auto allocated=alloc_counting::mem_allocated;
+		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
+		check_all_components_equal(dest,sum);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+}
+
+template<typename Callable>
+void make_dest_none(Callable test){
+	SU_vector dest;
+	test(dest,"none");
+}
+
+template<typename Callable>
+void make_dest_internal(unsigned int dim, Callable test){
+	SU_vector dest(dim);
+	test(dest,"internal");
+}
+
+template<typename Callable>
+void make_dest_external(unsigned int dim, Callable test){
+	const size_t size=dim*dim;
+	std::unique_ptr<double[]> buffer(new double[size]);
+	SU_vector dest(dim,buffer.get());
+	test(dest,"external");
+	//verify that memory has not shifted
+	buffer[0]=22.5;
+	std::cout << "Destination memory has not moved: " << (dest[0]==buffer[0]) << '\n';
+}
+
+//aliasing requires allocation!
+void test_fused_assign_add_aliased_vectors(unsigned int dim){
+	const double d1=5.28, d2=8.06, d3=1.83, sum1=d1+d2, sum2=d2+d3;
+	SU_vector v1(dim), v2(dim), v3(dim);
+	std::cout << "Aliased vector fused assign-add with size " << dim << '\n';
+	v1.SetAllComponents(d1);
+	v2.SetAllComponents(d2);
+	v3.SetAllComponents(d3);
+	try{
+		alloc_counting::reset_allocation_counters();
+		v1=v1+v2;
+		auto allocated=alloc_counting::mem_allocated;
+		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
+		check_all_components_equal(v1,sum1);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+	try{
+		alloc_counting::reset_allocation_counters();
+		v3=v2+v3;
+		auto allocated=alloc_counting::mem_allocated;
+		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
+		check_all_components_equal(v3,sum2);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+}
+
+//aliasing requires allocation!
+void test_fused_assign_add_aliased_storage(unsigned int dim){
+	const size_t size=dim*dim;
+	std::unique_ptr<double[]> b1(new double[size]), b2(new double[size]), b3(new double[size]);
+	const double d1=3.70, d2=2.29, sum=d1+d2;
+	std::cout << "Aliased storage fused assign-add with size " << dim << '\n';
+	try{
+		SU_vector v1(dim,b1.get()), v2(dim,b2.get()), v3(dim,b1.get());
+		v1.SetAllComponents(d1);
+		v2.SetAllComponents(d2);
+		alloc_counting::reset_allocation_counters();
+		v3=v1+v2;
+		auto allocated=alloc_counting::mem_allocated;
+		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
+		check_all_components_equal(v3,sum);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+	try{
+		SU_vector v1(dim,b1.get()), v2(dim,b2.get()), v3(dim,b2.get());
+		v1.SetAllComponents(d1);
+		v2.SetAllComponents(d2);
+		alloc_counting::reset_allocation_counters();
+		v3=v1+v2;
+		auto allocated=alloc_counting::mem_allocated;
+		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
+		check_all_components_equal(v3,sum);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+}
+
+void test_add_vector_proxy(unsigned int dim){
+	const double d1=7.31, d2=7.45, d3=2.46, sum=d1+d2+d3;
+	SU_vector v1(dim), v2(dim), v3(dim);
+	std::cout << "Adding 3 vectors with size " << dim << '\n';
+	v1.SetAllComponents(d1);
+	v2.SetAllComponents(d2);
+	v3.SetAllComponents(d3);
+	try{
+		SU_vector v4(v1+v2+v3);
+		check_all_components_equal(v4,sum);
+	} catch(std::runtime_error& err){
+		std::cout << "Exception: " << err.what() << '\n';
+	}
+}
+
+int main(){
+	alloc_counting::pattern_fill_allocs=true;
+	alloc_counting::alloc_fill_pattern=0xFF;
+	
+	for(unsigned int i=2; i<=6; i++){
+		test_pure_add(i,true);
+		test_pure_add(i,false);
+		
+		if(i<5){
+		auto test_fused_assign_add=[i](SU_vector& dest, const std::string& dStoreType){
+			::test_fused_assign_add(i,dest,dStoreType);
+		};
+		make_dest_none(test_fused_assign_add);
+		make_dest_internal(i,test_fused_assign_add);
+		make_dest_external(i,test_fused_assign_add);
+		
+		make_dest_internal((i>2?i-1:i+1),test_fused_assign_add);
+		make_dest_external((i>2?i-1:i+1),test_fused_assign_add);
+		}
+		
+		test_fused_assign_add_aliased_vectors(i);
+		test_fused_assign_add_aliased_storage(i);
+		
+		test_add_vector_proxy(i);
+		
+		std::cout << '\n';
+	}
+}
