@@ -578,6 +578,8 @@ bool SU_vector::operator==(const SU_vector& other){
 };
 
 double SU_vector::operator*(const SU_vector &other){
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector inner product");
   return SUTrace(*this,other);
 };
 
@@ -643,6 +645,8 @@ SU_vector& SU_vector::operator=(SU_vector&& other){
 }
 
 SU_vector & SU_vector::operator+=(const SU_vector &other){
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector increment");
   for(int i=0; i < SQR(dim); i++){
     components[i] += other.components[i];
   };
@@ -650,6 +654,8 @@ SU_vector & SU_vector::operator+=(const SU_vector &other){
 };
 
 SU_vector & SU_vector::operator-=(const SU_vector &other){
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector decrement");
   for(int i=0; i < SQR(dim); i++){
     components[i] -= other.components[i];
   };
@@ -657,10 +663,14 @@ SU_vector & SU_vector::operator-=(const SU_vector &other){
 };
 
 detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
   return(detail::AdditionProxy{*this,other});
 }
 
 detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
   return(detail::SubtractionProxy{*this,other});
 }
 
