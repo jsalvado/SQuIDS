@@ -5,10 +5,10 @@ void rabi::init(double D_E, double wi, double Am){
   Delta_E=D_E;
   w=wi;
   A=Am;
-  Set("th12",params.pi/4.0);  
+  params.Set_th12(params.pi/4.0);  
   ini(1,2,1,0);
 
-  Set("H1",true);  
+  Set_CoherentInteractions(true);  
 
   evol_b0_proj.reset(new SU_vector[nx*nsun]);
   evol_b1_proj.reset(new SU_vector[nx*nsun]);

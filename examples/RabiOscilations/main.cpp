@@ -40,8 +40,8 @@ int main(){
   R0.init(1,1,0.1);
 
   // Setting the errors
-  R0.Set("rel_error",1e-5);
-  R0.Set("abs_error",1e-5);
+  R0.Set_rel_error(1e-5);
+  R0.Set_abs_error(1e-5);
 
   cout << "Rabi system with frequency of 10 initialized." << endl;
   cout << "give the value for the detuning: " << endl;
@@ -50,8 +50,9 @@ int main(){
   // un-tuned Rabi system
   Rd.init(10,10+del,0.1);
   // Setting the errors
-  Rd.Set("rel_error",1e-5);
-  Rd.Set("abs_error",1e-5);
+  Rd.Set_rel_error(1e-5);
+  Rd.Set_abs_error(1e-5);
+
 
 
   cout << "Computing rabi" << endl;

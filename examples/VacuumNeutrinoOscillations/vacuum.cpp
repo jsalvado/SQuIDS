@@ -82,8 +82,9 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
 
 //funtion that sets the parameters for the Vacuum oscilation 
 //is necesari just to update the mass matrix, and mixings every time.
-void vacuum::SetVacuum(string name,double opt){
-  Set(name,opt);
+void vacuum::SetVacuum(Const par){
+  params=par;
+  params.Refresh();
   DM2 = (b0_proj[1])*gsl_matrix_get(params.dmsq,1,0);
   for(int i = 2; i < nsun; i++){
     DM2 += (b0_proj[i])*gsl_matrix_get(params.dmsq,i,0);

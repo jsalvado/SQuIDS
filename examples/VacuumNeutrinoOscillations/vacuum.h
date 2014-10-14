@@ -58,7 +58,7 @@ class vacuum: public SQUIDS {
   void init(int,int,double, double);
 
   //Function to set the parameters.
-  void SetVacuum(string name,double opt);  
+  void SetVacuum(Const par);  
   //H0 operator
   SU_vector H0(double);
   void EvolveProjectors(double t);
