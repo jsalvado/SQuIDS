@@ -199,10 +199,25 @@ class SQUIDS {
   // nrhos
   // nscalars
   // The parameters in the struc "const" are also available from this functions
-  void Set(string,bool);
-  void Set(string,double);
-  void Set(string,int);
-  void Set(string,const gsl_odeiv2_step_type*);
+  void Set_GSL_step(const gsl_odeiv2_step_type * opt);
+
+  void Set_AdaptiveStep(bool opt);
+  void Set_CoherentInteractions(bool opt);
+  void Set_NonCoherentInteractions(bool opt);
+  void Set_OtherInteractions(bool opt);
+  void Set_ScalarInteractions(bool opt);
+  void Set_h_min(double opt);
+  void Set_h_max(double opt);
+  void Set_h(double opt);
+  void Set_rel_error(double opt);
+  void Set_abs_error(double opt);
+  void Set_t(double opt);
+  void Set_units(double opt);
+  void Set_nx(int opt);
+  void Set_nsun(int opt);
+  void Set_NumSteps(int opt);
+  void Set_nrhos(int opt);
+  void Set_nscalars(int opt);
   
 
   //***************************************************************

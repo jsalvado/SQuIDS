@@ -1,4 +1,4 @@
-#!/usr/bin/env gnuplot -persist
+#!/usr/bin/gnuplot -persist
 set key box
 set key opaque
 set multiplot layout 2,1

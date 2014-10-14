@@ -146,7 +146,32 @@ public :
   double proton_mass;
   double neutron_mass;
 
-  bool Set(string, double);
+  //Functions that set the value for the parameters(mixings and delta_m).
+  //The Refresh function is called every time in these functions.
+  void Set_th12(double val);
+  void Set_th13(double val);
+  void Set_th23(double val);
+  void Set_th14(double val);
+  void Set_th24(double val);
+  void Set_th34(double val);
+  void Set_th15(double val);
+  void Set_th25(double val);
+  void Set_th35(double val);
+  void Set_th45(double val);
+  void Set_th16(double val);
+  void Set_th26(double val);
+  void Set_th36(double val);
+  void Set_th46(double val);
+  void Set_th56(double val);
+  void Set_dm21sq(double val);
+  void Set_dm31sq(double val);
+  void Set_dm41sq(double val);
+  void Set_dm51sq(double val);
+  void Set_dm61sq(double val);
+  void Set_delta1(double val);
+  void Set_delta2(double val);
+  void Set_delta3(double val);
+
   int Refresh(void);
   Const(void);
   ~Const(void);

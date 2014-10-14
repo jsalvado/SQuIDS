@@ -236,91 +236,92 @@ int SQUIDS::Get_i(double xi){
   return nl;
 }
 
-void SQUIDS::Set(string name,const gsl_odeiv2_step_type * opt){
-  if(name=="GSL_Step" || name=="GSL_step" || name=="step"){ 
-    step = (gsl_odeiv2_step_type *) opt;  
-  }
+void SQUIDS::Set_GSL_step(const gsl_odeiv2_step_type * opt){
+  step = (gsl_odeiv2_step_type *) opt;  
 }
 
-void SQUIDS::Set(string name,bool opt){
-  if(name=="AdaptiveStep"){
-    adaptive_step=opt;
-  }else if(name=="CoherentInteractions" || name=="coherentinteractoins" || name=="CohInt"||name=="H1"){
-    CoherentInt=opt;
-    AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
-  }else if(name=="NonCoherentInteractions" || name=="noncoherentinteractoins" || name=="NonCohInt"){
-    NonCoherentInt=opt;
-    AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
-  }else if(name=="OtherInt" || name=="otherint" || name=="OInt" ){
-    OtherInt=opt;
-    AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
-  }else if(name=="ScalarInteractions" || name=="scalarinteractions" || name=="ScalInt"){
+void SQUIDS::Set_AdaptiveStep(bool opt){
+  adaptive_step=opt;
+}
+void SQUIDS::Set_CoherentInteractions(bool opt){
+  CoherentInt=opt;
+}
+void SQUIDS::Set_NonCoherentInteractions(bool opt){
+  NonCoherentInt=opt;
+  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+}
+void SQUIDS::Set_OtherInteractions(bool opt){
+  OtherInt=opt;
+}
+void SQUIDS::Set_ScalarInteractions(bool opt){
     ScalarsInt=opt;
     AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
-  }else if(name=="AntiNeutrinos" || name=="antinu" || name=="AntiNu" || name=="anu"){
-    neu_and_aneu=opt;
-  }else{
-    throw std::runtime_error("DMKS::Set : Option (" + name + ") not found." );
-  }
 }
 
 
-void SQUIDS::Set(string name,double opt){
-  if(!params.Set(name,opt)){
-    if(name=="h_min"){
-      h_min=opt;
-      if(h<h_min){
-	if(h_max<50.0*h_min){
-	  h=(h_min+h_max)/2.0;
-	}else{
-	  h=h_min*10.0;
-	}
-      }
-    }else  if(name=="h_max"){
-      h_max=opt;
-      if(h>h_max){
-	if(h_max<50.0*h_min){
-	  h=(h_min+h_max)/2.0;
-	}else{
-	  h=h_min*10.0;
-	}
-      }
-    }else if(name=="h"){
-      h=opt;
-    }else if(name=="rel_error"){
-      rel_error=opt;
-    }else if(name=="abs_error"){
-      abs_error=opt;
-    }else  if(name=="t" || name=="T"){
-      t=opt;
-      t_ini=opt;
-    }else if(name=="Units" || name=="units" || name=="tunits"|| name=="Tunits"){
-      tunit=opt;
+void SQUIDS::Set_h_min(double opt){
+  h_min=opt;
+  if(h<h_min){
+    if(h_max<50.0*h_min){
+      h=(h_min+h_max)/2.0;
     }else{
-      throw std::runtime_error("DMKS::Set : Option (" +name+ ") not found. ");
+      h=h_min*10.0;
+    }
+  }
+}
+void SQUIDS::Set_h_max(double opt){
+  h_max=opt;
+  if(h>h_max){
+    if(h_max<50.0*h_min){
+      h=(h_min+h_max)/2.0;
+    }else{
+      h=h_min*10.0;
     }
   }
 }
 
+void SQUIDS::Set_h(double opt){
+  h=opt;
+}
 
-void SQUIDS::Set(string name,int opt){
-  if(name=="nx"){
-    if(opt!=nx)
-      ini(opt,nsun,nrhos,nscalars);
-  }else if(name=="nsun"){
-    if(opt!=nsun)
-      ini(nx,opt,nrhos,nscalars);
-  }else if(name=="NumSteps"){
-    nsteps=opt;
-  }else if(name=="nrhos"){
-    if(opt!=nrhos)
-      ini(nx,nsun,opt,nscalars);
-  }else if(name=="nscalars"){
-    if(opt!=nscalars)
-      ini(nx,nsun,nrhos,opt);
-  }else{
-    throw std::runtime_error("DMKS::Set : Option (" + name + ") not found. ");
-  }
+void SQUIDS::Set_rel_error(double opt){
+  rel_error=opt;
+}
+
+void SQUIDS::Set_abs_error(double opt){
+  abs_error=opt;
+}
+
+void SQUIDS::Set_t(double opt){
+  t=opt;
+  t_ini=opt;
+}
+
+void SQUIDS::Set_units(double opt){
+      tunit=opt;
+}
+
+
+void SQUIDS::Set_nx(int opt){
+  if(opt!=nx)
+    ini(opt,nsun,nrhos,nscalars);
+}
+
+void SQUIDS::Set_nsun(int opt){
+  if(opt!=nsun)
+    ini(nx,opt,nrhos,nscalars);
+}
+
+void SQUIDS::Set_NumSteps(int opt){
+  nsteps=opt;
+}
+
+void SQUIDS::Set_nrhos(int opt){
+  if(opt!=nrhos)
+    ini(nx,nsun,opt,nscalars);
+}
+void SQUIDS::Set_nscalars(int opt){
+  ini(nx,nsun,nrhos,opt);
 }
 
 

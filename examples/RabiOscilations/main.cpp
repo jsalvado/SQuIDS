@@ -37,7 +37,7 @@ int main(){
 
 
   // Tuned Rabi system
-  R0.init(10,10,0.1);
+  R0.init(1,1,0.1);
 
   // Setting the errors
   R0.Set("rel_error",1e-5);
@@ -73,8 +73,8 @@ int main(){
     progressbar(100*t/tf);
     Rd.EvolveSUN(t,t+dt);
     file << t << "\t" << Rd.GetExpectationValue(Rd.d0,0,0) << "  " 
-	 << Rd.GetExpectationValue(Rd.evol_b0_proj[0],0,0) << "  " 
-	 << Rd.GetExpectationValue(Rd.evol_b0_proj[1],0,0) << endl;
+	 << Rd.GetExpectationValue(Rd.b0_proj[0],0,0) << "  " 
+	 << Rd.GetExpectationValue(Rd.b0_proj[1],0,0) << endl;
     Rd.set_evol();
   }
   file.close();

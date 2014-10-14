@@ -68,7 +68,7 @@ void rabi::set_evol(void){
   for(int i = 0; i < nx; i++){
     SU_vector h0=H0(x[i]);
     for(int nrh=0;nrh<nrhos;nrh++){
-      state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,(t_ini-t_end));
+      state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,-(t_end-t_ini));
     }
   }
 }

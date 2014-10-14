@@ -308,58 +308,98 @@ int Const::Refresh(void){
     return 0;
 }
 
-bool Const::Set(string name, double val){
-  // angles 
-  if(name=="th12")
-    th12 = val;
-  else if(name=="th13")
-    th13 = val;
-  else if(name=="th23")
-    th23 = val;
-  else if(name=="th14")
-    th14 = val;
-  else if(name=="th24")
-    th24 = val;
-  else if(name=="th34")
-    th34 = val;
-  else if(name=="th15")
-    th15 = val;
-  else if(name=="th25")
-    th25 = val;
-  else if(name=="th35")
-    th35 = val;
-  else if(name=="th45")
-    th45 = val;
-  else if(name=="th16")
-    th16 = val;
-  else if(name=="th26")
-    th26 = val;
-  else if(name=="th36")
-    th36 = val;
-  else if(name=="th46")
-    th46 = val;
-  else if(name=="th56")
-    th56 = val;
-  else if(name=="dm21sq")
-    dm21sq = val;
-  else if(name=="dm31sq")
-    dm31sq = val;
-  else if(name=="dm41sq")
-    dm41sq = val;
-  else if(name=="dm51sq")
-    dm51sq = val;
-  else if(name=="dm61sq")
-    dm61sq = val;
-  else if(name=="delta1")
-    delta1 = val;
-  else if(name=="delta2")
-    delta2 = val;
-  else if(name=="delta3")
-    delta3 = val;
-  else{
-    return false;
-  }
+void Const::Set_th12(double val){
+  th12 = val;
   Refresh();
-
-  return true;
 }
+void Const::Set_th13(double val){
+  th13 = val;
+  Refresh();
+}
+void Const::Set_th23(double val){
+  th23 = val;
+  Refresh();
+}
+void Const::Set_th14(double val){
+  th14 = val;
+  Refresh();
+}
+void Const::Set_th24(double val){
+  th24 = val;
+  Refresh();
+}
+void Const::Set_th34(double val){
+  th34 = val;
+  Refresh();
+}
+void Const::Set_th15(double val){
+  th15 = val;
+  Refresh();
+}
+void Const::Set_th25(double val){
+  th25 = val;
+  Refresh();
+}
+void Const::Set_th35(double val){
+  th35 = val;
+  Refresh();
+}
+void Const::Set_th45(double val){
+  th45 = val;
+  Refresh();
+}
+void Const::Set_th16(double val){
+  th16 = val;
+  Refresh();
+}
+void Const::Set_th26(double val){
+  th26 = val;
+  Refresh();
+}
+void Const::Set_th36(double val){
+  th36 = val;
+  Refresh();
+}
+void Const::Set_th46(double val){
+  th46 = val;
+  Refresh();
+}
+void Const::Set_th56(double val){
+  th56 = val;
+  Refresh();
+}
+void Const::Set_dm21sq(double val){
+  dm21sq = val;
+  Refresh();
+}
+void Const::Set_dm31sq(double val){
+  dm31sq = val;
+  Refresh();
+}
+void Const::Set_dm41sq(double val){
+  dm41sq = val;
+  Refresh();
+}
+void Const::Set_dm51sq(double val){
+  dm51sq = val;
+  Refresh();
+}
+void Const::Set_dm61sq(double val){
+  dm61sq = val;
+  Refresh();
+}
+void Const::Set_delta1(double val){
+  delta1 = val;
+  Refresh();
+}
+void Const::Set_delta2(double val){
+  delta2 = val;
+  Refresh();
+}
+void Const::Set_delta3(double val){
+  delta3 = val;
+  Refresh();
+}
+ 
+
+
