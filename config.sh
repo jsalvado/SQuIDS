@@ -26,7 +26,7 @@ function find_package(){
 	fi
 	if [ $# -ge 2 ]; then
 		MIN_VERSION=$2
-		pkg-config --atleast-version $MIN_VERSION gsl
+		pkg-config --atleast-version $MIN_VERSION $PKG
 		if [ "$?" -ne 0 ]; then
 			echo "Error: installed $PKG verson ("`pkg-config --modversion $PKG`") is too old; version >=$MIN_VERSION is required" 1>&2
 			exit 1
@@ -111,7 +111,7 @@ if [ "$GSL_INCDIR" -a "$GSL_LIBDIR" ]; then
          -a -f "$GSL_LIBDIR/libgsl.a" ]; then
 		GSL_FOUND=1
 		GSL_CFLAGS="-I$GSL_INCDIR"
-		GSL_LDFLAGS="-LGSL_LIBDIR -lgsl -lgslcblas -lm"
+		GSL_LDFLAGS="-L$GSL_LIBDIR -lgsl -lgslcblas -lm"
 	else
 		echo "Warning: manually specifed GSL not found; will attempt auto detection"
 	fi
