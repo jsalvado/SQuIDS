@@ -209,6 +209,8 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@cp $(INCDIR)/*.h $(PREFIX)/include/SQuIDS
 	@mkdir -p $(PREFIX)/include/SQuIDS/detail
 	@cp $(INCDIR)/detail/*.h $(PREFIX)/include/SQuIDS/detail
+	@mkdir -p $(PREFIX)/include/SQuIDS/SU_inc
+	@cp $(INCDIR)/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
 	@echo Installing libraries in $(PREFIX)/lib
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
