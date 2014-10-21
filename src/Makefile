@@ -1,11 +1,11 @@
 # Compiler
-CC=gcc
-CXX=g++
+CC=clang
+CXX=clang++
 AR=ar
-LD=ld
+LD=clang++
 
-DYN_SUFFIX=.so
-DYN_OPT=-shared -Wl,-soname,$(shell basename $(DYN_PRODUCT))
+DYN_SUFFIX=.dylib
+DYN_OPT=-dynamiclib -compatibility_version $(VERSION) -current_version $(VERSION)
 
 VERSION=1.0.0
 PREFIX=/usr/local
@@ -18,8 +18,8 @@ CXXFLAGS= -std=c++11
 
 # Directories
 
-GSL_CFLAGS= 
-GSL_LDFLAGS=-lgsl -lgslcblas -lm 
+GSL_CFLAGS=-I/usr/local/Cellar/gsl/1.15/include 
+GSL_LDFLAGS=-L/usr/local/Cellar/gsl/1.15/lib -lgsl -lgslcblas -lm 
 
 LIBDIR=$(PATH_SQUIDS)/lib
 INCDIR=$(PATH_SQUIDS)/inc
@@ -68,6 +68,8 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@cp $(INCDIR)/*.h $(PREFIX)/include/SQuIDS
 	@mkdir -p $(PREFIX)/include/SQuIDS/detail
 	@cp $(INCDIR)/detail/*.h $(PREFIX)/include/SQuIDS/detail
+	@mkdir -p $(PREFIX)/include/SQuIDS/SU_inc
+	@cp $(INCDIR)/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
 	@echo Installing libraries in $(PREFIX)/lib
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig

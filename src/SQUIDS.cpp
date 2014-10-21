@@ -245,6 +245,7 @@ void SQUIDS::Set_AdaptiveStep(bool opt){
 }
 void SQUIDS::Set_CoherentInteractions(bool opt){
   CoherentInt=opt;
+  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
 }
 void SQUIDS::Set_NonCoherentInteractions(bool opt){
   NonCoherentInt=opt;
@@ -252,10 +253,11 @@ void SQUIDS::Set_NonCoherentInteractions(bool opt){
 }
 void SQUIDS::Set_OtherInteractions(bool opt){
   OtherInt=opt;
+  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
 }
 void SQUIDS::Set_ScalarInteractions(bool opt){
-    ScalarsInt=opt;
-    AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+  ScalarsInt=opt;
+  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
 }
 
 
