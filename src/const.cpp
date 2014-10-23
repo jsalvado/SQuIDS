@@ -120,9 +120,9 @@ Const::Const(void){
     neutype = 0;                    // neutrino or antineutrino
     
     // angles
-    th12 = 0.563942;
-    th13 = 0.154085;
-    th23 = piby2/2.0;
+    th12 = 33.48*degree;
+    th13 = 8.55*degree;
+    th23 = 42.3*degree;
     th14 = 0.0;
     th24 = 0.0;
     th34 = 0.0;
@@ -137,8 +137,8 @@ Const::Const(void){
     th56 = 0.0;
     
     // square mass differences
-    dm21sq = 7.65e-5;
-    dm31sq = 2.47e-3;
+    dm21sq = 7.5e-5;
+    dm31sq = 2.45e-3;
     dm41sq = 0.0;
     dm51sq = 0.0;
     dm61sq = 0.0;
