@@ -232,9 +232,9 @@ public:
   //Const, contines a standar set of angles, this funcion does the set of rotations
   //to change the bases.
   ///\todo Needs proper documentation
-  void RotateToB1(const Const*);
+  void RotateToB1(const Const&);
   ///\todo Needs proper documentation
-  void RotateToB0(const Const*);
+  void RotateToB0(const Const&);
 
   //equivalent in Matrix notation to the trace of the product for the two operators
   ///\todo Needs proper documentation

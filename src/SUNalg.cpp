@@ -461,27 +461,27 @@ SU_vector SU_vector::Rotate(unsigned int i, unsigned int j, double th, double de
   return *this;
 };
 
-void SU_vector::RotateToB0(const Const* param){
+void SU_vector::RotateToB0(const Const& param){
   Const param2;
-  param2.th12= -param->th12;
-  param2.th13= -param->th13;
-  param2.th23= -param->th23;
-  param2.th14= -param->th14;
-  param2.th24= -param->th24;
-  param2.th34= -param->th34;
-  param2.th15= -param->th15;
-  param2.th25= -param->th25;
-  param2.th35= -param->th35;
-  param2.th45= -param->th45;
-  param2.th16= -param->th16;
-  param2.th26= -param->th26;
-  param2.th36= -param->th36;
-  param2.th46= -param->th46; 
-  param2.th56= -param->th56; 
-  RotateToB1(&param2);
+  param2.th12= -param.th12;
+  param2.th13= -param.th13;
+  param2.th23= -param.th23;
+  param2.th14= -param.th14;
+  param2.th24= -param.th24;
+  param2.th34= -param.th34;
+  param2.th15= -param.th15;
+  param2.th25= -param.th25;
+  param2.th35= -param.th35;
+  param2.th45= -param.th45;
+  param2.th16= -param.th16;
+  param2.th26= -param.th26;
+  param2.th36= -param.th36;
+  param2.th46= -param.th46; 
+  param2.th56= -param.th56; 
+  RotateToB1(param2);
 }
 
-void SU_vector::RotateToB1(const Const* param){
+void SU_vector::RotateToB1(const Const& param){
   SU_vector suv(dim);
   SU_vector suv_rot(dim);
 
@@ -496,27 +496,27 @@ void SU_vector::RotateToB1(const Const* param){
     
   switch (dim){
   case 2:
-    th12 = param->th12;
+    th12 = param.th12;
     del12 = 0.0;
 #include "RotationSU2.txt"
 
     break;
   case 3:
-    th12 = param->th12;
+    th12 = param.th12;
     del12 = 0.0;
-    th13 = param->th13;
-    del13 = param->delta1;
-    th23 = param->th23;
+    th13 = param.th13;
+    del13 = param.delta1;
+    th23 = param.th23;
     del23 = 0.0;
 #include "RotationSU3.txt"
     break;
   case 4:
-    suv.Rotate(3,4,param->th34,0.0);
-    suv.Rotate(2,4,param->th24,0.0);
-    suv.Rotate(1,4,param->th14,param->delta2);
-    suv.Rotate(2,3,param->th23,0.0);
-    suv.Rotate(1,3,param->th13,param->delta1);
-    suv.Rotate(1,2,param->th12,0.0);
+    suv.Rotate(3,4,param.th34,0.0);
+    suv.Rotate(2,4,param.th24,0.0);
+    suv.Rotate(1,4,param.th14,param.delta2);
+    suv.Rotate(2,3,param.th23,0.0);
+    suv.Rotate(1,3,param.th13,param.delta1);
+    suv.Rotate(1,2,param.th12,0.0);
             
    suv_rot = suv;
 
