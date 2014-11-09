@@ -209,6 +209,9 @@ void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array
     case 5:
 #include "MatrixToSU5.txt"
       break;
+    case 6:
+#include "MatrixToSU6.txt"
+      break;
     default:
       throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
   }

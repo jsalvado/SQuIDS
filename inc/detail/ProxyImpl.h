@@ -57,7 +57,7 @@ namespace detail{
 #include "../SU_inc/EvolutionSU5.txt"
           break;
         case 6:
-          throw std::runtime_error("SU(6) evolution support not yet implemented");
+#include "../SU_inc/EvolutionSU6.txt"
           break;
         default:
           throw std::runtime_error("SUEvolution :: Error : dim  ");
