@@ -143,22 +143,7 @@ isinit_d(false)
   // the following rules are valid ONLY when the initial
   // matrix is hermitian
   
-  switch (dim){
-    case 2:
-#include "MatrixToSU2.txt"
-      break;
-    case 3:
-#include "MatrixToSU3.txt"
-      break;
-    case 4:
-#include "MatrixToSU4.txt"
-      break;
-    case 5:
-#include "MatrixToSU5.txt"
-      break;
-    default:
-      throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
-  }
+#include "MatrixToSUSelect.txt"
 };
 
 SU_vector::~SU_vector(){
@@ -196,25 +181,7 @@ namespace{
   };
   
 void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
-  switch (dim){
-    case 2:
-#include "MatrixToSU2.txt"
-      break;
-    case 3:
-#include "MatrixToSU3.txt"
-      break;
-    case 4:
-#include "MatrixToSU4.txt"
-      break;
-    case 5:
-#include "MatrixToSU5.txt"
-      break;
-    case 6:
-#include "MatrixToSU6.txt"
-      break;
-    default:
-      throw std::runtime_error("GLS_MATRIX_COMPLEX to SU_vector :: Error. ");
-  }
+#include "MatrixToSUSelect.txt"
 }
 }
 

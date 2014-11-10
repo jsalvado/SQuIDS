@@ -43,25 +43,7 @@ namespace detail{
     template<typename VW>
     void compute(VW target) const{
       auto& suv_new=target;
-      switch (suv_new.dim){
-        case 2:
-#include "../SU_inc/EvolutionSU2.txt"
-          break;
-        case 3:
-#include "../SU_inc/EvolutionSU3.txt"
-          break;
-        case 4:
-#include "../SU_inc/EvolutionSU4.txt"
-          break;
-        case 5:
-#include "../SU_inc/EvolutionSU5.txt"
-          break;
-        case 6:
-#include "../SU_inc/EvolutionSU6.txt"
-          break;
-        default:
-          throw std::runtime_error("SUEvolution :: Error : dim  ");
-      };
+#include "../SU_inc/EvolutionSelect.txt"
     }
   };
   
@@ -105,28 +87,9 @@ namespace detail{
     EvaluationProxy<iCommutatorProxy>{suv1,suv2}{}
     
     template<typename VW>
-    void compute(VW target) const{
-      auto& suv_new=target;
+    void compute(VW suv_new) const{
       suv_new.components[0]+=0;
-      switch (suv_new.dim){
-        case 2:
-#include "../SU_inc/iConmutatorSU2.txt"
-          break;
-        case 3:
-#include "../SU_inc/iConmutatorSU3.txt"
-          break;
-        case 4:
-#include "../SU_inc/iConmutatorSU4.txt"
-          break;
-        case 5:
-#include "../SU_inc/iConmutatorSU5.txt"
-          break;
-        case 6:
-#include "../SU_inc/iConmutatorSU6.txt"
-          break;
-        default:
-          throw std::runtime_error("SUiComutator :: Error.");
-      }
+#include "../SU_inc/iCommutatorSelect.txt"
     }
   };
   
@@ -135,27 +98,8 @@ namespace detail{
     EvaluationProxy<ACommutatorProxy>{suv1,suv2}{}
     
     template<typename VW>
-    void compute(VW target) const{
-      auto& suv_new=target;
-      switch (suv_new.dim){
-        case 2:
-#include "../SU_inc/AnticonmutatorSU2.txt"
-          break;
-        case 3:
-#include "../SU_inc/AnticonmutatorSU3.txt"
-          break;
-        case 4:
-#include "../SU_inc/AnticonmutatorSU4.txt"
-          break;
-        case 5:
-#include "../SU_inc/AnticonmutatorSU5.txt"
-          break;
-        case 6:
-#include "../SU_inc/AnticonmutatorSU6.txt"
-          break;
-        default:
-          throw std::runtime_error("SUAnticomutator :: Error.");
-      }
+    void compute(VW suv_new) const{
+#include "../SU_inc/AnticommutatorSelect.txt"
     }
   };
   
