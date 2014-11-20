@@ -122,61 +122,82 @@ class SQUIDS {
   //****************
   SQUIDS();
   //***************************************************************
-  //int -> Number of components in the array "x"
-  //int -> Dimension of SU(n)
-  //int -> Number of density matrix in every "x" site
-  //int -> Number of scalars in every "x" site
-  SQUIDS(int,int ,int,int);
+  ///\brief Constructs a SQUIDS object
+  ///
+  ///\param nx Number of components in the array "x"
+  ///\param dim Dimension of SU(n)
+  ///\param nrho Number of density matrix in every "x" site
+  ///\param nscalar Number of scalars in every "x" site
+  SQUIDS(int nx,int dim,int nrho,int nscalar);
 
   //***************************************************************
   virtual ~SQUIDS();
 
   //***************************************************************
-  //Initializer, the same argumens as the constructor
-  void ini(int,int ,int, int );
+  ///\brief Initializes a SQUIDS object
+  ///
+  ///\param nx Number of components in the array "x"
+  ///\param dim Dimension of SU(n)
+  ///\param nrho Number of density matrix in every "x" site
+  ///\param nscalar Number of scalars in every "x" site
+  void ini(int nx,int dim,int nrho, int nscalar);
 
   //***************************************************************
-  //set the range of values for the array "x"
-  //double -> x_min
-  //double -> x_max
-  //string -> "log or lin" type of scale
-  int Set_xrange(double , double, string);
+  ///\brief Set the range of values for the array "x"
+  ///\param xini  x_min
+  ///\param xend  x_max
+  ///\param scale "log or lin" type of scale
+  int Set_xrange(double xini, double xend, string scale);
 
   //***************************************************************
-  //returns the closes position in the array x for the value given
-  int Get_i(double);
+  ///\brief Returns the closes position in the array x for the value given
+  ///\param x value of x to look for
+  int Get_i(double x);
 
   //***************************************************************
-  //returns de value in the position "i"
+  ///\brief Returns de value in the position "i"
+  ///\param i node position
   double Get_x(int i){return x[i];};
 
   //***************************************************************
   //virtual functions defined in the dervied class
-  //H0 not time dependend evolution operator.
-  virtual SU_vector H0(double){SU_vector V(nsun); return V;}
-  //H1 time deppenden evolution operator.
+  ///\brief H0 time independent evolution operator
+  virtual SU_vector H0(double x){SU_vector V(nsun); return V;}
+  ///\brief H1 time dependent evolution operator
   virtual SU_vector HI(int ix,double t){SU_vector V(nsun); return V;}
-  //Atenuation and/or decoerence operator
+  ///\brief Attenuation and/or decoherence operator
+  ///\param ix Index in the x-array
+  ///\param t time
   virtual SU_vector GammaRho(int ix, double t){SU_vector V(nsun); return V;}
-  //Other function containing other possible operations, like non linear terms in rho
-  //or terms involving the scalar functions
+  ///\brief Function containing other possible operations, like non linear terms in rho
+  ///or terms involving the scalar functions
+  ///\param ix Index in the x-array
+  ///\param t time
   virtual SU_vector InteractionsRho(int ix,double t){SU_vector V(nsun); return V;}
-  //Atenuation for the scalar functions
+  ///\brief Attenuation for the scalar functions
+  ///\param ix Index in the x-array
+  ///\param t time
   virtual double GammaScalar(int ix, double t){return 0.0;}
-  //Other possible interaction terms for the scalar fucntions.
+  ///\brief Other possible interaction terms for the scalar functions.
+  ///\param ix Index in the x-array
+  ///\param t time
   virtual double InteractionsScalar(int ix,double t){return 0.0;}
-
-  virtual void PreDerive(double){};
+  ///\brief Function to be evaluated before the derivative
+  ///\param t time
+  ///
+  /// This function enables the user to perform operations or updates before the derivative.
+  virtual void PreDerive(double t){};
 
   //***************************************************************
-  //Computes all the derivatives.
-  int Derive(double);
+  ///\brief Computes the right hand side of the kinetic equation.
+  ///\param t time
+  int Derive(double t);
 
   //***************************************************************
-  //GSL evolution of the state.
-  //double -> initial time.
-  //double -> final time.
-  int EvolveSUN(double, double);
+  ///\brief Numerical evolution of the state using GSL
+  ///\param tini initial time.
+  ///\param tend final time.
+  int EvolveSUN(double tini, double tend);
 
   //***************************************************************
   //functions to set parameters in the object.
@@ -199,42 +220,61 @@ class SQUIDS {
   // nrhos
   // nscalars
   // The parameters in the struc "const" are also available from this functions
+  ///\brief Sets the GSL stepper function (numerical method)
+  ///\param opt GSL step function
   void Set_GSL_step(const gsl_odeiv2_step_type * opt);
 
+  ///\brief Turns on and off adaptive runge-kutta stepping
+  ///\param opt If true: uses adaptive stepping, else: it does not.
   void Set_AdaptiveStep(bool opt);
+  ///\brief Activate coherent interaction
   void Set_CoherentInteractions(bool opt);
+  ///\brief Activate noncoherent interaction
   void Set_NonCoherentInteractions(bool opt);
+  ///\brief Activate other SU_vector interactions
   void Set_OtherInteractions(bool opt);
+  ///\brief Activate other scalar interactions
   void Set_ScalarInteractions(bool opt);
+  ///\brief Set the minimum runge-kutta step
   void Set_h_min(double opt);
+  ///\brief Set the maximum runge-kutta step
   void Set_h_max(double opt);
+  ///\brief Set the initial runge-kutta step
   void Set_h(double opt);
+  ///\brief Set the numerical relative error
   void Set_rel_error(double opt);
+  ///\brief Set the numerical absolute error
   void Set_abs_error(double opt);
+  ///\brief Set the time value
   void Set_t(double opt);
+  ///\brief Set the time scale
   void Set_units(double opt);
+  ///\brief Set the number of x nodes
   void Set_nx(int opt);
+  ///\brief Set the hilbert space dimension
   void Set_nsun(int opt);
+  ///\brief Set the number of steps when not using adaptive stepping
   void Set_NumSteps(int opt);
+  ///\brief Set the number of SU_vector per x-node
   void Set_nrhos(int opt);
+  ///\brief Set the number of scalars per x-node
   void Set_nscalars(int opt);
   
 
   //***************************************************************
-  //returns the expectation value for a given operator
-  //SU_vector -> operator 
-  //int -> index of rho
-  //int -> index in the array "x"
-  double GetExpectationValue(SU_vector&,int,int);
+  ///\briefn Returns the expectation value for a given operator for a give state irho in a node ix.
+  ///\param op operator
+  ///\param irho index of rho
+  ///\param ix index in the array "x"
+  double GetExpectationValue(SU_vector& op,int irho,int ix);
 
   //***************************************************************
-  //returns the expectation value for a given operator, the same as the other,
-  //but using the exact value for "x" for the H0 evolution (very usefull fur fast
-  //oscilations in H0.
-  //SU_vector -> operator 
-  //int -> index of rho
-  //double -> value of x
-  double GetExpectationValueD(SU_vector&,int,double);
+  ///\brief Returns the expectation value for a given operator for the rho given by irho 
+  /// and using linear interpolation in "x"
+  ///\param op operator 
+  ///\param irho index of rho
+  ///\param x value of x
+  double GetExpectationValueD(SU_vector& op,int irho,double x);
 
 
 };
