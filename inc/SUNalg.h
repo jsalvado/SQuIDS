@@ -224,22 +224,32 @@ public:
   ///\param a The scaling factor to use
   SU_vector Rescale(double a);
   
-  //Change of bases with a rotation on the components given by the integers,
-  //double -> angle
-  //double -> phase
-  ///\todo Needs proper documentation
-  SU_vector Rotate(unsigned int, unsigned int, double, double);
+  ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace
+  ///\param i subspace index
+  ///\param j subspace index
+  ///\param theta rotation angle in radians
+  ///\param delta complex phase
+  SU_vector Rotate(unsigned int i, unsigned int j, double theta, double delta);
   //Const, contines a standar set of angles, this funcion does the set of rotations
   //to change the bases.
-  ///\todo Needs proper documentation
-  void RotateToB1(const Const&);
-  ///\todo Needs proper documentation
-  void RotateToB0(const Const&);
+  ///\brief Same as RotateToB0, but with reversed angles
+  ///\param params Contains the rotation parameters
+  ///
+  /// If the SU_vector is in the B0 basis, it transforms it to the B1 representation.
+  void RotateToB1(const Const& params);
+  ///\brief Rotates a SU_vector given the angles in Const
+  ///\param params Contains the rotation parameters
+  ///
+  /// If the SU_vector is in the B1 basis, it transforms it to the B0 representation.
+  void RotateToB0(const Const& params);
 
-  //equivalent in Matrix notation to the trace of the product for the two operators
-  ///\todo Needs proper documentation
+  ///\brief Returns the trace of the product of the SU_vector matrix representations
+  ///
+  /// Defines a scalar product of the SU_vector.
   double SUTrace(SU_vector*,SU_vector*);
-  ///\todo Needs proper documentation
+  ///\brief Returns the trace of the product of the SU_vector matrix representations
+  ///
+  /// Defines a scalar product of the SU_vector.
   double SUTrace(SU_vector&,const SU_vector&);
 
   ///\brief Gets the dimension of the SU_vector
@@ -340,13 +350,25 @@ public:
   ///\param d The dimension of the operator
   static SU_vector Identity(unsigned int d);
   
-  ///\todo Needs proper documentation
+  ///\brief Constructs a projector to the upper subspace of dimension i
+  ///
+  ///\param d The dimension of the operator
+  ///\param i The subspace dimension
+  ///
+  /// \f$ NegProj = diag(1,...,1,0,...,0) \f$ where the last one is at the \f$i-1\f$ entry.
   static SU_vector PosProjector(unsigned int d, unsigned int i);
   
-  ///\todo Needs proper documentation
+  ///\brief Constructs a projector to the lower subspace of dimension i
+  ///
+  ///\param d The dimension of the operator
+  ///\param i The subspace dimension
+  ///
+  /// \f$ NegProj = diag(0,...,0,1,...,1) \f$ where the first one is at the \f$d-i\f$ entry.
   static SU_vector NegProjector(unsigned int d, unsigned int i);
   
-  ///\todo Needs proper documentation
+  ///\brief Creates a SU_vector corresponding to the \f$i\f$SU_N basis generator.
+  //
+  // Tts represented by \f$ v = (0,...,1,...,0)\f$ where 1 is in the \f$i\f$ component.
   static SU_vector Component(unsigned int d, unsigned int i);
   
   template<typename Op>
