@@ -46,13 +46,17 @@
 #include <gsl/gsl_odeiv2.h>
 
 
+///\brief Structure that contains the node state
 struct SU_state
 {
+  ///\brief Vector of SU(N) vectors that represents the quantum part of the state
   std::unique_ptr<SU_vector[]> rho;
+  ///\brief Vector of scalars that represents the classic part of the state
   double* scalar; //not owned
 };
 
 
+///\brief SQUIDS main class
 
 //density matrix kinetic equation solver
 class SQUIDS {
@@ -110,12 +114,13 @@ class SQUIDS {
 
     
   //***************************************************************
-  //sets the deriv system pointer
+  ///\brief Sets the derivative system pointer for GSL use
   void set_deriv_system_pointer(double*);
   //interface function called by GSL
   friend int RHS(double ,const double*,double*,void*);
 
  public:
+  ///\todo
   std::unique_ptr<SU_state[]> dstate;
   //****************
   //Constructors
@@ -279,7 +284,7 @@ class SQUIDS {
 
 };
 
-//Auxiliar function used for the GSL
+///\brief Auxiliar function used for the GSL interface
 int RHS(double ,const double*,double*,void*);
 
 #endif
