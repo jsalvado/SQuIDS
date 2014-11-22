@@ -21,7 +21,11 @@
 
 #include "const.h"
 
-Const::Const(void){
+#include <cmath>
+
+#include "SU_inc/dimension.h"
+
+Const::Const(){
     /* PHYSICS CONSTANTS
     #===========================================================================
     # NAME
@@ -96,7 +100,7 @@ Const::Const(void){
     angstrom = 1.0e-10*meter;       // [eV^-1/A]
     AU = 149.60e9*meter;            // [eV^-1/AU]
     parsec = 3.08568025e16*meter;   // [eV^-1/parsec]
-    // luminocity
+    // luminosity
     picobarn = 1.0e-36*pow(cm,2);       // [eV^-2/pb]
     femtobarn = 1.0e-39*pow(cm,2);      // [eV^-2/fb]
     // Presure
@@ -109,112 +113,23 @@ Const::Const(void){
     // Angle
     degree = pi/180.0;              // [rad/degree]
     
-    /*
-    #===============================================================================
-    # NEUTRINO OSCILLATION PARAMETERS 
-    #===============================================================================
-    */
-    
-    numneu = 3;                     // number of neutrinos
-    numneumax = 6;                  // maximum neutrino number
-    neutype = 0;                    // neutrino or antineutrino
-    
-    // angles
-    th12 = 33.48*degree;
-    th13 = 8.55*degree;
-    th23 = 42.3*degree;
-    th14 = 0.0;
-    th24 = 0.0;
-    th34 = 0.0;
-    th15 = 0.0;
-    th25 = 0.0;
-    th35 = 0.0;
-    th45 = 0.0;
-    th16 = 0.0;
-    th26 = 0.0;
-    th36 = 0.0; 
-    th46 = 0.0;
-    th56 = 0.0;
-    
-    // square mass differences
-    dm21sq = 7.5e-5;
-    dm31sq = 2.45e-3;
-    dm41sq = 0.0;
-    dm51sq = 0.0;
-    dm61sq = 0.0;
-    
-    // cp-phases
-    delta1 = 0.0;
-    delta2 = 0.0;
-    delta3 = 0.0;
-    
     // initializing matrices
     
-    dmsq = gsl_matrix_alloc(numneumax,1);
-    gsl_matrix_set(dmsq,0,0,0.0);
-    gsl_matrix_set(dmsq,1,0,dm21sq);
-    gsl_matrix_set(dmsq,2,0,dm31sq);
-    gsl_matrix_set(dmsq,3,0,dm41sq);
-    gsl_matrix_set(dmsq,4,0,dm51sq);
-    gsl_matrix_set(dmsq,5,0,dm61sq);
+    dmsq = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1);
+    for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM-1; i++)
+        gsl_matrix_set(dmsq,i,0,0.0);
     
-    th = gsl_matrix_alloc(numneumax+1,numneumax+1);
-    gsl_matrix_set(th,1,2,th12);
-    gsl_matrix_set(th,1,2,th12);
-    gsl_matrix_set(th,1,3,th13);
-    gsl_matrix_set(th,2,3,th23);
-    gsl_matrix_set(th,1,4,th14);
-    gsl_matrix_set(th,2,4,th24);
-    gsl_matrix_set(th,3,4,th34);
-    gsl_matrix_set(th,1,5,th15);
-    gsl_matrix_set(th,2,5,th25);
-    gsl_matrix_set(th,3,5,th35);
-    gsl_matrix_set(th,4,5,th45);
-    gsl_matrix_set(th,1,6,th16);
-    gsl_matrix_set(th,2,6,th26);
-    gsl_matrix_set(th,3,6,th36);
-    gsl_matrix_set(th,4,6,th46);
-    gsl_matrix_set(th,5,6,th56);
+    th = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM);
+    for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
+        for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM; j++)
+            gsl_matrix_set(th,i,j,0.0);
+    }
     
-    c = gsl_matrix_alloc(numneumax+1,numneumax+1);
-    gsl_matrix_set(c,1,2,cos(th12));
-    gsl_matrix_set(c,1,3,cos(th13));
-    gsl_matrix_set(c,1,4,cos(th14));
-    gsl_matrix_set(c,2,3,cos(th23));
-    gsl_matrix_set(c,2,4,cos(th24));
-    gsl_matrix_set(c,3,4,cos(th34));
-    gsl_matrix_set(c,1,5,cos(th15));
-    gsl_matrix_set(c,2,5,cos(th25));
-    gsl_matrix_set(c,3,5,cos(th35));
-    gsl_matrix_set(c,4,5,cos(th45));
-    gsl_matrix_set(c,1,6,cos(th16));
-    gsl_matrix_set(c,2,6,cos(th26));
-    gsl_matrix_set(c,3,6,cos(th36));
-    gsl_matrix_set(c,4,6,cos(th46));
-    gsl_matrix_set(c,5,6,cos(th56));
-    
-    s = gsl_matrix_alloc(numneumax+1,numneumax+1);
-    gsl_matrix_set(s,1,2,sin(th12));
-    gsl_matrix_set(s,1,3,sin(th13));
-    gsl_matrix_set(s,1,4,sin(th14));
-    gsl_matrix_set(s,2,3,sin(th23));
-    gsl_matrix_set(s,2,4,sin(th24));
-    gsl_matrix_set(s,3,4,sin(th34));
-    gsl_matrix_set(s,1,5,sin(th15));
-    gsl_matrix_set(s,2,5,sin(th25));
-    gsl_matrix_set(s,3,5,sin(th35));
-    gsl_matrix_set(s,4,5,sin(th45));
-    gsl_matrix_set(s,1,6,sin(th16));
-    gsl_matrix_set(s,2,6,sin(th26));
-    gsl_matrix_set(s,3,6,sin(th36));
-    gsl_matrix_set(s,4,6,sin(th46));
-    gsl_matrix_set(s,5,6,sin(th56));      
-    
-    dcp = gsl_matrix_alloc(numneumax-2+1,1);
-    gsl_matrix_set(dcp,0,0,1.0);
-    gsl_matrix_set(dcp,1,0,delta1);
-    gsl_matrix_set(dcp,2,0,delta2);
-    gsl_matrix_set(dcp,3,0,delta3);
+    dcp = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,SQUIDS_MAX_HILBERT_DIM-1);
+    for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM-1; i++){
+        for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM-1; j++)
+            gsl_matrix_set(dcp,i,j,0.0);
+    }
     
     electron = 0;
     muon = 1;
@@ -228,178 +143,72 @@ Const::Const(void){
     
     proton_mass = 938.272*MeV;
     neutron_mass = 939.565*MeV;
-    
 };
 
-
-Const::~Const(void){
-  gsl_matrix_free(dmsq);
-  gsl_matrix_free(th);
-  gsl_matrix_free(c);
-  gsl_matrix_free(s);
-  gsl_matrix_free(dcp);
-
-}
-int Const::Refresh(void){
-    // reinitializing matrices
-    
-    gsl_matrix_set(dmsq,0,0,0.0);
-    gsl_matrix_set(dmsq,1,0,dm21sq);
-    gsl_matrix_set(dmsq,2,0,dm31sq);
-    gsl_matrix_set(dmsq,3,0,dm41sq);
-    gsl_matrix_set(dmsq,4,0,dm51sq);
-    gsl_matrix_set(dmsq,5,0,dm61sq);
-    
-    gsl_matrix_set(th,1,2,th12);
-    gsl_matrix_set(th,1,2,th12);
-    gsl_matrix_set(th,1,3,th13);
-    gsl_matrix_set(th,2,3,th23);
-    gsl_matrix_set(th,1,4,th14);
-    gsl_matrix_set(th,2,4,th24);
-    gsl_matrix_set(th,3,4,th34);
-    gsl_matrix_set(th,1,5,th15);
-    gsl_matrix_set(th,2,5,th25);
-    gsl_matrix_set(th,3,5,th35);
-    gsl_matrix_set(th,4,5,th45);
-    gsl_matrix_set(th,1,6,th16);
-    gsl_matrix_set(th,2,6,th26);
-    gsl_matrix_set(th,3,6,th36);
-    gsl_matrix_set(th,4,6,th46);
-    gsl_matrix_set(th,5,6,th56);
-    
-    gsl_matrix_set(c,1,2,cos(th12));
-    gsl_matrix_set(c,1,3,cos(th13));
-    gsl_matrix_set(c,1,4,cos(th14));
-    gsl_matrix_set(c,2,3,cos(th23));
-    gsl_matrix_set(c,2,4,cos(th24));
-    gsl_matrix_set(c,3,4,cos(th34));
-    gsl_matrix_set(c,1,5,cos(th15));
-    gsl_matrix_set(c,2,5,cos(th25));
-    gsl_matrix_set(c,3,5,cos(th35));
-    gsl_matrix_set(c,4,5,cos(th45));
-    gsl_matrix_set(c,1,6,cos(th16));
-    gsl_matrix_set(c,2,6,cos(th26));
-    gsl_matrix_set(c,3,6,cos(th36));
-    gsl_matrix_set(c,4,6,cos(th46));
-    gsl_matrix_set(c,5,6,cos(th56));
-    
-    gsl_matrix_set(s,1,2,sin(th12));
-    gsl_matrix_set(s,1,3,sin(th13));
-    gsl_matrix_set(s,1,4,sin(th14));
-    gsl_matrix_set(s,2,3,sin(th23));
-    gsl_matrix_set(s,2,4,sin(th24));
-    gsl_matrix_set(s,3,4,sin(th34));
-    gsl_matrix_set(s,1,5,sin(th15));
-    gsl_matrix_set(s,2,5,sin(th25));
-    gsl_matrix_set(s,3,5,sin(th35));
-    gsl_matrix_set(s,4,5,sin(th45));
-    gsl_matrix_set(s,1,6,sin(th16));
-    gsl_matrix_set(s,2,6,sin(th26));
-    gsl_matrix_set(s,3,6,sin(th36));
-    gsl_matrix_set(s,4,6,sin(th46));
-    gsl_matrix_set(s,5,6,sin(th56));      
-    
-
-    gsl_matrix_set(dcp,0,0,1.0);
-    gsl_matrix_set(dcp,1,0,delta1);
-    gsl_matrix_set(dcp,2,0,delta2);
-    gsl_matrix_set(dcp,3,0,delta3);    
-    
-    return 0;
+Const::~Const(){
+    gsl_matrix_free(dmsq);
+    gsl_matrix_free(th);
+    gsl_matrix_free(dcp);
 }
 
-void Const::Set_th12(double val){
-  th12 = val;
-  Refresh();
+void Const::SetMixingAngle(unsigned int state1, unsigned int state2, double angle){
+    if(state2<=state1)
+        throw std::runtime_error("Const::SetMixingAngle: state indices should be ordered and unequal"
+                                 " (Got "+std::to_string(state1)+" and "+std::to_string(state2)+")");
+    if(state1>=SQUIDS_MAX_HILBERT_DIM-1)
+        throw std::runtime_error("Const::SetMixingAngle: First state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR-1);
+    if(state2>=SQUIDS_MAX_HILBERT_DIM)
+        throw std::runtime_error("Const::SetMixingAngle: Second mass state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
+    
+    gsl_matrix_set(th,state1,state2,angle);
 }
-void Const::Set_th13(double val){
-  th13 = val;
-  Refresh();
-}
-void Const::Set_th23(double val){
-  th23 = val;
-  Refresh();
-}
-void Const::Set_th14(double val){
-  th14 = val;
-  Refresh();
-}
-void Const::Set_th24(double val){
-  th24 = val;
-  Refresh();
-}
-void Const::Set_th34(double val){
-  th34 = val;
-  Refresh();
-}
-void Const::Set_th15(double val){
-  th15 = val;
-  Refresh();
-}
-void Const::Set_th25(double val){
-  th25 = val;
-  Refresh();
-}
-void Const::Set_th35(double val){
-  th35 = val;
-  Refresh();
-}
-void Const::Set_th45(double val){
-  th45 = val;
-  Refresh();
-}
-void Const::Set_th16(double val){
-  th16 = val;
-  Refresh();
-}
-void Const::Set_th26(double val){
-  th26 = val;
-  Refresh();
-}
-void Const::Set_th36(double val){
-  th36 = val;
-  Refresh();
-}
-void Const::Set_th46(double val){
-  th46 = val;
-  Refresh();
-}
-void Const::Set_th56(double val){
-  th56 = val;
-  Refresh();
-}
-void Const::Set_dm21sq(double val){
-  dm21sq = val;
-  Refresh();
-}
-void Const::Set_dm31sq(double val){
-  dm31sq = val;
-  Refresh();
-}
-void Const::Set_dm41sq(double val){
-  dm41sq = val;
-  Refresh();
-}
-void Const::Set_dm51sq(double val){
-  dm51sq = val;
-  Refresh();
-}
-void Const::Set_dm61sq(double val){
-  dm61sq = val;
-  Refresh();
-}
-void Const::Set_delta1(double val){
-  delta1 = val;
-  Refresh();
-}
-void Const::Set_delta2(double val){
-  delta2 = val;
-  Refresh();
-}
-void Const::Set_delta3(double val){
-  delta3 = val;
-  Refresh();
-}
- 
 
+double Const::GetMixingAngle(unsigned int state1, unsigned int state2) const{
+    if(state2<=state1)
+        throw std::runtime_error("Const::GetMixingAngle: state indices should be ordered and unequal"
+                                 " (Got "+std::to_string(state1)+" and "+std::to_string(state2)+")");
+    if(state1>=SQUIDS_MAX_HILBERT_DIM-1)
+        throw std::runtime_error("Const::GetMixingAngle: First state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR-1);
+    if(state2>=SQUIDS_MAX_HILBERT_DIM)
+        throw std::runtime_error("Const::GetMixingAngle: Second mass state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
+    
+    return(gsl_matrix_get(th,state1,state2));
+}
 
+void Const::SetSquaredEnergyDifference(unsigned int upperState, double sqdiff){
+    if(upperState==0)
+        throw std::runtime_error("Const::SetSquaredEnergyDifference: Upper state index must be greater than 0");
+    if(upperState>=SQUIDS_MAX_HILBERT_DIM)
+        throw std::runtime_error("Const::SetSquaredEnergyDifference: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
+    
+    gsl_matrix_set(dmsq,upperState-1,0,sqdiff);
+}
+
+double Const::GetSquaredEnergyDifference(unsigned int upperState) const{
+    if(upperState==0)
+        throw std::runtime_error("Const::GetSquaredEnergyDifference: Upper state index must be greater than 0");
+    if(upperState>=SQUIDS_MAX_HILBERT_DIM)
+        throw std::runtime_error("Const::GetSquaredEnergyDifference: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
+    
+    return(gsl_matrix_get(dmsq,upperState-1,0));
+}
+
+void Const::SetPhase(unsigned int state1, unsigned int state2, double phase){
+    if(state2<=state1)
+        throw std::runtime_error("Const::SetPhase: State indices should be ordered and unequal"
+                                 " (Got "+std::to_string(state1)+" and "+std::to_string(state2)+")");
+    if(state2>=SQUIDS_MAX_HILBERT_DIM)
+        throw std::runtime_error("Const::SetPhase: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
+    
+    gsl_matrix_set(dcp,state1,state2,phase);
+}
+
+double Const::GetPhase(unsigned int state1, unsigned int state2) const{
+    if(state2<=state1)
+        throw std::runtime_error("Const::GetPhase: State indices should be ordered and unequal"
+                                 " (Got "+std::to_string(state1)+" and "+std::to_string(state2)+")");
+    if(state2>=SQUIDS_MAX_HILBERT_DIM)
+        throw std::runtime_error("Const::GetPhase: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
+    
+    return(gsl_matrix_get(dcp,state1,state2));
+}

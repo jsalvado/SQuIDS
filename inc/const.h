@@ -21,32 +21,29 @@
  ******************************************************************************/
 
 
-#ifndef __CONST_H
-#define __CONST_H
+#ifndef SQUIDS_CONST_H
+#define SQUIDS_CONST_H
 
 #include <string>
 #include <gsl/gsl_matrix.h>
-#include <math.h>
-#include <iostream>
-using namespace std;
 
 class Const{
 public : 
   // class identifiers
-  string name; 
-  string linestyle;
-  string markerstyle;
-  string colorstyle;
-  string savefilename;
-  // mathematical ants //
+  std::string name;
+  std::string linestyle;
+  std::string markerstyle;
+  std::string colorstyle;
+  std::string savefilename;
+  // mathematical constants //
   double pi;
   double piby2; 
   double sqrt2;
   double ln2;
-  // astronomical ants //
+  // astronomical constants //
   double earthradius;
   double sunradius;
-  ///// physics ants/////
+  ///// physics constants/////
   double GF;
   double Na;
   double sw_sq;
@@ -88,50 +85,6 @@ public :
   double Kelvin;
   // angle
   double degree;
-  ////// neutrino osc. param. //////////
-  // basic
-  int numneu; 
-  int numneumax;
-  int neutype;
-  // mixing angles
-  double th12;
-  double th13;
-  double th23;
-  double th14;
-  double th24;
-  double th34;
-  double th15;
-  double th25;
-  double th35;
-  double th45;
-  double th16;
-  double th26;
-  double th36;
-  double th46;
-  double th56;
-  // square mass differences
-  double dm21sq;
-  double dm31sq;
-  double dm41sq;
-  double dm51sq;
-  double dm61sq;
-  // cp-phases
-  double delta1;
-  double delta2;
-  double delta3;
-  // matrices
-  // angles
-  gsl_matrix *th;
-  // cosine mixing matrix
-  gsl_matrix *c;
-  // sine mixing matrix
-  gsl_matrix *s;
-  // cp-phases
-  gsl_matrix *dcp;
-  // square mass differences
-  gsl_matrix *dmsq;
-  // mixing matrix
-  gsl_matrix_complex *U;
         
   int electron;
   int muon;
@@ -145,36 +98,64 @@ public :
         
   double proton_mass;
   double neutron_mass;
+  
+  ///\brief set the mixing angle between two states of the system
+  ///
+  ///\param state1 the (zero-based) index of the first state
+  ///\param state2 the (zero-based) index of the second state;
+  ///              must be larger than state1
+  ///\param angle the angle to use
+  void SetMixingAngle(unsigned int state1, unsigned int state2, double angle);
+  
+  ///\brief get the mixing angle between two states of the system
+  ///
+  ///\param state1 the (zero-based) index of the first state
+  ///\param state2 the (zero-based) index of the second state;
+  ///              must be larger than state1
+  ///\return the mixing angle between the two states
+  double GetMixingAngle(unsigned int state1, unsigned int state2) const;
+  
+  ///\brief set the energy splitting between two states of the system
+  ///
+  ///\param upperState the (zero-based) index of the upper state;
+  ///                  the lower state is implicitly the ground state (0)
+  ///\param sqdiff the square of the energy difference between the states
+  void SetSquaredEnergyDifference(unsigned int upperState, double sqdiff);
+  
+  ///\brief get the energy splitting between two states of the system
+  ///
+  ///\param upperState the (zero-based) index of the upper state;
+  ///                  the lower state is implicitly the ground state (0)
+  ///\return the square of the energy difference between the states
+  double GetSquaredEnergyDifference(unsigned int upperState) const;
+  
+  ///\brief set the complex phasebetween two states of the system
+  ///
+  ///\param state1 the (zero-based) index of the first state
+  ///\param state2 the (zero-based) index of the second state;
+  ///              must be larger than state1
+  ///\param angle the phase to use
+  void SetPhase(unsigned int state1, unsigned int state2, double phase);
+  
+  ///\brief get the complex phase between two states of the system
+  ///
+  ///\param state1 the (zero-based) index of the first state
+  ///\param state2 the (zero-based) index of the second state;
+  ///              must be larger than state1
+  ///\return the phase between the two states
+  double GetPhase(unsigned int state1, unsigned int state2) const;
 
-  //Functions that set the value for the parameters(mixings and delta_m).
-  //The Refresh function is called every time in these functions.
-  void Set_th12(double val);
-  void Set_th13(double val);
-  void Set_th23(double val);
-  void Set_th14(double val);
-  void Set_th24(double val);
-  void Set_th34(double val);
-  void Set_th15(double val);
-  void Set_th25(double val);
-  void Set_th35(double val);
-  void Set_th45(double val);
-  void Set_th16(double val);
-  void Set_th26(double val);
-  void Set_th36(double val);
-  void Set_th46(double val);
-  void Set_th56(double val);
-  void Set_dm21sq(double val);
-  void Set_dm31sq(double val);
-  void Set_dm41sq(double val);
-  void Set_dm51sq(double val);
-  void Set_dm61sq(double val);
-  void Set_delta1(double val);
-  void Set_delta2(double val);
-  void Set_delta3(double val);
-
-  int Refresh(void);
-  Const(void);
-  ~Const(void);
+  Const();
+  ~Const();
+  
+private:
+  // matrices
+  // angles
+  gsl_matrix *th;
+  // cp-phases
+  gsl_matrix *dcp;
+  // square mass differences
+  gsl_matrix *dmsq;
 };
 
-#endif
+#endif //ifdef SQUIDS_CONST_H

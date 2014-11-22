@@ -37,14 +37,12 @@
 #include <limits>
 #include <memory>
 
-
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_odeiv2.h>
-
 
 ///\brief Structure that contains the node state
 struct SU_state
@@ -96,10 +94,7 @@ class SQUIDS {
 
   std::unique_ptr<SU_state[]> state;
 
-
   int numeqn;
-  //SU_alg SU;
-
 
   // setting up GSL ODE solver
   gsl_odeiv2_step_type* step; //not owned
@@ -111,7 +106,6 @@ class SQUIDS {
   double h_max;
   double abs_error;
   double rel_error;
-
     
   //***************************************************************
   ///\brief Sets the derivative system pointer for GSL use
@@ -152,7 +146,7 @@ class SQUIDS {
   ///\param xini  x_min
   ///\param xend  x_max
   ///\param scale "log or lin" type of scale
-  int Set_xrange(double xini, double xend, string scale);
+  int Set_xrange(double xini, double xend, std::string scale);
 
   //***************************************************************
   ///\brief Returns the closes position in the array x for the value given

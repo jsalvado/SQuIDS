@@ -25,10 +25,7 @@
  / already solved analyticaly using the SUN_vector evolution.                  /
  ******************************************************************************/
 
-
-
 #include "vacuum.h"
-
 
 void vacuum::init(int n,int ns, double Ein, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
@@ -37,7 +34,13 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
   DM2=SU_vector(nsun);
   //set the energy range in log scale
   Set_xrange(Ein, Efin,"log");
-
+  
+  // set the oscillation parameters
+  params.SetSquaredEnergyDifference(1,7.5e-5); //delta m^2 2,1
+  params.SetSquaredEnergyDifference(2,2.45e-3); //delta m^2 3,1
+  params.SetMixingAngle(0,1,33.48*params.degree); //theta 1,2
+  params.SetMixingAngle(0,2,8.55*params.degree);  //theta 1,3
+  params.SetMixingAngle(1,2,42.3*params.degree);  //theta 2,3
 
   evol_b0_proj.reset(new SU_vector[nx*nsun]);
   evol_b1_proj.reset(new SU_vector[nx*nsun]);
@@ -47,25 +50,21 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
   for(int i = 0; i < nsun; i++){
     b0_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i]=SU_vector::Projector(nsun,i);
-    b1_proj[i].RotateToB1(&params);
+    b1_proj[i].RotateToB1(params);
 
     for(int ei = 0; ei < nx; ei++){
       evol_b0_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
       evol_b1_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
-      evol_b1_proj[i*nx + ei].RotateToB1(&params);
+      evol_b1_proj[i*nx + ei].RotateToB1(params);
     }
   }
 
-
-  for(int i = 1; i < nsun; i++){
-    DM2 += (b0_proj[i])*gsl_matrix_get(params.dmsq,i,0);
-  }
-
+  for(int i = 1; i < nsun; i++)
+    DM2 += (b0_proj[i])*params.GetSquaredEnergyDifference(i);
 
   //set initial conditions for the density mattrix.  
   for(int ei = 0; ei < nx; ei++){
     state[ei].rho[0]=b1_proj[0];
-    //    state[ei].rho[0].RotateToB1(&params);
     
     for(int i=0;i<nscalars;i++){
       state[ei].scalar[i]=0;
@@ -73,58 +72,22 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
   }
 }
 
-
-
-
-
-
-
-
-//funtion that sets the parameters for the Vacuum oscilation 
-//is necesari just to update the mass matrix, and mixings every time.
-void vacuum::SetVacuum(Const par){
-  params=par;
-  params.Refresh();
-  DM2 = (b0_proj[1])*gsl_matrix_get(params.dmsq,1,0);
-  for(int i = 2; i < nsun; i++){
-    DM2 += (b0_proj[i])*gsl_matrix_get(params.dmsq,i,0);
-  }
-  for(int i = 0; i < nsun; i++){
-    b1_proj[i]=b0_proj[i];
-    b1_proj[i].RotateToB1(&params);
-    
-    for(int ei = 0; ei < nx; ei++){
-      evol_b1_proj[i*nx + ei]=b0_proj[i];
-      evol_b1_proj[i*nx + ei].RotateToB1(&params);
-    }
-  }
-  
-  for(int ei = 0; ei < nx; ei++){
-    state[ei].rho[0]=b1_proj[0];
-    state[ei].rho[0].RotateToB1(&params);
-  }
-}  
-
-
 //Function that returns the H0 operator
 SU_vector vacuum::H0(double x){
   return DM2*(0.5/x);
 }
 
-
-//function that returns the flux for the neutrino with flavo "i" and energy "e"
+//function that returns the flux for the neutrino with flavor "i" and energy "e"
 double vacuum::Get_flux(int i,double e){
   return GetExpectationValueD(b1_proj[i],0,e);
 }
 
-
-//function that returns the flux for the neutrino with flavo "i" and energy "e"
+//function that returns the flux for the neutrino with flavor "i" and energy "e"
 double vacuum::Get_flux(int i,int e){
   return GetExpectationValue(b1_proj[i],0,e);
 }
 
-
-void vacuum::set_evol(void){
+void vacuum::set_evol(){
   for(int i = 0; i < nx; i++){
     SU_vector h0=H0(x[i]);
     for(int nrh=0;nrh<nrhos;nrh++){
@@ -132,5 +95,3 @@ void vacuum::set_evol(void){
     }
   }
 }
-
-

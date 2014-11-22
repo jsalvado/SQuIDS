@@ -37,34 +37,25 @@ int main(){
   //Number of energy bins
   int Nenergy=1000;
   //Name of the output file
-  string plt;
+  std::string plt;
   //Initialization of the object
   V0.init(Nenergy,3,0.0005,10);
 
-  // if this is commented the parameters are the values by default
-  // V0->SetVacuum("dm21sq",0.01);
-  // V0->SetVacuum("dm31sq",0);
-  // V0->SetVacuum("th13",0);
-  // V0->SetVacuum("th23",0);
-  // V0->SetVacuum("th23",0);
-
   V0.EvolveSUN(0,1000*Kilometer);
 
-  ofstream file("oscillations.dat");
+  std::ofstream file("oscillations.dat");
 
   for(double lE=log(0.0005); lE<log(10); lE+=0.0001){
     double E=exp(lE);
     file << E << "  " << V0.Get_flux(0,E) << "  " <<
-      V0.Get_flux(1,E) << "  " << V0.Get_flux(2,E) << endl;
+      V0.Get_flux(1,E) << "  " << V0.Get_flux(2,E) << std::endl;
   }
 
-  cout << endl <<  "Done! " << endl <<  "Do you want to run the gnuplot script? yes/no" << endl;
-  cin >> plt;
+  std::cout << std::endl <<  "Done! " << std::endl <<  "Do you want to run the gnuplot script? yes/no" << std::endl;
+  std::cin >> plt;
 
   if(plt=="yes" || plt=="y"){
     return system("./plot.plt");
-  }else{
-    return 0;
   }
   
   return 0;

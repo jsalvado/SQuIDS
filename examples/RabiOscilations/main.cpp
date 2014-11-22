@@ -43,9 +43,9 @@ int main(){
   R0.Set_rel_error(1e-5);
   R0.Set_abs_error(1e-5);
 
-  cout << "Rabi system with frequency of 10 initialized." << endl;
-  cout << "give the value for the detuning: " << endl;
-  cin >> del;
+  std::cout << "Rabi system with frequency of 10 initialized." << std::endl;
+  std::cout << "give the value for the detuning: " << std::endl;
+  std::cin >> del;
 
   // un-tuned Rabi system
   Rd.init(10,10+del,0.1);
@@ -53,10 +53,8 @@ int main(){
   Rd.Set_rel_error(1e-5);
   Rd.Set_abs_error(1e-5);
 
-
-
-  cout << "Computing rabi" << endl;
-  ofstream file("rabi.dat");
+  std::cout << "Computing rabi" << std::endl;
+  std::ofstream file("rabi.dat");
 
   // Evolve and save the evolution
   for(double t=0;t<tf;t+=dt){
@@ -64,31 +62,28 @@ int main(){
     R0.EvolveSUN(t,t+dt);
     file << t << "\t" << R0.GetExpectationValue(R0.d0,0,0) << "  " 
 	 << R0.GetExpectationValue(R0.evol_b0_proj[0],0,0) << "  " 
-	 << R0.GetExpectationValue(R0.evol_b0_proj[1],0,0) << endl;
+	 << R0.GetExpectationValue(R0.evol_b0_proj[1],0,0) << std::endl;
     R0.set_evol();
   }
   file.close();
   file.open("rabi_detuned.dat");
-  cout << endl << "Computing detuned rabi" << endl;
+  std::cout << std::endl << "Computing detuned rabi" << std::endl;
   for(double t=0;t<tf;t+=dt){
     progressbar(100*t/tf);
     Rd.EvolveSUN(t,t+dt);
     file << t << "\t" << Rd.GetExpectationValue(Rd.d0,0,0) << "  " 
 	 << Rd.GetExpectationValue(Rd.b0_proj[0],0,0) << "  " 
-	 << Rd.GetExpectationValue(Rd.b0_proj[1],0,0) << endl;
+	 << Rd.GetExpectationValue(Rd.b0_proj[1],0,0) << std::endl;
     Rd.set_evol();
   }
   file.close();
-
   
-  //Ask for runnint the gnuplot script
-  string plt;
-  cout << endl <<  "Done! " << endl <<  "  Do you want to run the gnuplot script? yes/no" << endl;
-  cin >> plt;
-  if(plt=="yes" || plt=="y"){
+  //Ask whether to run the gnuplot script
+  std::string plt;
+  std::cout << std::endl <<  "Done! " << std::endl <<
+   "  Do you want to run the gnuplot script? yes/no" << std::endl;
+  std::cin >> plt;
+  if(plt=="yes" || plt=="y")
     return system("./plot.plt");
-  }else{
-    return 0;
-  }
-
+  return 0;
 }

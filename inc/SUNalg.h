@@ -35,10 +35,8 @@
 #include <gsl/gsl_matrix.h>
 
 #include "const.h"
+#include "SU_inc/dimension.h"
 #include "detail/ProxyFwd.h"
-
-//The code only works up to 6 dim Hilbert space
-#define MAXSIZE 36
 
 ///\brief A vector represented in the SU(n) basis
 ///
@@ -92,7 +90,7 @@
 ///    In this code the addition on the right hand side can be performed without
 /// allocation, but each of the evolution operations must allocate a temporary,
 /// so 2*N allocations and deallocations must occur. This can be reduced to 2
-/// allocations and deallocation by rewriting in this form:
+/// allocations and deallocations by rewriting in this form:
 ///
 ///     SU_vector temp1, temp2;
 ///     for(unsigned int i=0; i<N; i++){
@@ -100,7 +98,8 @@
 ///       temp2 = v3[i].SUEvolve(v4[i],t)
 ///       state[i] += temp1 + temp2;
 ///     }
-/// 2. If a calculation has an SU_vector calulation as a subexpression but
+///
+/// 2. If a calculation has an SU_vector calulation as a subexpression, but
 /// otherwise operates on scalars it can be useful to rewite the expression so
 /// that the vector calculation forms the top level if possible:
 ///
@@ -129,7 +128,7 @@ private:
       if(isinit_d) //can't resize
         throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
       if(!WrapperType::allowTargetResize)
-        throw std::runtime_error("Non-matching dimensions in SU_vector increment/decrement");
+        throw std::runtime_error("Non-matching dimensions in SU_vector assignment");
       //can resize
       if(isinit)
         delete[] components;
@@ -243,17 +242,11 @@ public:
   /// If the SU_vector is in the B1 basis, it transforms it to the B0 representation.
   void RotateToB0(const Const& params);
 
-  ///\brief Returns the trace of the product of the SU_vector matrix representations
-  ///
-  /// Defines a scalar product of the SU_vector.
-  double SUTrace(SU_vector*,SU_vector*);
-  ///\brief Returns the trace of the product of the SU_vector matrix representations
-  ///
-  /// Defines a scalar product of the SU_vector.
-  double SUTrace(SU_vector&,const SU_vector&);
-
   ///\brief Gets the dimension of the SU_vector
-  unsigned int Dim() const {return dim;};
+  unsigned int Dim() const {return dim;}
+  
+  ///\brief Gets the number of components in the vector
+  unsigned int Size() const { return size; }
 
   ///\brief Compute the time evolution of the SU_vector
   ///
@@ -382,18 +375,24 @@ public:
   
   friend detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
   friend detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
+  friend double SUTrace(const SU_vector&,const SU_vector&);
   
-  //ostream overload operator
-  friend ostream& operator<<(ostream&, const SU_vector&);
+  //overloaded output operator
+  friend std::ostream& operator<<(std::ostream&, const SU_vector&);
 };
 
-//Commutator of two SU_vectors
+///\brief Returns the trace of the product of the SU_vector matrix representations
+///
+/// Defines a scalar product of SU_vectors.
+double SUTrace(const SU_vector&,const SU_vector&);
+
+///\brief Commutator of two SU_vectors
 detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
 
-//Anticommutator of two SU_vectors
+///\brief Anticommutator of two SU_vectors
 detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
 
-//Multiplication of an SU_vectors by a scalar from the left.
+///\brief Multiplication of an SU_vectors by a scalar from the left.
 detail::MultiplicationProxy operator*(double x, const SU_vector& v);
 
 #include "detail/ProxyImpl.h"
