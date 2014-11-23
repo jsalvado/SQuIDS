@@ -24,16 +24,6 @@
 
 //#define CalNeuOscSUN_DEBUG
 
-// Macros
-#define SQR(x)      ((x)*(x))                        // x^2
-#define SQR_ABS(x)  (SQR(creal(x)) + SQR(cimag(x)))  // |x|^2
-#define POW10(x)    (exp(M_LN10*(x)))                // 10^x
-#define MIN(X,Y)    ( ((X) < (Y)) ? (X) : (Y) )
-#define MAX(X,Y)    ( ((X) > (Y)) ? (X) : (Y) )
-#define SIGN(a,b)   ( (b) > 0.0 ? (fabs(a)) : (-fabs(a)) )
-#define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )
-
-
 SQUIDS::SQUIDS(void){
   is_init=false;
 }
@@ -61,8 +51,8 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
   nsun=nsu;
   nrhos=nrh;
   nscalars=nsc;
-  size_rho=SQR(nsun);
-  size_state=(SQR(nsun)*nrhos+nscalars);
+  size_rho=nsun*nsun;
+  size_state=(size_rho*nrhos+nscalars);
   /*
     Setting time units and initial time
   */
@@ -79,9 +69,6 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
     Initializing the SU algebra object, needed to compute algebraic operations like commutators,
     anticommutators, rotations and evolutions
   */
-
-  //SU=SU_alg(nsun);
-
 
   //Allocate memory
   x.reset(new double[nx]);
@@ -106,7 +93,6 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
     }
   }
 
-
   //default errors
   rel_error=1e-20;
   abs_error=1e-20;
@@ -124,7 +110,6 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
   sys.dimension = (size_t)numeqn;
   sys.params = this;
 
-
   is_init=true;
 };
 
@@ -132,9 +117,7 @@ void SQUIDS::set_deriv_system_pointer(double *p){
   deriv_system=p;
   for(int ei = 0; ei < nx; ei++){
     for(int i=0;i<nrhos;i++){
-      //dstate[ei].rho[i].InitSU_vector(nsun,&(p[ei*size_state+i*size_rho])); //JS
-      //dstate[ei].rho[i]=SU_vector(nsun,&(p[ei*size_state+i*size_rho])); //CW1
-      dstate[ei].rho[i].SetBackingStore(&(p[ei*size_state+i*size_rho])); //CW2
+      dstate[ei].rho[i].SetBackingStore(&(p[ei*size_state+i*size_rho]));
     }
     dstate[ei].scalar=&(p[ei*size_state+nrhos*size_rho]);
   }
@@ -147,7 +130,7 @@ SQUIDS::~SQUIDS(){}
   density matrix and a set of scalars
  */
 
-int SQUIDS::Set_xrange(double xi, double xf, string type){
+int SQUIDS::Set_xrange(double xi, double xf, std::string type){
   if (xi == xf){
     x[0] = xi;
     return 0;
@@ -182,7 +165,6 @@ int SQUIDS::Set_xrange(double xi, double xf, string type){
   return 0;
 }
 
-
 double SQUIDS::GetExpectationValue(SU_vector & op,  int nrh, int i){
   SU_vector h0=H0(x[i]);
   return state[i].rho[nrh]*op.SUEvolve(h0,t-t_ini);
@@ -215,10 +197,8 @@ int SQUIDS::Get_i(double xi){
   xl=x[nl];
   xr=x[nr];
 
-  if(xi>xr || xi<xl){
-    cout << xr << "  " << xl << endl;
-    throw std::runtime_error(" Error IDS::Get_i :  value  out of bounds");
-  }
+  if(xi>xr || xi<xl)
+    throw std::runtime_error(" Error SQUIDS::Get_i :  value  out of bounds");
 
   while((nr-nl)>1){
     if(((nr-nl)%2)!=0){
@@ -260,7 +240,6 @@ void SQUIDS::Set_ScalarInteractions(bool opt){
   AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
 }
 
-
 void SQUIDS::Set_h_min(double opt){
   h_min=opt;
   if(h<h_min){
@@ -300,9 +279,8 @@ void SQUIDS::Set_t(double opt){
 }
 
 void SQUIDS::Set_units(double opt){
-      tunit=opt;
+  tunit=opt;
 }
-
 
 void SQUIDS::Set_nx(int opt){
   if(opt!=nx)
@@ -326,14 +304,10 @@ void SQUIDS::Set_nscalars(int opt){
   ini(nx,nsun,nrhos,opt);
 }
 
-
-
-
 int SQUIDS::Derive(double at){
   t=at;
 
   PreDerive(at);
-  //std::cout << "----\n";
   for(int ei = 0; ei < nx; ei++){
     for(int i = 0; i < nrhos; i++){
       index_rho=i;
@@ -362,8 +336,6 @@ int SQUIDS::Derive(double at){
   return GSL_SUCCESS;
 }
 
-
-
 int SQUIDS::EvolveSUN(double ti, double tf){
   t_ini=ti;
   t_end=tf;
@@ -380,7 +352,6 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     printf("h_min : %g \n", h_min/tunit);
 #endif
 
-
     // initial position
     
     t=ti;
@@ -390,7 +361,6 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     gsl_odeiv2_driver_set_hmin(d,h_min);
     gsl_odeiv2_driver_set_hmax(d,h_max);
     gsl_odeiv2_driver_set_nmax(d,0);
-
 
 #ifdef CalNeuOscSUN_DEBUG
     printf("Start calculation.\n");
@@ -408,7 +378,6 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     if( gsl_status != GSL_SUCCESS ){
       throw std::runtime_error("SQUIDS::EvolveSUN: Error in GSL ODE solver.");
     }
-    
 
 #ifdef CalNeuOscSUN_DEBUG
     printf("End calculation. x_final :  %lf \n",x/tunit);
@@ -421,11 +390,9 @@ int SQUIDS::EvolveSUN(double ti, double tf){
   return GSL_SUCCESS;
 }
 
-
 int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
   SQUIDS *dms=(SQUIDS*)par;
   dms->set_deriv_system_pointer(state_dbl_out);
   dms->Derive(t);
   return 0;
 }
-

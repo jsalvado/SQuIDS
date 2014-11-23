@@ -134,7 +134,7 @@ Description: Evolves quantum mechanical states
 URL: https://github.com/jsalvado/SQuIDS' >> src/squids.pc
 echo "Version: $VERSION" >> src/squids.pc
 echo 'Requires: gsl >= 1.14
-Libs: -L${libdir} -lSQUIDS
+Libs: -L${libdir} -lSQuIDS
 Cflags: -I${includedir}
 ' >> src/squids.pc
 
@@ -169,7 +169,7 @@ CFLAGS= -O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)
 LDFLAGS= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)
 
 # Project files
-NAME=SQUIDS
+NAME=SQuIDS
 STAT_PRODUCT=$(LIBDIR)/lib$(NAME).a
 DYN_PRODUCT=$(LIBDIR)/lib$(NAME)$(DYN_SUFFIX)
 

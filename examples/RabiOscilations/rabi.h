@@ -21,11 +21,10 @@ class rabi: public SQUIDS {
 
   //Energy difference
   double Delta_E;
-  //Lasser Frequency
+  //Laser Frequency
   double w;
-  //Lasser Amplitud
+  //Laser Amplitude
   double A;
-  
 
  public:
   SU_vector d0;
@@ -35,13 +34,13 @@ class rabi: public SQUIDS {
   std::unique_ptr<SU_vector[]> evol_b1_proj;
 
   void PreDerive(double t);
-  rabi(void){};
+  rabi(){};
   rabi(double a, double b, double c){init(a,b,c);};
   void init(double, double,double );
   SU_vector H0(double);
   SU_vector HI(int ix,double t);
 
-  void set_evol(void);
+  void set_evol();
 };
 
 #endif

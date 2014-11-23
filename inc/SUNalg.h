@@ -35,10 +35,8 @@
 #include <gsl/gsl_matrix.h>
 
 #include "const.h"
+#include "SU_inc/dimension.h"
 #include "detail/ProxyFwd.h"
-
-//The code only works up to 6 dim Hilbert space
-#define MAXSIZE 36
 
 ///\brief A vector represented in the SU(n) basis
 ///
@@ -92,7 +90,7 @@
 ///    In this code the addition on the right hand side can be performed without
 /// allocation, but each of the evolution operations must allocate a temporary,
 /// so 2*N allocations and deallocations must occur. This can be reduced to 2
-/// allocations and deallocation by rewriting in this form:
+/// allocations and deallocations by rewriting in this form:
 ///
 ///     SU_vector temp1, temp2;
 ///     for(unsigned int i=0; i<N; i++){
@@ -100,7 +98,8 @@
 ///       temp2 = v3[i].SUEvolve(v4[i],t)
 ///       state[i] += temp1 + temp2;
 ///     }
-/// 2. If a calculation has an SU_vector calulation as a subexpression but
+///
+/// 2. If a calculation has an SU_vector calulation as a subexpression, but
 /// otherwise operates on scalars it can be useful to rewite the expression so
 /// that the vector calculation forms the top level if possible:
 ///
@@ -129,7 +128,7 @@ private:
       if(isinit_d) //can't resize
         throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
       if(!WrapperType::allowTargetResize)
-        throw std::runtime_error("Non-matching dimensions in SU_vector increment/decrement");
+        throw std::runtime_error("Non-matching dimensions in SU_vector assignment");
       //can resize
       if(isinit)
         delete[] components;
@@ -224,26 +223,30 @@ public:
   ///\param a The scaling factor to use
   SU_vector Rescale(double a);
   
-  //Change of bases with a rotation on the components given by the integers,
-  //double -> angle
-  //double -> phase
-  ///\todo Needs proper documentation
-  SU_vector Rotate(unsigned int, unsigned int, double, double);
+  ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace
+  ///\param i subspace index
+  ///\param j subspace index
+  ///\param theta rotation angle in radians
+  ///\param delta complex phase
+  SU_vector Rotate(unsigned int i, unsigned int j, double theta, double delta);
   //Const, contines a standar set of angles, this funcion does the set of rotations
   //to change the bases.
-  ///\todo Needs proper documentation
-  void RotateToB1(const Const&);
-  ///\todo Needs proper documentation
-  void RotateToB0(const Const&);
-
-  //equivalent in Matrix notation to the trace of the product for the two operators
-  ///\todo Needs proper documentation
-  double SUTrace(SU_vector*,SU_vector*);
-  ///\todo Needs proper documentation
-  double SUTrace(SU_vector&,const SU_vector&);
+  ///\brief Same as RotateToB0, but with reversed angles
+  ///\param params Contains the rotation parameters
+  ///
+  /// If the SU_vector is in the B0 basis, it transforms it to the B1 representation.
+  void RotateToB1(const Const& params);
+  ///\brief Rotates a SU_vector given the angles in Const
+  ///\param params Contains the rotation parameters
+  ///
+  /// If the SU_vector is in the B1 basis, it transforms it to the B0 representation.
+  void RotateToB0(const Const& params);
 
   ///\brief Gets the dimension of the SU_vector
-  unsigned int Dim() const {return dim;};
+  unsigned int Dim() const {return dim;}
+  
+  ///\brief Gets the number of components in the vector
+  unsigned int Size() const { return size; }
 
   ///\brief Compute the time evolution of the SU_vector
   ///
@@ -340,13 +343,25 @@ public:
   ///\param d The dimension of the operator
   static SU_vector Identity(unsigned int d);
   
-  ///\todo Needs proper documentation
+  ///\brief Constructs a projector to the upper subspace of dimension i
+  ///
+  ///\param d The dimension of the operator
+  ///\param i The subspace dimension
+  ///
+  /// \f$ NegProj = diag(1,...,1,0,...,0) \f$ where the last one is at the \f$i-1\f$ entry.
   static SU_vector PosProjector(unsigned int d, unsigned int i);
   
-  ///\todo Needs proper documentation
+  ///\brief Constructs a projector to the lower subspace of dimension i
+  ///
+  ///\param d The dimension of the operator
+  ///\param i The subspace dimension
+  ///
+  /// \f$ NegProj = diag(0,...,0,1,...,1) \f$ where the first one is at the \f$d-i\f$ entry.
   static SU_vector NegProjector(unsigned int d, unsigned int i);
   
-  ///\todo Needs proper documentation
+  ///\brief Creates a SU_vector corresponding to the \f$i\f$SU_N basis generator.
+  //
+  // Tts represented by \f$ v = (0,...,1,...,0)\f$ where 1 is in the \f$i\f$ component.
   static SU_vector Component(unsigned int d, unsigned int i);
   
   template<typename Op>
@@ -360,18 +375,24 @@ public:
   
   friend detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
   friend detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
+  friend double SUTrace(const SU_vector&,const SU_vector&);
   
-  //ostream overload operator
-  friend ostream& operator<<(ostream&, const SU_vector&);
+  //overloaded output operator
+  friend std::ostream& operator<<(std::ostream&, const SU_vector&);
 };
 
-//Commutator of two SU_vectors
+///\brief Returns the trace of the product of the SU_vector matrix representations
+///
+/// Defines a scalar product of SU_vectors.
+double SUTrace(const SU_vector&,const SU_vector&);
+
+///\brief Commutator of two SU_vectors
 detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
 
-//Anticommutator of two SU_vectors
+///\brief Anticommutator of two SU_vectors
 detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
 
-//Multiplication of an SU_vectors by a scalar from the left.
+///\brief Multiplication of an SU_vectors by a scalar from the left.
 detail::MultiplicationProxy operator*(double x, const SU_vector& v);
 
 #include "detail/ProxyImpl.h"
