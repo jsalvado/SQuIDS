@@ -29,7 +29,7 @@ SQUIDS::SQUIDS(void){
 }
 
 SQUIDS::SQUIDS(int n,int ns,int nrh,int nsc, double ti = 0.0){
-  ini(n,ns,nrh,nsc, ti);
+  ini(n,ns,nrh,nsc,ti);
 }
 
 void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti=0.0){

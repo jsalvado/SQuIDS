@@ -6,7 +6,7 @@ void rabi::init(double D_E, double wi, double Am){
   w=wi;
   A=Am;
   params.SetMixingAngle(0,1,params.pi/4);
-  ini(1,2,1,0);
+  ini(1,2,1,0,0);
 
   Set_CoherentInteractions(true);  
 
@@ -56,10 +56,10 @@ SU_vector rabi::HI(int ix,double t){
   return (A*cos(w*t))*d;
 }
 
-void rabi::set_evol(){
-  for(int i = 0; i < nx; i++){
-    SU_vector h0=H0(x[i]);
-    for(int nrh=0;nrh<nrhos;nrh++)
-      state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,-(t_end-t_ini));
-  }
-}
+// void rabi::set_evol(){
+//   for(int i = 0; i < nx; i++){
+//     SU_vector h0=H0(x[i]);
+//     for(int nrh=0;nrh<nrhos;nrh++)
+//       state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,-(t-t_ini));
+//   }
+// }

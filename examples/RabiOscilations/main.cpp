@@ -59,22 +59,20 @@ int main(){
   // Evolve and save the evolution
   for(double t=0;t<tf;t+=dt){
     progressbar(100*t/tf);
-    R0.EvolveSUN(t,t+dt);
+    R0.EvolveSUN(dt);
     file << t << "\t" << R0.GetExpectationValue(R0.d0,0,0) << "  " 
 	 << R0.GetExpectationValue(R0.evol_b0_proj[0],0,0) << "  " 
 	 << R0.GetExpectationValue(R0.evol_b0_proj[1],0,0) << std::endl;
-    R0.set_evol();
   }
   file.close();
   file.open("rabi_detuned.dat");
   std::cout << std::endl << "Computing detuned rabi" << std::endl;
   for(double t=0;t<tf;t+=dt){
     progressbar(100*t/tf);
-    Rd.EvolveSUN(t,t+dt);
+    Rd.EvolveSUN(dt);
     file << t << "\t" << Rd.GetExpectationValue(Rd.d0,0,0) << "  " 
 	 << Rd.GetExpectationValue(Rd.b0_proj[0],0,0) << "  " 
 	 << Rd.GetExpectationValue(Rd.b0_proj[1],0,0) << std::endl;
-    Rd.set_evol();
   }
   file.close();
   

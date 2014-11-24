@@ -29,7 +29,7 @@
 
 void vacuum::init(int n,int ns, double Ein, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
-  ini(n,ns,1,0);
+  ini(n,ns,1,0,0);
   //initialize the SU_vector that contines the delta_m
   DM2=SU_vector(nsun);
   //set the energy range in log scale
@@ -87,11 +87,3 @@ double vacuum::Get_flux(int i,int e){
   return GetExpectationValue(b1_proj[i],0,e);
 }
 
-void vacuum::set_evol(){
-  for(int i = 0; i < nx; i++){
-    SU_vector h0=H0(x[i]);
-    for(int nrh=0;nrh<nrhos;nrh++){
-      state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,(t_ini-t_end));
-    }
-  }
-}

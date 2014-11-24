@@ -15,14 +15,14 @@
 class collective: public SQUIDS {
  private:
   //Hamiltonian
-  SU_vector H0;
+  SU_vector B;
+  SU_vector P;
 
-  //
+  //self interaction strengh sqrt(2) G_F n_\nu
   double mu;
   double n_nu;
 
  public:
-  SU_vector d0;
   std::unique_ptr<SU_vector[]> b0_proj;
   std::unique_ptr<SU_vector[]> b1_proj;
   std::unique_ptr<SU_vector[]> evol_b0_proj;
@@ -30,8 +30,8 @@ class collective: public SQUIDS {
 
   void PreDerive(double t);
   collective(void){};
-  collective(double a, double b, double c){init(a,b,c);};
-  void init(double, double,double );
+  collective(double mu, double wmin, double wmax, int Nbins){init(mu, wmin, wmax, Nbin);};
+  void init(double mu, double wmin, double wmax, int Nbins);
   SU_vector H0(double);
   SU_vector HI(int ix,double t);
 

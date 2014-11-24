@@ -1,13 +1,12 @@
 #include "collective.h"
 
 
-void collective::init(double D_E, double wi, double Am){
-  Delta_E=D_E;
-  w=wi;
-  A=Am;
-  params.Set_th12(params.pi/4.0);  
-  ini(1,2,1,0);
+void collective::init(double m, double wmin, double wmax, int Nbins){
+  mu=m;
+  ini(Nbins,2,1,0);
+  Set_xrange(wmin,wmax,"lin");
 
+  //  params.Set_th12(params.pi/4.0);  
   Set_CoherentInteractions(true);  
 
   evol_b0_proj.reset(new SU_vector[nx*nsun]);
@@ -16,9 +15,7 @@ void collective::init(double D_E, double wi, double Am){
   b1_proj.reset(new SU_vector[nsun]);
 
   for(int i = 0; i < nsun; i++){
-    //b0_proj[i].InitSU_vector("Proj",i,nsun);
     b0_proj[i]=SU_vector::Projector(nsun,i);
-    //b1_proj[i].InitSU_vector("Proj",i,nsun);
     b1_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i].RotateToB1(&params);
 
@@ -29,15 +26,10 @@ void collective::init(double D_E, double wi, double Am){
     }
   }
 
-  suH0=SU_vector(nsun);
-  d=SU_vector(nsun);
-  d0=SU_vector(nsun);
-
-  d0=(b1_proj[0]-b1_proj[1]);
-  suH0 = b0_proj[1]*Delta_E;
+  B=b0_proj[1];
 
   // set initial conditions for the density mattrix.
-  state[0].rho[0] = b0_proj[0];
+  state[0].rho[0] = b1_proj[0];
     
 }
 
@@ -45,8 +37,8 @@ void collective::init(double D_E, double wi, double Am){
 void collective::PreDerive(double t){
   for(int i = 0; i < nsun; i++){
     for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei] = b0_proj[i].SUEvolve(suH0,t-t_ini);
-      evol_b1_proj[i*nx + ei] = b1_proj[i].SUEvolve(suH0,t-t_ini);
+      evol_b0_proj[i*nx + ei] = b0_proj[i].SUEvolve(B,t-t_ini);
+      evol_b1_proj[i*nx + ei] = b1_proj[i].SUEvolve(B,t-t_ini);
     }
   }
 }
@@ -54,21 +46,16 @@ void collective::PreDerive(double t){
 
 
 SU_vector collective::H0(double x){
-  return suH0;
+  return B;
 }
 
 
 SU_vector collective::HI(int ix,double t){
-  d=(evol_b1_proj[0]-evol_b1_proj[1]);
-  return (A*cos(w*t))*d;
-}
-
-
-void collective::set_evol(void){
-  for(int i = 0; i < nx; i++){
-    SU_vector h0=H0(x[i]);
-    for(int nrh=0;nrh<nrhos;nrh++){
-      state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,-(t_end-t_ini));
-    }
+  P=state[0].rho[0];
+  for(int ei = 0; ei < nx; ei++){
+    P+=state[0].rho[0];
   }
+  P=P*(mu/(double)nx);
+  return P;
 }
+

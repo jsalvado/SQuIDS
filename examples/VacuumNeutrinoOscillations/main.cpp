@@ -41,7 +41,7 @@ int main(){
   //Initialization of the object
   V0.init(Nenergy,3,0.0005,10);
 
-  V0.EvolveSUN(0,1000*Kilometer);
+  V0.EvolveSUN(1000*Kilometer);
 
   std::ofstream file("oscillations.dat");
 
