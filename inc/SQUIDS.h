@@ -67,7 +67,6 @@ class SQUIDS {
   std::unique_ptr<double[]> delx;
   double t;
   double t_ini;
-  double t_end;
 
   double tunit;
   int nx;
@@ -127,7 +126,9 @@ class SQUIDS {
   ///\param dim Dimension of SU(n)
   ///\param nrho Number of density matrix in every "x" site
   ///\param nscalar Number of scalars in every "x" site
-  SQUIDS(int nx,int dim,int nrho,int nscalar);
+  ///\param ti initial value for the evolution parameter t
+
+  SQUIDS(int nx,int dim,int nrho,int nscalar, double ti);
 
   //***************************************************************
   virtual ~SQUIDS();
@@ -139,7 +140,9 @@ class SQUIDS {
   ///\param dim Dimension of SU(n)
   ///\param nrho Number of density matrix in every "x" site
   ///\param nscalar Number of scalars in every "x" site
-  void ini(int nx,int dim,int nrho, int nscalar);
+  ///\param ti initial value for the evolution parameter t
+  void ini(int nx,int dim,int nrho, int nscalar, double ti);
+
 
   //***************************************************************
   ///\brief Set the range of values for the array "x"
@@ -194,9 +197,8 @@ class SQUIDS {
 
   //***************************************************************
   ///\brief Numerical evolution of the state using GSL
-  ///\param tini initial time.
-  ///\param tend final time.
-  int EvolveSUN(double tini, double tend);
+  ///\param dt evolution time interval.
+  int EvolveSUN(double dt);
 
   //***************************************************************
   //functions to set parameters in the object.

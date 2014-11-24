@@ -26,7 +26,7 @@
 
 #include <string>
 #include <gsl/gsl_matrix.h>
-
+#include <stdexcept>
 class Const{
 public : 
   // class identifiers

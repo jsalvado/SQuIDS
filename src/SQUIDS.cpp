@@ -28,11 +28,11 @@ SQUIDS::SQUIDS(void){
   is_init=false;
 }
 
-SQUIDS::SQUIDS(int n,int ns,int nrh,int nsc){
-  ini(n,ns,nrh,nsc);
+SQUIDS::SQUIDS(int n,int ns,int nrh,int nsc, double ti = 0.0){
+  ini(n,ns,nrh,nsc, ti);
 }
 
-void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
+void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti=0.0){
   CoherentInt=false;
   NonCoherentInt=false;
   OtherInt=false;
@@ -57,7 +57,8 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc){
     Setting time units and initial time
   */
   tunit=1;
-  t=0;
+  t_ini=ti;
+  t=ti;
   nsteps=1000;
 
   //Allocate memeroy for the system
@@ -306,7 +307,6 @@ void SQUIDS::Set_nscalars(int opt){
 
 int SQUIDS::Derive(double at){
   t=at;
-
   PreDerive(at);
   for(int ei = 0; ei < nx; ei++){
     for(int i = 0; i < nrhos; i++){
@@ -336,25 +336,21 @@ int SQUIDS::Derive(double at){
   return GSL_SUCCESS;
 }
 
-int SQUIDS::EvolveSUN(double ti, double tf){
-  t_ini=ti;
-  t_end=tf;
+int SQUIDS::EvolveSUN(double dt){
   if(AnyNumerics){
     int gsl_status = GSL_SUCCESS;
-    t=ti;
+
 
 #ifdef CalNeuOscSUN_DEBUG
     printf("GSL paramers :\n");
     
-    printf("x_ini : %lf \n", ti/tunit);
-    printf("x_end : %lf \n", tf/tunit);
+    printf("x_ini : %lf \n", t/tunit);
+    printf("x_end : %lf \n", (t+dt)/tunit);
     printf("h : %g \n", h/tunit);
     printf("h_min : %g \n", h_min/tunit);
 #endif
 
-    // initial position
-    
-    t=ti;
+    // initial time
     
     // ODE system error control
     gsl_odeiv2_driver* d = gsl_odeiv2_driver_alloc_y_new(&sys,step,h,abs_error,rel_error);
@@ -369,9 +365,9 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     double* gsl_sys = system.get();
     
     if(adaptive_step){
-      gsl_status = gsl_odeiv2_driver_apply(d, &t, tf, gsl_sys);
+      gsl_status = gsl_odeiv2_driver_apply(d, &t, t+dt, gsl_sys);
     }else{
-      gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, (tf-ti)/nsteps , nsteps , gsl_sys);
+      gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, dt/nsteps , nsteps , gsl_sys);
     }
     
     gsl_odeiv2_driver_free(d);
@@ -383,8 +379,8 @@ int SQUIDS::EvolveSUN(double ti, double tf){
     printf("End calculation. x_final :  %lf \n",x/tunit);
 #endif
   }else{
-    PreDerive(tf);
-    t=tf;
+    t+=dt;
+    PreDerive(t);
   }
 
   return GSL_SUCCESS;
