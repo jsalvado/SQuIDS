@@ -210,6 +210,7 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@mkdir -p $(PREFIX)/include/SQuIDS/detail
 	@cp $(INCDIR)/detail/*.h $(PREFIX)/include/SQuIDS/detail
 	@mkdir -p $(PREFIX)/include/SQuIDS/SU_inc
+	@cp $(INCDIR)/SU_inc/*.h $(PREFIX)/include/SQuIDS/SU_inc
 	@cp $(INCDIR)/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
 	@echo Installing libraries in $(PREFIX)/lib
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib
