@@ -55,6 +55,31 @@ void progressbar( int percent){
 
 int main(){
   // Declaration of the objects
-  collective ColleciveNus;
+  double mu=10.0;
+  double mu2=0;
+  double wmin=-4;
+  double wmax=4;
+  int Nbins=1000;
+  collective ColNus(mu,wmin,wmax,Nbins);
+  collective ColNus2(mu2,wmin,wmax,Nbins);
+  std::cout << "Computing Collective" << std::endl;
+  std::ofstream file("collective.dat");
+
+  // Evolve and save the evolution
+  // for(double t=0;t<tf;t+=dt){
+  //  progressbar(100*t/tf);
+  double dt=10.23;
+  ColNus.EvolveSUN(dt);
+  //ColNus2.EvolveSUN(dt);
+  SU_vector o=ColNus.ez;
+  for(int w=0;w<Nbins;w++){
+    file << std::scientific << ColNus.Get_x(w) << "\t" 
+  	 << ColNus.GetExpectationValue(o,0,w)/ 
+     ColNus2.GetExpectationValue(o,0,w) << std::endl;//"  " 
+    // 	 << ColNus.GetExpectationValue(ColNus.b1_proj[1],0,w) << std::endl;
+  }
+  
+  file.close();
+
 
 }

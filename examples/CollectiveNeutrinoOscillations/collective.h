@@ -21,16 +21,14 @@ class collective: public SQUIDS {
   //self interaction strengh sqrt(2) G_F n_\nu
   double mu;
   double n_nu;
-
+  double w_min, w_max;
  public:
-  std::unique_ptr<SU_vector[]> b0_proj;
-  std::unique_ptr<SU_vector[]> b1_proj;
-  std::unique_ptr<SU_vector[]> evol_b0_proj;
-  std::unique_ptr<SU_vector[]> evol_b1_proj;
+  SU_vector ex,ey,ez;
+
 
   void PreDerive(double t);
   collective(void){};
-  collective(double mu, double wmin, double wmax, int Nbins){init(mu, wmin, wmax, Nbin);};
+  collective(double mu, double wmin, double wmax, int Nbins){init(mu, wmin, wmax, Nbins);};
   void init(double mu, double wmin, double wmax, int Nbins);
   SU_vector H0(double);
   SU_vector HI(int ix,double t);

@@ -259,7 +259,7 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
 SU_vector SU_vector::Component(unsigned int d, unsigned int ii){
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
-  if(ii>=d)
+  if(ii>=d*d)
     throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
   SU_vector v(d);
   v.components[ii] = 1.0;
