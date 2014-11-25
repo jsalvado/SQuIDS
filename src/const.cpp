@@ -125,9 +125,9 @@ Const::Const(){
             gsl_matrix_set(th,i,j,0.0);
     }
     
-    dcp = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,SQUIDS_MAX_HILBERT_DIM-1);
-    for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM-1; i++){
-        for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM-1; j++)
+    dcp = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM);
+    for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
+        for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM; j++)
             gsl_matrix_set(dcp,i,j,0.0);
     }
     
