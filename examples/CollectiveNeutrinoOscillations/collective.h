@@ -32,6 +32,7 @@ class collective: public SQUIDS {
   void init(double mu, double wmin, double wmax, int Nbins);
   SU_vector H0(double);
   SU_vector HI(int ix,double t);
+  double Fermi(double EoverT);
 
   void set_evol(void);
 };

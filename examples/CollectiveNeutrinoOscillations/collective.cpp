@@ -36,9 +36,16 @@ void collective::init(double m, double wmin, double wmax, int Nbins){
 
   // set initial conditions for the density mattrix.
   for(int ei = 0; ei < nx; ei++){
-    double invsq2=1.0/sqrt(2);
-    state[ei].rho[0] = ez*invsq2 + ey*invsq2;
-  }
+    double th=0.1;
+    double w=Get_x(ei);
+    //if(fabs(w)>0.1){
+      if(w>0){
+	state[ei].rho[0] = (ez*sin(th) + ey*cos(th))*(1/(2*w*w)*Fermi(1/(2.0*w)));
+      }else{
+	state[ei].rho[0] = (ez*sin(th) + ey*cos(th))*(-1/(2*w*w)*Fermi(-1/(2.0*w)));
+      }
+    }
+  //}
     
 }
 
@@ -62,3 +69,7 @@ SU_vector collective::HI(int ix,double t){
   //return P;
 }
 
+
+double collective::Fermi(double EoverT){
+  return 1.0/(exp(EoverT)+1.0);
+}

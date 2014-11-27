@@ -68,13 +68,17 @@ int main(){
   // Evolve and save the evolution
   // for(double t=0;t<tf;t+=dt){
   //  progressbar(100*t/tf);
-  double dt=10.23;
+  double dt=100;
+  ColNus.Set_rel_error(1e-5);
+  ColNus.Set_abs_error(1e-5);
+
+
   ColNus.EvolveSUN(dt);
   //ColNus2.EvolveSUN(dt);
   SU_vector o=ColNus.ez;
   for(int w=0;w<Nbins;w++){
     file << std::scientific << ColNus.Get_x(w) << "\t" 
-  	 << ColNus.GetExpectationValue(o,0,w)/ 
+  	 << ColNus.GetExpectationValue(o,0,w)<<"  " <<  
      ColNus2.GetExpectationValue(o,0,w) << std::endl;//"  " 
     // 	 << ColNus.GetExpectationValue(ColNus.b1_proj[1],0,w) << std::endl;
   }
