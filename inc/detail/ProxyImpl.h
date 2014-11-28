@@ -2,10 +2,19 @@
 #define SQUIDS_DETAIL_PROXYIMPL_H
 
 namespace detail{
+  constexpr static int Arg1Movable=1;
+  constexpr static int Arg2Movable=2;
+  
+  template<typename Op>
+  struct operation_traits{
+    constexpr static bool elementwise=false;
+  };
+  
   template<typename Op>
   struct EvaluationProxy{
     const SU_vector& suv1;
     const SU_vector& suv2;
+    int flags;
     
     template<typename VW>
     void compute(VW target) const{
@@ -32,13 +41,17 @@ namespace detail{
     SU_vector operator-(const ProxyType& other) const;
     template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
     SU_vector SUEvolve(const ProxyType& other ,double t) const;
+    
+    bool mayStealArg1() const{
+      return(flags&detail::Arg1Movable && operation_traits<Op>::elementwise);
+    }
   };
   
   struct EvolutionProxy : public EvaluationProxy<EvolutionProxy>{
     double t;
     
     EvolutionProxy(const SU_vector& suv1,const SU_vector& suv2,double t):
-    EvaluationProxy<EvolutionProxy>{suv1,suv2},t(t){}
+    EvaluationProxy<EvolutionProxy>{suv1,suv2,0},t(t){}
     
     template<typename VW>
     void compute(VW target) const{
@@ -48,8 +61,8 @@ namespace detail{
   };
   
   struct AdditionProxy : public EvaluationProxy<AdditionProxy>{
-    AdditionProxy(const SU_vector& suv1,const SU_vector& suv2):
-    EvaluationProxy<AdditionProxy>{suv1,suv2}{}
+    AdditionProxy(const SU_vector& suv1,const SU_vector& suv2,int flags=0):
+    EvaluationProxy<AdditionProxy>{suv1,suv2,flags}{}
     
     template<typename VW>
     void compute(VW target) const{
@@ -58,9 +71,14 @@ namespace detail{
     }
   };
   
+  template<>
+  struct operation_traits<AdditionProxy>{
+    constexpr static bool elementwise=true;
+  };
+  
   struct SubtractionProxy : public EvaluationProxy<SubtractionProxy>{
-    SubtractionProxy(const SU_vector& suv1,const SU_vector& suv2):
-    EvaluationProxy<SubtractionProxy>{suv1,suv2}{}
+    SubtractionProxy(const SU_vector& suv1,const SU_vector& suv2,int flags=0):
+    EvaluationProxy<SubtractionProxy>{suv1,suv2,flags}{}
     
     template<typename VW>
     void compute(VW target) const{
@@ -69,11 +87,16 @@ namespace detail{
     }
   };
   
+  template<>
+  struct operation_traits<SubtractionProxy>{
+    constexpr static bool elementwise=true;
+  };
+  
   struct MultiplicationProxy : public EvaluationProxy<MultiplicationProxy>{
     double a;
     
-    MultiplicationProxy(const SU_vector& suv1,double a):
-    EvaluationProxy<MultiplicationProxy>{suv1,suv1},a(a){}
+    MultiplicationProxy(const SU_vector& suv1,double a,int flags=0):
+    EvaluationProxy<MultiplicationProxy>{suv1,suv1,flags},a(a){}
     
     template<typename VW>
     void compute(VW target) const{
@@ -82,9 +105,14 @@ namespace detail{
     }
   };
   
+  template<>
+  struct operation_traits<MultiplicationProxy>{
+    constexpr static bool elementwise=true;
+  };
+  
   struct iCommutatorProxy : public EvaluationProxy<iCommutatorProxy>{
     iCommutatorProxy(const SU_vector& suv1,const SU_vector& suv2):
-    EvaluationProxy<iCommutatorProxy>{suv1,suv2}{}
+    EvaluationProxy<iCommutatorProxy>{suv1,suv2,0}{}
     
     template<typename VW>
     void compute(VW suv_new) const{
@@ -95,7 +123,7 @@ namespace detail{
   
   struct ACommutatorProxy : public EvaluationProxy<ACommutatorProxy>{
     ACommutatorProxy(const SU_vector& suv1,const SU_vector& suv2):
-    EvaluationProxy<ACommutatorProxy>{suv1,suv2}{}
+    EvaluationProxy<ACommutatorProxy>{suv1,suv2,0}{}
     
     template<typename VW>
     void compute(VW suv_new) const{

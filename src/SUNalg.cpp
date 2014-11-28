@@ -467,12 +467,18 @@ double SU_vector::operator*(const SU_vector &other){
   return SUTrace(*this,other);
 }
 
-detail::MultiplicationProxy SU_vector::operator*(double x) const{
+detail::MultiplicationProxy SU_vector::operator*(double x) const &{
   return(detail::MultiplicationProxy{*this,x});
+}
+detail::MultiplicationProxy SU_vector::operator*(double x) &&{
+  return(detail::MultiplicationProxy{*this,x,detail::Arg1Movable});
 }
 
 detail::MultiplicationProxy operator*(double x, const SU_vector& v){
   return(detail::MultiplicationProxy{v,x});
+}
+detail::MultiplicationProxy operator*(double x, SU_vector&& v){
+  return(detail::MultiplicationProxy{v,x,detail::Arg1Movable});
 }
 
 SU_vector& SU_vector::operator=(const SU_vector& other){
@@ -543,16 +549,41 @@ SU_vector& SU_vector::operator-=(const SU_vector &other){
   return *this;
 }
 
-detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const{
+detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const &{
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector addition");
   return(detail::AdditionProxy{*this,other});
 }
 
-detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const{
+detail::AdditionProxy SU_vector::operator+(SU_vector&& other) const &{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+  //exploit commutativity and put the movable object first
+  return(detail::AdditionProxy{other,*this,detail::Arg1Movable});
+}
+
+detail::AdditionProxy SU_vector::operator+(const SU_vector& other) &&{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+  return(detail::AdditionProxy{*this,other,detail::Arg1Movable});
+}
+
+detail::AdditionProxy SU_vector::operator+(SU_vector&& other) &&{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+  return(detail::AdditionProxy{*this,other,detail::Arg1Movable|detail::Arg2Movable});
+}
+
+detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const &{
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
   return(detail::SubtractionProxy{*this,other});
+}
+
+detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) &&{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
+  return(detail::SubtractionProxy{*this,other,detail::Arg1Movable});
 }
 
 detail::EvolutionProxy SU_vector::SUEvolve(const SU_vector& suv1,double t) const{
