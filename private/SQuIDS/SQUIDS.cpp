@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 
-#include "SQUIDS.h"
+#include "SQuIDS/SQUIDS.h"
 
 //#define CalNeuOscSUN_DEBUG
 

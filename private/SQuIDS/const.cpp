@@ -19,11 +19,9 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-#include "const.h"
-
 #include <cmath>
-
-#include "SU_inc/dimension.h"
+#include "SQuIDS/const.h"
+#include "SQuIDS/SU_inc/dimension.h"
 
 Const::Const(){
     /* PHYSICS CONSTANTS

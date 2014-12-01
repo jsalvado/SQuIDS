@@ -1,5 +1,6 @@
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <algorithm>
+#include "SQuIDS/SUNalg.h"
 #include "alloc_counting.h"
 
 void exercise_constructor(unsigned int dim){
@@ -17,7 +18,7 @@ void exercise_constructor(unsigned int dim){
 	
 	std::cout << "Internal storage\n";
 	alloc_counting::reset_allocation_counters();
-	SU_vector dest1(std::move(source1));
+	SU_vector dest1(source1);
 	auto allocated=alloc_counting::mem_allocated;
 	std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
 	//check the number of components
@@ -27,11 +28,13 @@ void exercise_constructor(unsigned int dim){
 	std::cout << "components " <<
 		(std::all_of(components.begin(),components.end(),[=](double c){ return(c==initVal); })?
 		 "are":"are not") << " correctly set\n";
-	std::cout << "Source dimension: " << source1.Dim() << '\n';
+	//check that memory is not aliased
+	source1[0]=0;
+	std::cout << "Memory aliasing: " << (dest1[0]==source1[0]) << '\n';
 	
 	std::cout << "External storage\n";
 	alloc_counting::reset_allocation_counters();
-	SU_vector dest2(std::move(source2));
+	SU_vector dest2(source2);
 	allocated=alloc_counting::mem_allocated;
 	std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
 	//check the number of components
@@ -41,9 +44,8 @@ void exercise_constructor(unsigned int dim){
 	std::cout << "components " <<
 		(std::all_of(components.begin(),components.end(),[=](double c){ return(c==initVal); })?
 		 "are":"are not") << " correctly set\n";
-	//check that memory _is_ aliased
+	//check that memory is not aliased
 	source2[0]=0;
-	std::cout << "Source dimension: " << source2.Dim() << '\n';
 	std::cout << "Memory aliasing: " << (dest2[0]==source2[0]) << '\n';
 	std::cout << '\n';
 }
