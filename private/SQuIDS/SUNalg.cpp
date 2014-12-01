@@ -19,7 +19,7 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-#include "SUNalg.h"
+#include "SQuIDS/SUNalg.h"
 
 #include <ostream>
 
@@ -137,7 +137,7 @@ isinit_d(false)
   // the following rules are valid ONLY when the initial
   // matrix is hermitian
   
-#include "MatrixToSUSelect.txt"
+#include "SQuIDS/SU_inc/MatrixToSUSelect.txt"
 };
 
 SU_vector::~SU_vector(){
@@ -172,7 +172,7 @@ namespace{
   };
   
 void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
-#include "MatrixToSUSelect.txt"
+#include "SQuIDS/SU_inc/MatrixToSUSelect.txt"
 }
 }
 
@@ -298,7 +298,7 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
 
   assert(i<j && "Components selected for rotation must be in ascending order");
   
-#include "rotation_switcher.h"
+#include "SQuIDS/SU_inc/rotation_switcher.h"
     
   for(int i=0; i < size; i++){
     components[i] = suv_rot.components[i];
