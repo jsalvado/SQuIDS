@@ -1,5 +1,6 @@
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <algorithm>
+#include "SQuIDS/SUNalg.h" 
 #include "alloc_counting.h"
 
 void exercise_constructor(unsigned int dim){

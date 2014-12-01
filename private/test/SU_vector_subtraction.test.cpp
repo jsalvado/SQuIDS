@@ -1,6 +1,9 @@
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <algorithm>
+#include "SQuIDS/SUNalg.h"
 #include "alloc_counting.h"
+
+using namespace std;
 
 //Subtraction is simple, so while we're here also thoroughly test arithmetic optimizations
 //Things to test:
