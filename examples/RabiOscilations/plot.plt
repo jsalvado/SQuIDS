@@ -1,4 +1,5 @@
-#!/usr/bin/env gnuplot -persist
+#!/usr/bin/env gnuplot
+set terminal wxt persist
 set key box
 set key opaque
 set multiplot layout 2,1

@@ -1,5 +1,6 @@
-#!/usr/bin/env gnuplot -persist
+#!/usr/bin/env gnuplot
 #set key box
+set terminal wxt persist
 set key opaque
 
 #set yrange [-1.5:1.5]

@@ -50,6 +50,7 @@ class collective: public SQUIDS {
 
   //self interaction strengh sqrt(2) G_F n_\nu
   double mu;
+  double mu_i,mu_f;
   
   //range of the spectrum w=T/E
   double w_min, w_max;
@@ -67,6 +68,15 @@ class collective: public SQUIDS {
   //shows the progress bar
   void progressbar( int percent, double mu);
 
+  //function that is evaluated before computting the derivatives, it bassically computes the vector P 
+  void PreDerive(double t);
+
+  //Hamilitonian of the system, in this case we don't use any time idependent separation(non in the interaction picutre formalism)
+  SU_vector HI(int ix,double t);
+
+  //Fermi distribution
+  double Fermi(double EoverT);
+
  public:
   //basis
   SU_vector ex,ey,ez;
@@ -81,17 +91,8 @@ class collective: public SQUIDS {
   collective(double mu,double th, double wmin, double wmax, int Nbins){init(mu,th, wmin, wmax, Nbins);};
   void init(double mu,double th, double wmin, double wmax, int Nbins);
 
-  //function that is evaluated before computting the derivatives, it bassically computes the vector P 
-  void PreDerive(double t);
-
   //Function that sets the value of mu
   void Set_mu(double m){mu=m;}
-
-  //Hamilitonian of the system, in this case we don't use any time idependent separation(non in the interaction picutre formalism)
-  SU_vector HI(int ix,double t);
-
-  //Fermi distribution
-  double Fermi(double EoverT);
 
   //Function that solve the evolution changing mu from mu_i to mu_f in the time period given by period
   // bar shows the progress bar if it's true.

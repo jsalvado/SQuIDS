@@ -55,7 +55,7 @@ void collective::progressbar( int percent, double mu){
 
 void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   mu=m;
-  ini(Nbins,2,1,0,0);
+  ini(Nbins,2,1,0,0.0);
   w_min=wmin;
   w_max=wmax;
   theta=th;
@@ -108,16 +108,18 @@ void collective::PreDerive(double t){
 
 
 SU_vector collective::HI(int ix,double t){
-  double m = mu*(1.0-t/period);
+  mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
   if(bar){
-    progressbar(100*t/period, m);
+    progressbar(100*t/period, mu);
   }
-  return Get_x(ix)*B+P*(m*(w_max-w_min)/(double)nx);
+  return Get_x(ix)*B+P*(mu*(w_max-w_min)/(double)nx);
 }
 
-void collective::Adiabatic_mu(double mu_i, double mu_f, double per, bool b){
+void collective::Adiabatic_mu(double mui, double muf, double per, bool b){
   period=per;
   bar=b;
+  mu_i=mui;
+  mu_f=muf;
   EvolveSUN(period);
   if(bar)
     std::cout << std::endl;  

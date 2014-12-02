@@ -1,5 +1,6 @@
-#!/usr/bin/env gnuplot -persist
+#!/usr/bin/env gnuplot 
 #set key box
+set terminal wxt persist
 set key opaque
 
 #set yrange [-1.5:1.5]
@@ -13,7 +14,7 @@ plot "collective.dat" u 1:($2/$3) w l  title "" , "collective.dat" u 1:($3) w l 
 
 set terminal postscript eps enhanced color
 set output "Collective.eps"
-plot "collective.dat" u 1:($2/$3) w l  title "" , "collective.dat" u 1:$3 w l ls 7 title "nu_mu" 
+plot "collective.dat" u 1:($2/$3) w l  title "" , "collective.dat" u 1:($3) w l ls 7 title "nu_mu" 
 
 
 

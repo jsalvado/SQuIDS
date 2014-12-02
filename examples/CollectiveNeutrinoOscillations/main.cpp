@@ -45,7 +45,7 @@ int main(){
 
   
   collective ColNus(mu,th,wmin,wmax,Nbins);
-  collective ColNus2(mu2,th2,wmin,wmax,Nbins);
+  collective ColNus_notevolved(mu2,th2,wmin,wmax,Nbins);
   
   std::ofstream file;
 
@@ -62,7 +62,7 @@ int main(){
   for(int w=0;w<Nbins;w++){
     file << std::scientific << ColNus.Get_x(w) << "\t" 
 	 << ColNus.GetExpectationValue(o,0,w)<<"  " <<  
-      ColNus2.GetExpectationValue(o,0,w) << std::endl;
+      ColNus_notevolved.GetExpectationValue(o,0,w) << std::endl;
   }
   
   file.close();

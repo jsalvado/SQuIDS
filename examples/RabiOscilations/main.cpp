@@ -60,7 +60,7 @@ int main(){
 
 
   // Tuned Rabi system
-  R0.init(1,1,0.1);
+  R0.init(10,10,0.1);
 
   // Setting the errors
   R0.Set_rel_error(1e-5);
