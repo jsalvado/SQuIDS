@@ -29,6 +29,9 @@ components are correctly set
 4 entries allocated
 components are correctly set
 Adding 3 vectors with size 2
+4 entries allocated
+components are correctly set
+4 entries allocated
 components are correctly set
 
 Adding vectors with sizes 3 and 3
@@ -62,6 +65,9 @@ components are correctly set
 9 entries allocated
 components are correctly set
 Adding 3 vectors with size 3
+9 entries allocated
+components are correctly set
+9 entries allocated
 components are correctly set
 
 Adding vectors with sizes 4 and 4
@@ -95,6 +101,9 @@ components are correctly set
 16 entries allocated
 components are correctly set
 Adding 3 vectors with size 4
+16 entries allocated
+components are correctly set
+16 entries allocated
 components are correctly set
 
 Adding vectors with sizes 5 and 5
@@ -112,6 +121,9 @@ components are correctly set
 25 entries allocated
 components are correctly set
 Adding 3 vectors with size 5
+25 entries allocated
+components are correctly set
+25 entries allocated
 components are correctly set
 
 Adding vectors with sizes 6 and 6
@@ -129,5 +141,8 @@ components are correctly set
 36 entries allocated
 components are correctly set
 Adding 3 vectors with size 6
+36 entries allocated
+components are correctly set
+36 entries allocated
 components are correctly set
 

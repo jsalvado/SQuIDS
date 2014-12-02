@@ -134,8 +134,17 @@ private:
         delete[] components;
       dim=proxy.suv1.dim;
       size=proxy.suv1.size;
-      components=new double[size];
-      isinit=true;
+      if(proxy.mayStealArg1()){ //if the operation is component-wise and suv1 is an rvalue
+        components=proxy.suv1.components; //take suv1's backing storage
+        isinit=proxy.suv1.isinit;
+        isinit_d=proxy.suv1.isinit_d;
+        if(isinit)
+          const_cast<SU_vector&>(proxy.suv1).isinit=false; //complete the theft
+      }
+      else{
+        components=new double[size];
+        isinit=true;
+      }
     }
     //evaluate in place
     proxy.compute(detail::vector_wrapper<WrapperType>{dim,components});
@@ -187,6 +196,23 @@ public:
   ///\param storage The data buffer which the SU_vector will use
   ///\pre dim <= 6
   SU_vector(unsigned int dim, double* storage);
+  
+  ///\brief construct a vector from the result of a vector arithmetic expression
+  ///
+  /// The newly constructed vector will take the data buffer from one of the
+  /// operands, if possible, to elide memory allocation.
+  template<typename ProxyType>
+  SU_vector(ProxyType&& proxy, typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>::type* =nullptr):
+  dim(proxy.suv1.dim),
+  size(proxy.suv1.size),
+  components(proxy.mayStealArg1() ? proxy.suv1.components : new double[size]),
+  isinit(proxy.mayStealArg1() ? proxy.suv1.isinit : true),
+  isinit_d(proxy.mayStealArg1() ? proxy.suv1.isinit_d : false)
+  {
+    if(components==proxy.suv1.components && proxy.suv1.isinit)
+      const_cast<SU_vector&>(proxy.suv1).isinit=false; //complete the theft
+    proxy.compute(detail::vector_wrapper<detail::AssignWrapper>{dim,components});
+  }
 
   ///\brief Construct an SU_vector from a GSL matrix
   ///
@@ -270,7 +296,11 @@ public:
   
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
-  detail::MultiplicationProxy operator*(const double) const;
+  detail::MultiplicationProxy operator*(const double) const &;
+  
+  ///\brief Multiplication by a scalar
+  ///\returns An object convertible to an SU_vector
+  detail::MultiplicationProxy operator*(const double) &&;
   
   ///\brief Assignment
   ///
@@ -296,11 +326,27 @@ public:
   
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
-  detail::AdditionProxy operator +(const SU_vector&) const;
+  detail::AdditionProxy operator +(const SU_vector&) const &;
+  
+  ///\brief Addition
+  ///\returns An object convertible to an SU_vector
+  detail::AdditionProxy operator +(SU_vector&&) const &;
+  
+  ///\brief Addition
+  ///\returns An object convertible to an SU_vector
+  detail::AdditionProxy operator +(const SU_vector&) &&;
+  
+  ///\brief Addition
+  ///\returns An object convertible to an SU_vector
+  detail::AdditionProxy operator +(SU_vector&&) &&;
   
   ///\brief Subtraction
   ///\returns An object convertible to an SU_vector
-  detail::SubtractionProxy operator -(const SU_vector& other) const;
+  detail::SubtractionProxy operator -(const SU_vector& other) const &;
+  
+  ///\brief Subtraction
+  ///\returns An object convertible to an SU_vector
+  detail::SubtractionProxy operator -(const SU_vector& other) &&;
   
   ///\brief Optimized assignment from the result of an arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
@@ -392,8 +438,11 @@ detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
 ///\brief Anticommutator of two SU_vectors
 detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
 
-///\brief Multiplication of an SU_vectors by a scalar from the left.
+///\brief Multiplication of an SU_vector by a scalar from the left.
 detail::MultiplicationProxy operator*(double x, const SU_vector& v);
+
+///\brief Multiplication of an SU_vector by a scalar from the left.
+detail::MultiplicationProxy operator*(double x, SU_vector&& v);
 
 #include "detail/ProxyImpl.h"
 

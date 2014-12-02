@@ -1,36 +1,58 @@
-(suv_rot) . components[0]+=subscript(a,1);
-(suv_rot) . components[1]+=subscript(a,2);
-(suv_rot) . components[2]+=subscript(a,3);
-(suv_rot) . components[3]+=subscript(a,4);
-(suv_rot) . components[4]+=subscript(a,5);
-(suv_rot) . components[5]+=subscript(a,6);
-(suv_rot) . components[6]+=subscript(a,7);
-(suv_rot) . components[7]+=subscript(a,8);
-(suv_rot) . components[8]+=subscript(a,9);
-(suv_rot) . components[9]+=subscript(a,10);
-(suv_rot) . components[10]+=subscript(a,11);
-(suv_rot) . components[11]+=subscript(a,12);
-(suv_rot) . components[12]+=subscript(a,13);
-(suv_rot) . components[13]+=subscript(a,14);
-(suv_rot) . components[14]+=subscript(a,15);
-(suv_rot) . components[15]+=subscript(a,16);
-(suv_rot) . components[16]+=subscript(a,17);
-(suv_rot) . components[17]+=subscript(a,18);
-(suv_rot) . components[18]+=subscript(a,19);
-(suv_rot) . components[19]+=subscript(a,20);
-(suv_rot) . components[20]+=subscript(a,21);
-(suv_rot) . components[21]+=subscript(a,22);
-(suv_rot) . components[22]+=subscript(a,23);
-(suv_rot) . components[23]+=subscript(a,24);
-(suv_rot) . components[24]+=subscript(a,25);
-(suv_rot) . components[25]+=subscript(a,26);
-(suv_rot) . components[26]+=subscript(a,27);
-(suv_rot) . components[27]+=subscript(a,28);
-(suv_rot) . components[28]+=subscript(a,29);
-(suv_rot) . components[29]+=subscript(a,30);
-(suv_rot) . components[30]+=subscript(a,31);
-(suv_rot) . components[31]+=subscript(a,32);
-(suv_rot) . components[32]+=subscript(a,33);
-(suv_rot) . components[33]+=subscript(a,34);
-(suv_rot) . components[34]+=subscript(a,35);
-(suv_rot) . components[35]+=subscript(a,36);
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         cweaver@icecube.wisc.edu                                            *
+ ******************************************************************************/
+(suv_rot) . components[0]+=suv.components[0];
+(suv_rot) . components[1]+=cos(th)*suv.components[1] - sin(th)*(cos(del)*suv.components[10] + sin(del)*suv.components[25]);
+(suv_rot) . components[2]+=cos(th)*suv.components[2] - sin(th)*(cos(del)*suv.components[16] + sin(del)*suv.components[26]);
+(suv_rot) . components[3]+=cos(th)*suv.components[3] - sin(th)*(cos(del)*suv.components[22] + sin(del)*suv.components[27]);
+(suv_rot) . components[4]+=(6*(cos(th)*cos(th) - cos(2*del)*sin(th)*sin(th))*suv.components[4] + sin(th)*(-6*sin(2*del)*sin(th)*suv.components[24] + cos(del)*cos(th)*(6*suv.components[7] + 2*sqrt(3)*suv.components[14] + sqrt(6)*suv.components[21] + 3*sqrt(10)*suv.components[28])))/6.;
+(suv_rot) . components[5]+=cos(th)*suv.components[5] + sin(th)*(-(cos(del)*suv.components[29]) + sin(del)*suv.components[34]);
+(suv_rot) . components[6]+=cos(th)*suv.components[6] + sin(th)*(-(sin(del)*suv.components[10]) + cos(del)*suv.components[25]);
+(suv_rot) . components[7]+=(3*(3 + cos(2*th))*suv.components[7] - 6*sin(2*th)*(cos(del)*suv.components[4] + sin(del)*suv.components[24]) - sin(th)*sin(th)*(2*sqrt(3)*suv.components[14] + sqrt(6)*suv.components[21] + 3*sqrt(10)*suv.components[28]))/12.;
+(suv_rot) . components[8]+=suv.components[8];
+(suv_rot) . components[9]+=suv.components[9];
+(suv_rot) . components[10]+=cos(del)*sin(th)*suv.components[1] + sin(del)*sin(th)*suv.components[6] + cos(th)*suv.components[10];
+(suv_rot) . components[11]+=suv.components[11];
+(suv_rot) . components[12]+=cos(th)*suv.components[12] + sin(th)*(-(sin(del)*suv.components[16]) + cos(del)*suv.components[26]);
+(suv_rot) . components[13]+=suv.components[13];
+(suv_rot) . components[14]+=((11 + cos(2*th))*suv.components[14] - 2*sqrt(3)*sin(2*th)*(cos(del)*suv.components[4] + sin(del)*suv.components[24]) - sin(th)*sin(th)*(2*sqrt(3)*suv.components[7] + sqrt(2)*suv.components[21] + sqrt(30)*suv.components[28]))/12.;
+(suv_rot) . components[15]+=suv.components[15];
+(suv_rot) . components[16]+=cos(del)*sin(th)*suv.components[2] + sin(del)*sin(th)*suv.components[12] + cos(th)*suv.components[16];
+(suv_rot) . components[17]+=suv.components[17];
+(suv_rot) . components[18]+=cos(th)*suv.components[18] + sin(th)*(-(sin(del)*suv.components[22]) + cos(del)*suv.components[27]);
+(suv_rot) . components[19]+=suv.components[19];
+(suv_rot) . components[20]+=suv.components[20];
+(suv_rot) . components[21]+=((23 + cos(2*th))*suv.components[21] - 2*sqrt(6)*sin(2*th)*(cos(del)*suv.components[4] + sin(del)*suv.components[24]) - 2*sin(th)*sin(th)*(sqrt(6)*suv.components[7] + sqrt(2)*suv.components[14] + sqrt(15)*suv.components[28]))/24.;
+(suv_rot) . components[22]+=cos(del)*sin(th)*suv.components[3] + sin(del)*sin(th)*suv.components[18] + cos(th)*suv.components[22];
+(suv_rot) . components[23]+=suv.components[23];
+(suv_rot) . components[24]+=-2*cos(del)*sin(del)*sin(th)*sin(th)*suv.components[4] + (cos(th)*cos(th) + cos(2*del)*sin(th)*sin(th))*suv.components[24] + (cos(th)*sin(del)*sin(th)*(6*suv.components[7] + 2*sqrt(3)*suv.components[14] + sqrt(6)*suv.components[21] + 3*sqrt(10)*suv.components[28]))/6.;
+(suv_rot) . components[25]+=sin(del)*sin(th)*suv.components[1] - cos(del)*sin(th)*suv.components[6] + cos(th)*suv.components[25];
+(suv_rot) . components[26]+=sin(del)*sin(th)*suv.components[2] - cos(del)*sin(th)*suv.components[12] + cos(th)*suv.components[26];
+(suv_rot) . components[27]+=sin(del)*sin(th)*suv.components[3] - cos(del)*sin(th)*suv.components[18] + cos(th)*suv.components[27];
+(suv_rot) . components[28]+=(-10*sin(th)*sin(th)*(6*suv.components[7] + 2*sqrt(3)*suv.components[14] + sqrt(6)*suv.components[21]) - 60*sin(2*th)*(cos(del)*suv.components[4] + sin(del)*suv.components[24]) + 3*sqrt(10)*(3 + 5*cos(2*th))*suv.components[28])/(24.*sqrt(10));
+(suv_rot) . components[29]+=cos(del)*sin(th)*suv.components[5] + cos(th)*suv.components[29] + sin(del)*sin(th)*suv.components[30];
+(suv_rot) . components[30]+=cos(th)*suv.components[30] - sin(th)*(sin(del)*suv.components[29] + cos(del)*suv.components[34]);
+(suv_rot) . components[31]+=suv.components[31];
+(suv_rot) . components[32]+=suv.components[32];
+(suv_rot) . components[33]+=suv.components[33];
+(suv_rot) . components[34]+=-(sin(del)*sin(th)*suv.components[5]) + cos(del)*sin(th)*suv.components[30] + cos(th)*suv.components[34];
+(suv_rot) . components[35]+=suv.components[35];

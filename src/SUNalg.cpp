@@ -298,119 +298,7 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
 
   assert(i<j && "Components selected for rotation must be in ascending order");
   
-  switch (dim){
-  case 2:
-    if(i == 1 and j == 2){
-#include "RotationSU2_12.txt"
-    }
-    break;
-  case 3:
-    switch (i){
-    case 1:
-      switch (j){
-      case 2:
-#include "RotationSU3_12.txt"
-	break;
-      case 3:
-#include "RotationSU3_13.txt"
-	break;
-      }
-      break;
-    case 2:
-      switch (j){
-      case 3:
-#include "RotationSU3_23.txt"
-	break;
-      }
-    }
-    break;
-  case 4:
-    switch (i){
-    case 1:
-      switch (j){
-      case 2:
-#include "RotationSU4_12.txt"
-	break;
-      case 3:
-#include "RotationSU4_13.txt"
-	break;
-      case 4:
-#include "RotationSU4_14.txt"
-	break;
-      }
-      break;
-    case 2:
-      switch (j){
-      case 3:
-#include "RotationSU4_23.txt"
-	break;
-      case 4:
-#include "RotationSU4_24.txt"
-	break;
-      }
-      break;  
-    case 3:
-      switch (j){
-      case 4:
-#include "RotationSU4_34.txt"
-	break;
-      }
-      break;
-    }
-    break;
-  case 5:
-    switch (i){
-    case 1:
-      switch (j){
-      case 2:
-#include "RotationSU5_12.txt"
-	break;
-      case 3:
-#include "RotationSU5_13.txt"
-	break;
-      case 4:
-#include "RotationSU5_14.txt"
-	break;
-      case 5:
-#include "RotationSU5_15.txt"
-	break;                            
-      }
-      break;
-    case 2:
-      switch (j){
-      case 3:
-#include "RotationSU5_23.txt"
-	break;
-      case 4:
-#include "RotationSU5_24.txt"
-	break;
-      case 5:
-#include "RotationSU5_25.txt"
-	break;
-      }
-      break;  
-    case 3:
-      switch (j){
-      case 4:
-#include "RotationSU5_34.txt"
-	break;
-      case 5:
-#include "RotationSU5_35.txt"
-	break;
-      }
-      break;
-    case 4:
-      switch (j){
-      case 5:
-#include "RotationSU5_45.txt"
-	break;
-      }
-      break;
-    }
-    break;
-  default:
-    throw std::runtime_error("SUN_rotation error. \n");
-  }
+#include "rotation_switcher.h"
     
   for(int i=0; i < size; i++){
     components[i] = suv_rot.components[i];
@@ -467,12 +355,18 @@ double SU_vector::operator*(const SU_vector &other){
   return SUTrace(*this,other);
 }
 
-detail::MultiplicationProxy SU_vector::operator*(double x) const{
+detail::MultiplicationProxy SU_vector::operator*(double x) const &{
   return(detail::MultiplicationProxy{*this,x});
+}
+detail::MultiplicationProxy SU_vector::operator*(double x) &&{
+  return(detail::MultiplicationProxy{*this,x,detail::Arg1Movable});
 }
 
 detail::MultiplicationProxy operator*(double x, const SU_vector& v){
   return(detail::MultiplicationProxy{v,x});
+}
+detail::MultiplicationProxy operator*(double x, SU_vector&& v){
+  return(detail::MultiplicationProxy{v,x,detail::Arg1Movable});
 }
 
 SU_vector& SU_vector::operator=(const SU_vector& other){
@@ -543,16 +437,41 @@ SU_vector& SU_vector::operator-=(const SU_vector &other){
   return *this;
 }
 
-detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const{
+detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const &{
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector addition");
   return(detail::AdditionProxy{*this,other});
 }
 
-detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const{
+detail::AdditionProxy SU_vector::operator+(SU_vector&& other) const &{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+  //exploit commutativity and put the movable object first
+  return(detail::AdditionProxy{other,*this,detail::Arg1Movable});
+}
+
+detail::AdditionProxy SU_vector::operator+(const SU_vector& other) &&{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+  return(detail::AdditionProxy{*this,other,detail::Arg1Movable});
+}
+
+detail::AdditionProxy SU_vector::operator+(SU_vector&& other) &&{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+  return(detail::AdditionProxy{*this,other,detail::Arg1Movable|detail::Arg2Movable});
+}
+
+detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const &{
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
   return(detail::SubtractionProxy{*this,other});
+}
+
+detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) &&{
+  if(size!=other.size)
+    throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
+  return(detail::SubtractionProxy{*this,other,detail::Arg1Movable});
 }
 
 detail::EvolutionProxy SU_vector::SUEvolve(const SU_vector& suv1,double t) const{
