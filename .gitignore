@@ -24,3 +24,7 @@
 *.dat
 *.eps
 *.nb
+
+# docxygen
+
+docs/*

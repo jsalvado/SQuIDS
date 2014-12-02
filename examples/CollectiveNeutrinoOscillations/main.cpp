@@ -15,7 +15,8 @@
  *   Authors:                                                                  *
  *      Carlos Arguelles (University of Wisconsin Madison)                     * 
  *         carguelles@icecube.wisc.edu                                         *
-        Chris
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
@@ -30,60 +31,52 @@
 #include "collective.h"
 #include <fstream>
 
-void progressbar( int percent){
-  static int last=-1;
-  if(percent==last)
-    return;
-  last=percent;
-  std::string bar;
-  
-  for(int i = 0; i < 50; i++){
-    if( i < (percent/2)){
-      bar.replace(i,1,"=");
-    }else if( i == (percent/2)){
-      bar.replace(i,1,">");
-    }else{
-      bar.replace(i,1," ");
-    }
-  }
-  
-  std::cout<< "\r" "[" << bar << "] ";
-  std::cout.width( 3 );
-  std::cout<< percent << "%  " << std::flush;
-}
 
 
 int main(){
-  // Declaration of the objects
+  //Parameters
   double mu=10.0;
-  double mu2=0;
-  double wmin=-4;
-  double wmax=4;
-  int Nbins=1000;
-  collective ColNus(mu,wmin,wmax,Nbins);
-  collective ColNus2(mu2,wmin,wmax,Nbins);
-  std::cout << "Computing Collective" << std::endl;
-  std::ofstream file("collective.dat");
+  double mu2=10;
+  double wmin=-2;
+  double wmax=2;
+  double th=0.01;
+  double th2=0.01;
+  int Nbins=200;
 
-  // Evolve and save the evolution
-  // for(double t=0;t<tf;t+=dt){
-  //  progressbar(100*t/tf);
-  double dt=100;
-  ColNus.Set_rel_error(1e-5);
-  ColNus.Set_abs_error(1e-5);
+  
+  collective ColNus(mu,th,wmin,wmax,Nbins);
+  collective ColNus2(mu2,th2,wmin,wmax,Nbins);
+  
+  std::ofstream file;
 
 
-  ColNus.EvolveSUN(dt);
-  //ColNus2.EvolveSUN(dt);
+  //Evolution from mu=10 to mu=0 in a time period of 100
+  ColNus.Adiabatic_mu(10,0,100,true);
+
+  //write the ouput in the file
+  //col 1 value of w
+  //col 2 expectation value of ez for the evolved system
+  //col 3 expectation value of ez for the non evolved system
   SU_vector o=ColNus.ez;
+  file.open("collective.dat");
   for(int w=0;w<Nbins;w++){
     file << std::scientific << ColNus.Get_x(w) << "\t" 
-  	 << ColNus.GetExpectationValue(o,0,w)<<"  " <<  
-     ColNus2.GetExpectationValue(o,0,w) << std::endl;//"  " 
-    // 	 << ColNus.GetExpectationValue(ColNus.b1_proj[1],0,w) << std::endl;
+	 << ColNus.GetExpectationValue(o,0,w)<<"  " <<  
+      ColNus2.GetExpectationValue(o,0,w) << std::endl;
   }
   
   file.close();
+
+  //runs the gnuplot script if yes
+  std::string plt;
+  std::cout << std::endl <<  "Done! " << std::endl <<  "Do you want to run the gnuplot script? yes/no" << std::endl;
+  std::cin >> plt;
+  
+  if(plt=="yes" || plt=="y"){
+    return system("./plot.plt");
+  }
+  
+  return 0;
 
 
 }
