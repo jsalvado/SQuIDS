@@ -19,12 +19,21 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-(suv_new) . components[0]+=suv2.components[0];
-(suv_new) . components[1]+=cos(2.*t*suv1.components[4])*suv2.components[1] + sin(2*t*suv1.components[4])*suv2.components[3];
-(suv_new) . components[2]+=cos(t*(suv1.components[4] + sqrt(3)*suv1.components[8]))*suv2.components[2] + sin(t*(suv1.components[4] + sqrt(3)*suv1.components[8]))*suv2.components[6];
-(suv_new) . components[3]+=-(sin(2.*t*suv1.components[4])*suv2.components[1]) + cos(2.*t*suv1.components[4])*suv2.components[3];
-(suv_new) . components[4]+=suv2.components[4];
-(suv_new) . components[5]+=cos(t*(suv1.components[4] - sqrt(3)*suv1.components[8]))*suv2.components[5] - sin(t*(suv1.components[4] - sqrt(3)*suv1.components[8]))*suv2.components[7];
-(suv_new) . components[6]+=-(sin(t*(suv1.components[4] + sqrt(3)*suv1.components[8]))*suv2.components[2]) + cos(t*(suv1.components[4] + sqrt(3)*suv1.components[8]))*suv2.components[6];
-(suv_new) . components[7]+=sin(t*(suv1.components[4] - sqrt(3)*suv1.components[8]))*suv2.components[5] + cos(t*(suv1.components[4] - sqrt(3)*suv1.components[8]))*suv2.components[7];
-(suv_new) . components[8]+=suv2.components[8];
+{
+	double s,c;
+	(suv_new) . components[0]+=suv2.components[0];
+	(suv_new) . components[4]+=suv2.components[4];
+	(suv_new) . components[8]+=suv2.components[8];
+	s=sin(2.*t*suv1.components[4]);
+	c=cos(2.*t*suv1.components[4]);
+	(suv_new) . components[1]+=c*suv2.components[1] + s*suv2.components[3];
+	(suv_new) . components[3]+=-(s*suv2.components[1]) + c*suv2.components[3];
+	s=sin(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
+	c=cos(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
+	(suv_new) . components[2]+=c*suv2.components[2] + s*suv2.components[6];
+	(suv_new) . components[6]+=-(s*suv2.components[2]) + c*suv2.components[6];
+	s=sin(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
+	c=cos(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
+	(suv_new) . components[5]+=c*suv2.components[5] - s*suv2.components[7];
+	(suv_new) . components[7]+=s*suv2.components[5] + c*suv2.components[7];
+}

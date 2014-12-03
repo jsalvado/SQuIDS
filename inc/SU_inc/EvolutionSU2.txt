@@ -18,8 +18,12 @@
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
-
-(suv_new) . components[0]+=suv2.components[0];
-(suv_new) . components[1]+=cos(2*t*suv1.components[3])*suv2.components[1] + sin(2*t*suv1.components[3])*suv2.components[2];
-(suv_new) . components[2]+=-(sin(2*t*suv1.components[3])*suv2.components[1]) + cos(2*t*suv1.components[3])*suv2.components[2];
-(suv_new) . components[3]+=suv2.components[3];
+{
+	double c,s;
+	(suv_new) . components[0]+=suv2.components[0];
+	(suv_new) . components[3]+=suv2.components[3];
+	c=cos(2*t*suv1.components[3]);
+	s=sin(2*t*suv1.components[3]);
+	(suv_new) . components[1]+=c*suv2.components[1] + s*suv2.components[2];
+	(suv_new) . components[2]+=-(s*suv2.components[1]) + c*suv2.components[2];
+}

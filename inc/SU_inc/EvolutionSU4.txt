@@ -19,19 +19,34 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-(suv_new) . components[0]+=suv2.components[0];
-(suv_new) . components[1]+=cos(2*t*suv1.components[5])*suv2.components[1] + sin(2*t*suv1.components[5])*suv2.components[4];
-(suv_new) . components[2]+=cos(t*(suv1.components[5] + sqrt(3)*suv1.components[10]))*suv2.components[2] + sin(t*(suv1.components[5] + sqrt(3)*suv1.components[10]))*suv2.components[8];
-(suv_new) . components[3]+=cos(t*suv1.components[5] + (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[3] + sin(t*suv1.components[5] + (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[12];
-(suv_new) . components[4]+=-(sin(2*t*suv1.components[5])*suv2.components[1]) + cos(2*t*suv1.components[5])*suv2.components[4];
-(suv_new) . components[5]+=suv2.components[5];
-(suv_new) . components[6]+=cos(t*(suv1.components[5] - sqrt(3)*suv1.components[10]))*suv2.components[6] - sin(t*(suv1.components[5] - sqrt(3)*suv1.components[10]))*suv2.components[9];
-(suv_new) . components[7]+=cos(t*suv1.components[5] - (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[7] - sin(t*suv1.components[5] - (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[13];
-(suv_new) . components[8]+=-(sin(t*(suv1.components[5] + sqrt(3)*suv1.components[10]))*suv2.components[2]) + cos(t*(suv1.components[5] + sqrt(3)*suv1.components[10]))*suv2.components[8];
-(suv_new) . components[9]+=sin(t*(suv1.components[5] - sqrt(3)*suv1.components[10]))*suv2.components[6] + cos(t*(suv1.components[5] - sqrt(3)*suv1.components[10]))*suv2.components[9];
-(suv_new) . components[10]+=suv2.components[10];
-(suv_new) . components[11]+=cos((2*t*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[11] - sin((2*t*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[14];
-(suv_new) . components[12]+=-(sin(t*suv1.components[5] + (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[3]) + cos(t*suv1.components[5] + (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[12];
-(suv_new) . components[13]+=sin(t*suv1.components[5] - (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[7] + cos(t*suv1.components[5] - (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[13];
-(suv_new) . components[14]+=sin((2*t*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[11] + cos((2*t*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3))*suv2.components[14];
-(suv_new) . components[15]+=suv2.components[15];
+{
+	double s,c;
+	(suv_new) . components[0]+=suv2.components[0];
+	(suv_new) . components[5]+=suv2.components[5];
+	(suv_new) . components[10]+=suv2.components[10];
+	(suv_new) . components[15]+=suv2.components[15];
+	s=sin(2*t*suv1.components[5]);
+	c=cos(2*t*suv1.components[5]);
+	(suv_new) . components[1]+=  c*suv2.components[1]  + s*suv2.components[4];
+	(suv_new) . components[4]+=-(s*suv2.components[1]) + c*suv2.components[4];
+	s=sin(t*(suv1.components[5] + sqrt(3)*suv1.components[10]));
+	c=cos(t*(suv1.components[5] + sqrt(3)*suv1.components[10]));
+	(suv_new) . components[2]+=  c*suv2.components[2]  + s*suv2.components[8];
+	(suv_new) . components[8]+=-(s*suv2.components[2]) + c*suv2.components[8];
+	s=sin(t*suv1.components[5] + (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3));
+	c=cos(t*suv1.components[5] + (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3));
+	(suv_new) . components[3]+=   c*suv2.components[3]  + s*suv2.components[12];
+	(suv_new) . components[12]+=-(s*suv2.components[3]) + c*suv2.components[12];
+	s=sin(t*(suv1.components[5] - sqrt(3)*suv1.components[10]));
+	c=cos(t*(suv1.components[5] - sqrt(3)*suv1.components[10]));
+	(suv_new) . components[6]+=c*suv2.components[6] - s*suv2.components[9];
+	(suv_new) . components[9]+=s*suv2.components[6] + c*suv2.components[9];
+	s=sin(t*suv1.components[5] - (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3));
+	c=cos(t*suv1.components[5] - (t*(suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3));
+	(suv_new) . components[7]+= c*suv2.components[7] - s*suv2.components[13];
+	(suv_new) . components[13]+=s*suv2.components[7] + c*suv2.components[13];
+	s=sin((2*t*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3));
+	c=cos((2*t*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3));
+	(suv_new) . components[11]+=c*suv2.components[11] - s*suv2.components[14];
+	(suv_new) . components[14]+=s*suv2.components[11] + c*suv2.components[14];
+}
