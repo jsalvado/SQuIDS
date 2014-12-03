@@ -23,8 +23,9 @@
 # Data
 *.dat
 *.eps
-*.nb
 
-# docxygen
-
+# doxygen
 docs/*
+
+Makefile
+*.pc

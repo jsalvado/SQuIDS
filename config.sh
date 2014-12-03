@@ -22,6 +22,8 @@ function find_package(){
 	pkg-config --exists $PKG
 	if [ "$?" -ne 0 ]; then
 		echo "Error: $PKG not installed or not registered with pkg-config" 1>&2
+		lowername=`echo $PKG | tr [A-Z] [a-z]`
+		echo "Please specify location using the --with-"$lowername"-incdir and --with-"$lowername"-libdir flags" 1>&2
 		exit 1
 	fi
 	if [ $# -ge 2 ]; then
@@ -124,84 +126,93 @@ if [ ! -d ./lib/ ]; then
 fi
 
 echo "Generating config file..."
-echo "prefix=$PREFIX" > src/squids.pc
+echo "prefix=$PREFIX" > lib/squids.pc
 echo '
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
 Name: SQuIDS
 Description: Evolves quantum mechanical states
-URL: https://github.com/jsalvado/SQuIDS' >> src/squids.pc
-echo "Version: $VERSION" >> src/squids.pc
+URL: https://github.com/jsalvado/SQuIDS' >> lib/squids.pc
+echo "Version: $VERSION" >> lib/squids.pc
 echo 'Requires: gsl >= 1.14
 Libs: -L${libdir} -lSQuIDS
 Cflags: -I${includedir}
-' >> src/squids.pc
+' >> lib/squids.pc
 
 echo "Generating makefile..."
 echo "# Compiler
-CC=$CC
-CXX=$CXX
-AR=$AR
-LD=$LD
+CC:=$CC
+CXX:=$CXX
+AR:=$AR
+LD:=$LD
 
-DYN_SUFFIX=$DYN_SUFFIX
-DYN_OPT=$DYN_OPT
+VERSION:=$VERSION
+PREFIX:=$PREFIX
 
-VERSION=$VERSION
-PREFIX=$PREFIX
-" > ./src/Makefile
+DYN_SUFFIX:=$DYN_SUFFIX
+DYN_OPT:=$DYN_OPT
+" > Makefile
 echo '
-CURRENT_DIR = $(shell pwd)
-PATH_SQUIDS=$(CURRENT_DIR)/..
+CURRENT_DIR := $(shell pwd)
+PATH_SQUIDS:=$(CURRENT_DIR)
 
-CXXFLAGS= -std=c++11
+CXXFLAGS:= -std=c++11
 
 # Directories
-' >> ./src/Makefile
-echo "GSL_CFLAGS=$GSL_CFLAGS" >> ./src/Makefile
-echo "GSL_LDFLAGS=$GSL_LDFLAGS" >> ./src/Makefile
+' >> Makefile
+echo "GSL_CFLAGS=$GSL_CFLAGS" >> Makefile
+echo "GSL_LDFLAGS=$GSL_LDFLAGS" >> Makefile
 echo '
-LIBDIR=$(PATH_SQUIDS)/lib
-INCDIR=$(PATH_SQUIDS)/inc
-SUINCDIR=$(PATH_SQUIDS)/inc/SU_inc
-CFLAGS= -O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)
-LDFLAGS= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)
+LIBDIR:=$(PATH_SQUIDS)/lib
+INCDIR:=$(PATH_SQUIDS)/inc
+SUINCDIR:=$(PATH_SQUIDS)/inc/SU_inc
+SRCDIR:=$(PATH_SQUIDS)/src
+CFLAGS:= -O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)
+LDFLAGS:= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)
 
 # Project files
-NAME=SQuIDS
-STAT_PRODUCT=$(LIBDIR)/lib$(NAME).a
-DYN_PRODUCT=$(LIBDIR)/lib$(NAME)$(DYN_SUFFIX)
+NAME:=SQuIDS
+STAT_PRODUCT:=$(LIBDIR)/lib$(NAME).a
+DYN_PRODUCT:=$(LIBDIR)/lib$(NAME)$(DYN_SUFFIX)
 
-OBJECTS= const.o SUNalg.o SQUIDS.o
+OBJECTS:= $(LIBDIR)/const.o $(LIBDIR)/SUNalg.o $(LIBDIR)/SQUIDS.o
 
 # Compilation rules
 all: $(STAT_PRODUCT) $(DYN_PRODUCT)
 
 $(DYN_PRODUCT) : $(OBJECTS)
 	@echo Linking `basename $(DYN_PRODUCT)`
-	@$(CXX) $(DYN_OPT)  $(LDFLAGS) -o $(DYN_PRODUCT) $(OBJECTS)
+	@$(CXX) $(DYN_OPT) $(LDFLAGS) -o $(DYN_PRODUCT) $(OBJECTS)
 
 $(STAT_PRODUCT) : $(OBJECTS)
 	@echo Linking `basename $(STAT_PRODUCT)`
 	@$(AR) -rcs $(STAT_PRODUCT) $(OBJECTS)
 
-const.o: const.cpp $(INCDIR)/const.h Makefile
-	$(CXX) $(CXXFLAGS) -c $(CFLAGS) const.cpp
-SQUIDS.o: SQUIDS.cpp $(INCDIR)/SQUIDS.h Makefile
-	$(CXX) $(CXXFLAGS) -c $(CFLAGS) SQUIDS.cpp
-SUNalg.o: SUNalg.cpp $(INCDIR)/SUNalg.h Makefile
-	$(CXX) $(CXXFLAGS) -c -Warray-bounds $(CFLAGS) SUNalg.cpp
+$(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(INCDIR)/const.h Makefile
+	@echo Compiling `basename $<` to `basename $@`
+	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/const.cpp -o $@
+$(LIBDIR)/SQUIDS.o: $(SRCDIR)/SQUIDS.cpp $(INCDIR)/SQUIDS.h $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
+	@echo Compiling `basename $<` to `basename $@`
+	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQUIDS.cpp -o $@
+$(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
+	@echo Compiling `basename $<` to `basename $@`
+	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@
 
-.PHONY: clean install
+.PHONY: clean install doxygen docs
 clean:
-	rm -f *.o *.so *.dylib ../lib/*.a ../lib/*.so ../lib/*.dylib
+	@echo Erasing generated files
+	@rm -f $(LIBDIR)/*.o $(LIBDIR)/*.a $(LIBDIR)/*.so $(LIBDIR)/*.dylib
 
 doxygen:
-	doxygen
+	@doxygen src/doxyfile
+docs:
+	@doxygen src/doxyfile
 
 test: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd ../test ; ./run_tests
+	@cd test ; ./run_tests
+check: $(DYN_PRODUCT) $(STAT_PRODUCT)
+	@cd test ; ./run_tests
 
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
@@ -216,7 +227,7 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
 	@mkdir -p $(PREFIX)/lib/pkgconfig
-	@cp squids.pc $(PREFIX)/lib/pkgconfig
-' >> ./src/Makefile
+	@cp $(LIBDIR)/squids.pc $(PREFIX)/lib/pkgconfig
+' >> Makefile
 echo "Done."
-echo "To build, run the following: cd src; make"
+echo "To build, run 'make'"
