@@ -105,7 +105,7 @@ do
 	if [ "$TMP" ]; then GSL_LIBDIR="$TMP"; continue; fi
 done
 
-$CXX -std=c++11 resources/compiler_test.cpp -o lib/compiler_test.exe > /dev/null 2>&1
+$CXX -std=c++11 resources/compiler_test.cpp -o lib/compiler_test.exe >/dev/null 2>&1
 RESULT=$?
 if [ "$RESULT" -ne 0 ];
 then

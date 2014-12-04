@@ -52,6 +52,8 @@ class rabi: public SQUIDS {
   double w;
   //Laser Amplitude
   double A;
+  
+  std::unique_ptr<double[]> HI_buffer;
 
  public:
   //Dipole operator

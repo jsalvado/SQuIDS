@@ -56,7 +56,7 @@ int main(){
   // delta time for the prints
   double dt=0.01;
   // Final time
-  double tf=120;
+  double tf=1200;
 
 
   // Tuned Rabi system
@@ -68,7 +68,8 @@ int main(){
 
   std::cout << "Rabi system with frequency of 10 initialized." << std::endl;
   std::cout << "give the value for the detuning: " << std::endl;
-  std::cin >> del;
+  //std::cin >> del;
+  del=1;
 
   // un-tuned Rabi system
   Rd.init(10,10+del,0.1);
@@ -103,7 +104,7 @@ int main(){
   std::string plt;
   std::cout << std::endl <<  "Done! " << std::endl <<
    "  Do you want to run the gnuplot script? yes/no" << std::endl;
-  std::cin >> plt;
+  //std::cin >> plt;
   if(plt=="yes" || plt=="y")
     return system("./plot.plt");
   return 0;

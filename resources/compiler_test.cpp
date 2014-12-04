@@ -1,3 +1,5 @@
+#include <memory>
+
 template<typename T>
 void sink(T&& t){}
 
