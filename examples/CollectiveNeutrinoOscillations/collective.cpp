@@ -15,10 +15,10 @@
  *   Authors:                                                                  *
  *      Carlos Arguelles (University of Wisconsin Madison)                     * 
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
- *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
+ *         chris.weaver@icecube.wisc.edu                                       *
  ******************************************************************************/
 
 
@@ -52,7 +52,6 @@ void collective::progressbar( int percent, double mu){
   std::cout<< percent << "%   mu: " << mu << std::flush;
 }
 
-
 void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   mu=m;
   ini(Nbins,2,1,0,0.0);
@@ -64,13 +63,13 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
 
   Set_CoherentInteractions(true);  
 
-  ex=SU_vector::Component(nsun,1);
-  ey=SU_vector::Component(nsun,2);
-  ez=SU_vector::Component(nsun,3);
+  ex=SU_vector::Generator(nsun,1);
+  ey=SU_vector::Generator(nsun,2);
+  ez=SU_vector::Generator(nsun,3);
 
   B=ez;
 
-  // set initial conditions for the density mattrix.
+  // set initial conditions for the density matrix.
   double Norm=0;
 
   for(int ei = 0; ei < nx; ei++){
@@ -82,9 +81,9 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   for(int ei = 0; ei < nx; ei++){
     double w=Get_x(ei);
       if(w>0){
-	state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(1.0/(Norm*w*w)*Fermi(1/(2*w)));
+        state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(1.0/(Norm*w*w)*Fermi(1/(2*w)));
       }else{
-	state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(-0.7/(Norm*w*w)*Fermi(-1/(2*w)));
+        state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(-0.7/(Norm*w*w)*Fermi(-1/(2*w)));
       }
     }
 
@@ -93,8 +92,6 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   Set_abs_error(1e-7);
   Set_h(1e-10);
   Set_GSL_step(gsl_odeiv2_step_rk4);
-
-    
 }
 
 
@@ -105,13 +102,10 @@ void collective::PreDerive(double t){
   }
 }
 
-
-
 SU_vector collective::HI(int ix,double t){
   mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
-  if(bar){
+  if(bar)
     progressbar(100*t/period, mu);
-  }
   return Get_x(ix)*B+P*(mu*(w_max-w_min)/(double)nx);
 }
 
