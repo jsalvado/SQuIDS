@@ -246,17 +246,12 @@ public:
   ///\brief Get a copy of the SU_vector's components
   std::vector<double> GetComponents() const;
   
-  ///brief Scale components by a constant
-  ///
-  ///\param a The scaling factor to use
-  SU_vector Rescale(double a);
-  
   ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace
   ///\param i subspace index
   ///\param j subspace index
   ///\param theta rotation angle in radians
   ///\param delta complex phase
-  SU_vector Rotate(unsigned int i, unsigned int j, double theta, double delta);
+  SU_vector& Rotate(unsigned int i, unsigned int j, double theta, double delta);
   //Const, contines a standar set of angles, this funcion does the set of rotations
   //to change the bases.
   ///\brief Same as RotateToB0, but with reversed angles
@@ -289,12 +284,12 @@ public:
   //operators
   //**********
   ///\brief Equality comparison
-  bool operator ==(const SU_vector&);
+  bool operator ==(const SU_vector&) const;
 
   ///\brief Scalar product of two SU_vectors.
   ///
   /// Equivalent to the trace of the matrix multiplication.
-  double operator*(const SU_vector&);
+  double operator*(const SU_vector&) const;
   
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
@@ -325,6 +320,12 @@ public:
   
   ///\brief Decrementing assignment
   SU_vector & operator-=(const SU_vector&);
+  
+  ///\brief Multiplying assignment
+  SU_vector & operator*=(double);
+  
+  ///\brief Dividing assignment
+  SU_vector & operator/=(double);
   
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
@@ -375,10 +376,10 @@ public:
 
   ///\brief Array-like indexing
   ///\pre i < dimension^2
-  double& operator[](unsigned int i) {assert(i < dim*dim); return components[i];};
+  double& operator[](unsigned int i) {assert(i < size); return components[i];};
   ///\brief Array-like indexing
   ///\pre i < dimension^2
-  const double& operator[](unsigned int i) const {assert(i < dim*dim); return components[i];}
+  const double& operator[](unsigned int i) const {assert(i < size); return components[i];}
 
   ///\brief Construct a projection operator
   ///

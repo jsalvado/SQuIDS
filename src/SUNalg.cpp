@@ -287,13 +287,7 @@ std::vector<double> SU_vector::GetComponents() const{
   return x;
 }
 
-SU_vector SU_vector::Rescale(double x){
-  for(int i = 0; i < size; i++)
-    components[i] = x*components[i];
-  return *this;
-}
-
-SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del){
+SU_vector& SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del){
   SU_vector suv=*this;
   SU_vector suv_rot(dim);
   unsigned int i=ii+1, j=jj+1; //convert to 1 based indices to interface with Mathematica generated code
@@ -334,7 +328,7 @@ double SUTrace(const SU_vector& suv1,const SU_vector& suv2){
   return id_trace+2.0*gen_trace;
 }
 
-bool SU_vector::operator==(const SU_vector& other){
+bool SU_vector::operator==(const SU_vector& other) const{
   if(dim != other.dim) //vectors of different sizes cannot be equal
     return false;
   //if one vector contains data and the other does not they cannot be equal
@@ -351,7 +345,7 @@ bool SU_vector::operator==(const SU_vector& other){
   return true;
 }
 
-double SU_vector::operator*(const SU_vector &other){
+double SU_vector::operator*(const SU_vector &other) const{
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector inner product");
   return SUTrace(*this,other);
@@ -436,6 +430,18 @@ SU_vector& SU_vector::operator-=(const SU_vector &other){
     throw std::runtime_error("Non-matching dimensions in SU_vector decrement");
   for(int i=0; i < size; i++)
     components[i] -= other.components[i];
+  return *this;
+}
+
+SU_vector& SU_vector::operator *=(double x){
+  for(int i = 0; i < size; i++)
+    components[i] *= x;
+  return *this;
+}
+
+SU_vector& SU_vector::operator /=(double x){
+  for(int i = 0; i < size; i++)
+    components[i] /= x;
   return *this;
 }
 
