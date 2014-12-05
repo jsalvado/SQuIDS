@@ -29,6 +29,8 @@
 #include <string>
 #include <gsl/gsl_matrix.h>
 #include <stdexcept>
+
+///Contains physical and mathematical constants
 class Const{
 public : 
   // mathematical constants //
@@ -130,7 +132,7 @@ public :
   ///\return the square of the energy difference between the states
   double GetSquaredEnergyDifference(unsigned int upperState) const;
   
-  ///\brief set the complex phasebetween two states of the system
+  ///\brief set the complex phase between two states of the system
   ///
   ///\param state1 the (zero-based) index of the first state
   ///\param state2 the (zero-based) index of the second state;

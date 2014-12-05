@@ -15,18 +15,76 @@
  *   Authors:                                                                  *
  *      Carlos Arguelles (University of Wisconsin Madison)                     *
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
- *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
+ *         chris.weaver@icecube.wisc.edu                                       *
  ******************************************************************************/
 
+/**
+ \mainpage
+ 
+ Introduction
+ ------------
+ 
+ Simple Quantum Integro-Differential Solver (SQuIDS) is a C++ code designed to 
+ solve semi-analytically the evolution of a set of density matrices and scalar 
+ functions. SQuIDS provides a base class from which users can derive new classes 
+ to include new non-trivial terms from the right hand sides of density matrix 
+ equations. The code was designed in the context of solving neutrino oscillation 
+ problems, but can be applied in any problem that involves solving the quantum 
+ evolution of a collection of particles with Hilbert space of dimension up to 6.
+ 
+ Dependencies
+ ------------
+ 
+ SQuIDS is written using features of C++11 for efficiency, so it requires a
+ reasonably new C++ compiler. GCC 4.7 or newer or Clang 3.3 or newer is 
+ recommended, but the code is written to be portable and should work with 
+ other compilers as well. 
+ 
+ The GNU Scientific Library (GSL),
+ version 1.14 or newer is needed by SQuIDS to perform differential equation 
+ integration. The latest version can be found at 
+ https://www.gnu.org/software/gsl/ .
+ 
+ Finally, gnuplot (http://www.gnuplot.info) version 4.0 or newer is required 
+ to generate plots from the example programs, but is not needed by the library 
+ itself.
+ 
+ Building
+ --------
+ 
+ First, run the included configure script: 
+ 
+     ./config
+ 
+ It may be useful to run it with the `--help` flag in order to find out all
+ available options. 
+ 
+ After configuring the build, simply compile with the generated makefile:
+ 
+     make
+ 
+ You can verify that the library is working correctly by running the unit 
+ tests with `make test`, and you can install the built library with 
+ `make install`.
+ 
+ Usage
+ -----
+ 
+ To learn about using the library, see the examples in the `examples` 
+ subdirectory. 
+ 
+ In general, implementing a system using this library requires defining a
+ new subclass of the SQUIDS base class which encapsulates the problem, and
+ using the SU_vector class to represent quantum mechanical states and 
+ operators.
+ 
+ */
 
-
-#ifndef __SQUIDS_H
-#define __SQUIDS_H
-
-//#define CalNeuOscSUN_DEBUG
+#ifndef SQUIDS_H
+#define SQUIDS_H
 
 #include "const.h"
 #include "SUNalg.h"
@@ -46,21 +104,21 @@
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_odeiv2.h>
 
-///\brief Structure that contains the node state
-struct SU_state
-{
-  ///\brief Vector of SU(N) vectors that represents the quantum part of the state
-  std::unique_ptr<SU_vector[]> rho;
-  ///\brief Vector of scalars that represents the classic part of the state
-  double* scalar; //not owned
-};
-
-
-///\brief SQUIDS main class
+///\brief SQuIDS main class
 
 //density matrix kinetic equation solver
 class SQUIDS {
  protected:
+  
+  ///\brief Structure that contains the node state
+  struct SU_state
+  {
+    ///\brief Vector of SU(N) vectors that represents the quantum part of the state
+    std::unique_ptr<SU_vector[]> rho;
+    ///\brief Vector of scalars that represents the classic part of the state
+    double* scalar; //not owned
+  };
+  
   bool CoherentInt,NonCoherentInt,OtherInt,ScalarsInt,AnyNumerics;
   bool is_init;
   bool adaptive_step;

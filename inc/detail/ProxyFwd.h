@@ -3,7 +3,16 @@
 
 #define REQUIRE_EVALUATION_PROXY typename=typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>
 
+///This namespace contains implementation details
+///which most users should not need to use directly
 namespace detail{
+  ///All of the SU_vector operations in ../SU_inc/ are generated in terms
+  ///of incmrement operations (+=), but we would like to be able to fuse
+  ///them with plain assignments, increments, and decrements. Rather that
+  ///creating three versions of those operations with tiny syntax differences
+  ///this set of classes allows them to be used for all three operations
+  ///with the same syntax, by means of the slightly underhanded trick of
+  ///redefining the += operator
   
   struct AssignWrapper{
     constexpr static bool allowTargetResize=true;
@@ -45,6 +54,8 @@ namespace detail{
     }
   };
   
+  ///This class is used to adapt a plain array of values by wrapping
+  ///each value with the given Wrapper type on demand. 
   template<typename Wrapper>
   struct vector_wrapper{
     const unsigned int& dim;
