@@ -101,7 +101,7 @@ isinit_d(false)
   std::fill(components,components+size,0.0);
 };
 
-SU_vector::SU_vector(std::vector<double> comp):
+SU_vector::SU_vector(const std::vector<double>& comp):
 dim(sqrt(comp.size())),
 size(comp.size()),
 components(new double[size]),

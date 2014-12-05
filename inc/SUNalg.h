@@ -229,7 +229,7 @@ public:
   /// will copy its component information from data.
   ///\param data The existing vector components to use
   ///\pre data has a square size (4, 9, 16, 25, or 36)
-  SU_vector(std::vector<double> data);
+  SU_vector(const std::vector<double>& data);
 
   // destructor
   ~SU_vector();
