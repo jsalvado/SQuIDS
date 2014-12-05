@@ -60,8 +60,6 @@ void rabi::init(double D_E, double wi, double Am){
 
   // set initial conditions for the density matrix.
   state[0].rho[0] = b0_proj[0];
-  
-  HI_buffer.reset(new double[nsun*nsun]);
 }
 
 void rabi::PreDerive(double t){
@@ -80,15 +78,4 @@ SU_vector rabi::H0(double x){
 SU_vector rabi::HI(int ix,double t){
   d=(evol_b1_proj[0]-evol_b1_proj[1]);
   return (A*cos(w*t))*d;
-  /*SU_vector hi(nsun,HI_buffer.get());
-  hi=(A*cos(w*t))*d;
-  return(hi);*/
 }
-
-// void rabi::set_evol(){
-//   for(int i = 0; i < nx; i++){
-//     SU_vector h0=H0(x[i]);
-//     for(int nrh=0;nrh<nrhos;nrh++)
-//       state[i].rho[nrh]=state[i].rho[nrh].SUEvolve(h0,-(t-t_ini));
-//   }
-// }
