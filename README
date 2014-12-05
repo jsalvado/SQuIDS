@@ -30,7 +30,8 @@ Configuration
 
 The path for the GSL libraries can be specified running:
 
-./config.sh -GSL_INC=GSL_include_path -GSL_INC=GSL_library_path
+
+./config.sh --with-gsl-incdir=DIR --with-gsl-libdir=DIR 
  
 
   

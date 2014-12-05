@@ -64,8 +64,6 @@ class vacuum: public SQUIDS {
   //H0 operator
   SU_vector H0(double);
   void EvolveProjectors(double t);
-  void set_evol(void);
-
   
   //get the final flux, the initial one is flat in energy
   double Get_flux(int,double);
