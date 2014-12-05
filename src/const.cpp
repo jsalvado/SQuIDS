@@ -29,18 +29,6 @@
 
 Const::Const(){
     /* PHYSICS CONSTANTS
-    #===========================================================================
-    # NAME
-    #===========================================================================
-    */
-    
-    name = "STD";                    // Default values
-    linestyle = "solid";             // Default linestyle in plots
-    markerstyle = "*";               // Default marker style
-    colorstyle = "red";              // Default color style
-    savefilename = "output.dat";     // Default color style
-    
-    /*
     #===============================================================================
     # MATH
     #===============================================================================
@@ -109,7 +97,6 @@ Const::Const(){
     Pascal = Joule/pow(meter,3);        // [eV^4/Pa]
     hPascal = 100.0*Pascal;         // [eV^4/hPa]
     atm = 101325.0*Pascal;          // [eV^4/atm]
-    psi = 6893.0*Pascal;            // [eV^4/psi]
     // Temperature
     Kelvin = 1/1.1604505e4;         // [eV/K]
     // Angle

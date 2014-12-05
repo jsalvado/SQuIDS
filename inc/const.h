@@ -31,12 +31,6 @@
 #include <stdexcept>
 class Const{
 public : 
-  // class identifiers
-  std::string name;
-  std::string linestyle;
-  std::string markerstyle;
-  std::string colorstyle;
-  std::string savefilename;
   // mathematical constants //
   double pi;
   double piby2; 
@@ -87,20 +81,20 @@ public :
   double Kelvin;
   // angle
   double degree;
-        
+
   int electron;
   int muon;
   int tau;
   int sterile1;
   int sterile2;
   int sterile3;
-        
+
   double tau_lifetime;
   double tau_mass;
-        
+
   double proton_mass;
   double neutron_mass;
-  
+
   ///\brief set the mixing angle between two states of the system
   ///
   ///\param state1 the (zero-based) index of the first state
@@ -108,7 +102,7 @@ public :
   ///              must be larger than state1
   ///\param angle the angle to use
   void SetMixingAngle(unsigned int state1, unsigned int state2, double angle);
-  
+
   ///\brief get the mixing angle between two states of the system
   ///
   ///\param state1 the (zero-based) index of the first state
