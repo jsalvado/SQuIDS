@@ -45,6 +45,7 @@ public :
   double sw_sq;
   double G;
   double alpha;
+  double e_charge;
   /////////// units //////////
   // energy
   double TeV;
@@ -68,17 +69,21 @@ public :
   double fermi;
   double angstrom;
   double AU;
+  double ly;
   double parsec;
   // luminocity
   double picobarn;
   double femtobarn;
   // presure
   double Pascal;
-  double hPascal;
   double atm;
   double psi;
   // temperature
   double Kelvin;
+  // electromagnetic units
+  double C;
+  double A;
+  double T;
   // angle
   double degree;
 

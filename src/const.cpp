@@ -61,6 +61,7 @@ Const::Const(){
     sw_sq = 0.2312;                 // [dimensionless] sin(th_weinberg) ^2
     G  = 6.67300e-11;               // [m^3 kg^-1 s^-2]
     alpha = 1.0/137.0;              // [dimensionless] fine-structure constant 
+    e_charge = sqrt(4.*pi*alpha);
     
     /*
     #===============================================================================
@@ -89,16 +90,20 @@ Const::Const(){
     fermi = 1.0e-15*meter;          // [eV^-1/fm]
     angstrom = 1.0e-10*meter;       // [eV^-1/A]
     AU = 149.60e9*meter;            // [eV^-1/AU]
+    ly = 9.4605284e15*meter;        // [eV^-1/ly]
     parsec = 3.08568025e16*meter;   // [eV^-1/parsec]
     // luminosity
     picobarn = 1.0e-36*pow(cm,2);       // [eV^-2/pb]
     femtobarn = 1.0e-39*pow(cm,2);      // [eV^-2/fb]
     // Presure
     Pascal = Joule/pow(meter,3);        // [eV^4/Pa]
-    hPascal = 100.0*Pascal;         // [eV^4/hPa]
     atm = 101325.0*Pascal;          // [eV^4/atm]
     // Temperature
     Kelvin = 1/1.1604505e4;         // [eV/K]
+    // Electromagnetic units
+    C = 6.24150965e18*e_charge;
+    A = C/sec;
+    T = kg/(A*sec*sec);
     // Angle
     degree = pi/180.0;              // [rad/degree]
     

@@ -221,7 +221,7 @@ public:
   ///\param m The matrix whose data should be copied
   ///\pre m is hermitian
   ///\pre m->size1 <= 6
-  SU_vector(gsl_matrix_complex* m);
+  SU_vector(const gsl_matrix_complex* m);
   
   ///\brief Construct an SU_vector from existing data
   ///
@@ -410,7 +410,7 @@ public:
   ///\brief Creates a SU_vector corresponding to the \f$i\f$SU_N basis generator.
   //
   // Tts represented by \f$ v = (0,...,1,...,0)\f$ where 1 is in the \f$i\f$ component.
-  static SU_vector Component(unsigned int d, unsigned int i);
+  static SU_vector Generator(unsigned int d, unsigned int i);
   
   template<typename Op>
   friend struct detail::EvaluationProxy;

@@ -115,7 +115,7 @@ isinit_d(false)
   std::copy(comp.begin(),comp.end(),components);
 };
 
-SU_vector::SU_vector(gsl_matrix_complex* m):
+SU_vector::SU_vector(const gsl_matrix_complex* m):
 dim(m->size1),
 size(dim*dim),
 components(new double[size]),
@@ -258,7 +258,7 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
   return(v);
 }
 
-SU_vector SU_vector::Component(unsigned int d, unsigned int ii){
+SU_vector SU_vector::Generator(unsigned int d, unsigned int ii){
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d*d)
