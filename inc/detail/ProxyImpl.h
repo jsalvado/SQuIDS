@@ -52,18 +52,18 @@ namespace detail{
     SU_vector SUEvolve(const SU_vector& other, double t) const;
     
     ///scalar product between proxies
-    template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+    template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
     double operator*(const ProxyType& other) const{
       return(SU_vector(*this)*SU_vector(other));
     }
     ///addition of proxies
-    template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+    template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
     SU_vector operator+(const ProxyType& other) const;
     ///subtraction of proxies
-    template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+    template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
     SU_vector operator-(const ProxyType& other) const;
     ///time evolution of a proxy according to an operator given by another proxy
-    template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+    template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
     SU_vector SUEvolve(const ProxyType& other ,double t) const;
     
     ///whether the result of the operation can be written directly
@@ -203,6 +203,8 @@ namespace detail{
   }
 } //namespace detail
 
-#undef REQUIRE_EVALUATION_PROXY
+#undef REQUIRE_EVALUATION_PROXY_CORE
+#undef REQUIRE_EVALUATION_PROXY_TPARAM
+#undef REQUIRE_EVALUATION_PROXY_FPARAM
 
 #endif //SQUIDS_DETAIL_PROXYIMPL_H

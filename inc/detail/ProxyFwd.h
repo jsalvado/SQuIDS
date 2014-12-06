@@ -1,7 +1,9 @@
 #ifndef SQUIDS_DETAIL_PROXYFWD_H
 #define SQUIDS_DETAIL_PROXYFWD_H
 
-#define REQUIRE_EVALUATION_PROXY typename=typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>
+#define REQUIRE_EVALUATION_PROXY_CORE typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>
+#define REQUIRE_EVALUATION_PROXY_TPARAM typename= REQUIRE_EVALUATION_PROXY_CORE
+#define REQUIRE_EVALUATION_PROXY_FPARAM REQUIRE_EVALUATION_PROXY_CORE ::type* =nullptr
 
 ///This namespace contains implementation details
 ///which most users should not need to use directly
@@ -55,7 +57,7 @@ namespace detail{
   };
   
   ///This class is used to adapt a plain array of values by wrapping
-  ///each value with the given Wrapper type on demand. 
+  ///each value with the given Wrapper type on demand.
   template<typename Wrapper>
   struct vector_wrapper{
     const unsigned int& dim;

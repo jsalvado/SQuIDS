@@ -204,7 +204,7 @@ public:
   /// The newly constructed vector will take the data buffer from one of the
   /// operands, if possible, to elide memory allocation.
   template<typename ProxyType>
-  SU_vector(ProxyType&& proxy, typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>::type* =nullptr):
+  SU_vector(ProxyType&& proxy, REQUIRE_EVALUATION_PROXY_FPARAM):
   dim(proxy.suv1.dim),
   size(proxy.suv1.size),
   components(proxy.mayStealArg1() ? proxy.suv1.components : new double[size]),
@@ -352,21 +352,21 @@ public:
   detail::SubtractionProxy operator -(const SU_vector& other) &&;
   
   ///\brief Optimized assignment from the result of an arithmetic expression
-  template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+  template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator=(const ProxyType& proxy){
     return(assignProxy<detail::AssignWrapper>(proxy));
   }
   
   ///\brief Optimized incrementing assignment from the result of an
   /// arithmetic expression
-  template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+  template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator+=(const ProxyType& proxy){
     return(assignProxy<detail::IncrementWrapper>(proxy));
   }
   
   ///\brief Optimized decrementing assignment from the result of an
   /// arithmetic expression
-  template<typename ProxyType, REQUIRE_EVALUATION_PROXY>
+  template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator-=(const ProxyType& proxy){
     return(assignProxy<detail::DecrementWrapper>(proxy));
   }
