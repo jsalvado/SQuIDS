@@ -142,8 +142,6 @@ class SQUIDS {
   int size_rho;
   int size_state;
 
-  bool neu_and_aneu;
-
   std::unique_ptr<double[]> system;
   double* deriv_system; //not owned
 

@@ -39,7 +39,6 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti=0.0){
   NonCoherentInt=false;
   OtherInt=false;
   ScalarsInt=false;
-  neu_and_aneu = false;
   AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
 
   adaptive_step=true;
