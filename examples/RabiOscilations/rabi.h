@@ -67,8 +67,8 @@ class rabi: public SQUIDS {
   //Constructors and initializer
   // 
   rabi(){};
-  rabi(double a, double b, double c){init(a,b,c);};
-  void init(double, double,double );
+  rabi(double D_E, double wi, double Am){init(D_E,wi,Am);};
+  void init(double D_E, double wi, double Am);
   
   //Time independent hamiltonian
   SU_vector H0(double);
