@@ -21,6 +21,14 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
+
+ /*****************************************************************************
+ / Simple example computting two rabi models with and whithout dettuning       /
+ / reproducing some plots form Phys. Rev. B 84, 075107 J. I. Fuks, N. Helbig,  /
+ / I. V. Tokatly, and A. Rubio arXiv:1101.2880                                 /
+ ******************************************************************************/
+
+
 #include "rabi.h"
 #include <fstream>
 

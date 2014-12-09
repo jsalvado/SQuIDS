@@ -8,15 +8,17 @@ set key opaque
 #set yrange [-1.5:1.5]
 set xrange [-2:2]
 
+set style line 1 lt 1 lc rgb "red" lw 3
+set style line 7 lt 3 lc rgb "black" lw 3
 
 set xlabel "w"
 set ylabel "Swap factor"
 
-plot "collective.dat" u 1:($2/$3) w l  title "" , "collective.dat" u 1:($3) w l ls 7 title "nu_mu" 
+plot "collective.dat" u 1:($2/$3) w l ls 1  title "Swap Factor" , "collective.dat" u 1:($3) w l ls 7 title "Initial Spectrum" 
 
 set terminal postscript eps enhanced color
 set output "Collective.eps"
-plot "collective.dat" u 1:($2/$3) w l  title "" , "collective.dat" u 1:($3) w l ls 7 title "nu_mu" 
+plot "collective.dat" u 1:($2/$3) w l ls 1  title "Swap Factor" , "collective.dat" u 1:($3) w l ls 7 title "Initial Spectrum" 
 
 
 
