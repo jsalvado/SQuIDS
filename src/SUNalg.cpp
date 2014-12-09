@@ -142,21 +142,6 @@ isinit_d(false)
 #include "MatrixToSUSelect.txt"
 };
 
-SU_vector::~SU_vector(){
-  if(isinit){
-    delete[] components;
-    isinit=false;
-  }
-};
-
-void SU_vector::SetBackingStore(double* comp){
-  if(isinit)
-    delete[] components;
-  components = comp;
-  isinit=false;
-  isinit_d=true;
-}
-
 namespace{
   struct sq_array_2D{
     unsigned int d;
@@ -287,8 +272,8 @@ std::vector<double> SU_vector::GetComponents() const{
   return x;
 }
 
-SU_vector& SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del){
-  SU_vector suv=*this;
+SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del){
+  const SU_vector& suv=*this;
   SU_vector suv_rot(dim);
   unsigned int i=ii+1, j=jj+1; //convert to 1 based indices to interface with Mathematica generated code
 
@@ -296,24 +281,20 @@ SU_vector& SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double
   
 #include "rotation_switcher.h"
     
-  for(int i=0; i < size; i++){
-    components[i] = suv_rot.components[i];
-  }
-    
-  return *this;
+  return suv_rot;
 }
 
 void SU_vector::RotateToB0(const Const& param){
   for(unsigned int j=dim-1; j>0; j--){
     for(unsigned int i=j-1; i<dim; i--)
-      Rotate(i,j,-param.GetMixingAngle(i,j),-param.GetPhase(i,j)); //note negated angle, and phase
+      *this=Rotate(i,j,-param.GetMixingAngle(i,j),-param.GetPhase(i,j)); //note negated angle, and phase
   }
 }
 
 void SU_vector::RotateToB1(const Const& param){
   for(unsigned int j=dim-1; j>0; j--){
     for(unsigned int i=j-1; i<dim; i--)
-      Rotate(i,j,param.GetMixingAngle(i,j),param.GetPhase(i,j));
+      *this=Rotate(i,j,param.GetMixingAngle(i,j),param.GetPhase(i,j));
   }
 }
 

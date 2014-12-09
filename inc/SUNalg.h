@@ -232,7 +232,10 @@ public:
   SU_vector(const std::vector<double>& data);
 
   // destructor
-  ~SU_vector();
+  ~SU_vector(){
+    if(isinit)
+      delete[] components;
+  }
 
   //*************
   // Functions
@@ -251,7 +254,7 @@ public:
   ///\param j subspace index
   ///\param theta rotation angle in radians
   ///\param delta complex phase
-  SU_vector& Rotate(unsigned int i, unsigned int j, double theta, double delta);
+  SU_vector Rotate(unsigned int i, unsigned int j, double theta, double delta);
   //Const, contines a standar set of angles, this funcion does the set of rotations
   //to change the bases.
   ///\brief Same as RotateToB0, but with reversed angles
@@ -372,7 +375,13 @@ public:
   }
   
   ///\brief Set the external storage used by this SU_vector
-  void SetBackingStore(double* storage);
+  void SetBackingStore(double* storage){
+    if(isinit)
+      delete[] components;
+    components = storage;
+    isinit=false;
+    isinit_d=true;
+  }
 
   ///\brief Array-like indexing
   ///\pre i < dimension^2
