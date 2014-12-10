@@ -254,7 +254,7 @@ public:
   ///\param j subspace index
   ///\param theta rotation angle in radians
   ///\param delta complex phase
-  SU_vector Rotate(unsigned int i, unsigned int j, double theta, double delta);
+  SU_vector Rotate(unsigned int i, unsigned int j, double theta, double delta) const;
   //Const, contines a standar set of angles, this funcion does the set of rotations
   //to change the bases.
   ///\brief Same as RotateToB0, but with reversed angles

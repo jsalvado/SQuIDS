@@ -272,7 +272,7 @@ std::vector<double> SU_vector::GetComponents() const{
   return x;
 }
 
-SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del){
+SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
   const SU_vector& suv=*this;
   SU_vector suv_rot(dim);
   unsigned int i=ii+1, j=jj+1; //convert to 1 based indices to interface with Mathematica generated code
