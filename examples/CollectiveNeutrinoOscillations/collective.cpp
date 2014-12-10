@@ -61,7 +61,7 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
 
   Set_xrange(wmin,wmax,"lin");
 
-  Set_CoherentInteractions(true);  
+  Set_CoherentRhoTerms(true);
 
   ex=SU_vector::Generator(nsun,1);
   ey=SU_vector::Generator(nsun,2);

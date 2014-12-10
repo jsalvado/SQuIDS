@@ -110,7 +110,7 @@ class SQUIDS {
     double* scalar; //not owned
   };
   
-  bool CoherentInt,NonCoherentInt,OtherInt,ScalarsInt,AnyNumerics;
+  bool CoherentRhoTerms,NonCoherentRhoTerms,OtherRhoTerms,GammaScalarTerms,OtherScalarTerms,AnyNumerics;
   bool is_init;
   bool adaptive_step;
  
@@ -275,13 +275,15 @@ class SQUIDS {
   ///\param opt If true: uses adaptive stepping, else: it does not.
   void Set_AdaptiveStep(bool opt);
   ///\brief Activate coherent interaction
-  void Set_CoherentInteractions(bool opt);
+  void Set_CoherentRhoTerms(bool opt);
   ///\brief Activate noncoherent interaction
-  void Set_NonCoherentInteractions(bool opt);
+  void Set_NonCoherentRhoTerms(bool opt);
   ///\brief Activate other SU_vector interactions
-  void Set_OtherInteractions(bool opt);
+  void Set_OtherRhoTerms(bool opt);
   ///\brief Activate other scalar interactions
-  void Set_ScalarInteractions(bool opt);
+  void Set_GammaScalarTerms(bool opt);
+  ///\brief Activate other scalar interactions
+  void Set_OtherScalarTerms(bool opt);
   ///\brief Set the minimum runge-kutta step
   void Set_h_min(double opt);
   ///\brief Set the maximum runge-kutta step

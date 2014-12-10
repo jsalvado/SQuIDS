@@ -32,7 +32,7 @@ void rabi::init(double D_E, double wi, double Am){
   params.SetMixingAngle(0,1,params.pi/4);
   ini(1,2,1,0,0);
 
-  Set_CoherentInteractions(true);  
+  Set_CoherentRhoTerms(true);
 
   evol_b0_proj.reset(new SU_vector[nx*nsun]);
   evol_b1_proj.reset(new SU_vector[nx*nsun]);

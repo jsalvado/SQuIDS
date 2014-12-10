@@ -39,11 +39,12 @@ SQUIDS::SQUIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int n
 }
 
 void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned int nsc, double ti){
-  CoherentInt=false;
-  NonCoherentInt=false;
-  OtherInt=false;
-  ScalarsInt=false;
-  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+  CoherentRhoTerms=false;
+  NonCoherentRhoTerms=false;
+  OtherRhoTerms=false;
+  GammaScalarTerms=false;
+  OtherScalarTerms=false;
+  AnyNumerics=false;
 
   adaptive_step=true;
 
@@ -228,21 +229,25 @@ void SQUIDS::Set_GSL_step(const gsl_odeiv2_step_type * opt){
 void SQUIDS::Set_AdaptiveStep(bool opt){
   adaptive_step=opt;
 }
-void SQUIDS::Set_CoherentInteractions(bool opt){
-  CoherentInt=opt;
-  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+void SQUIDS::Set_CoherentRhoTerms(bool opt){
+  CoherentRhoTerms=opt;
+  AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_NonCoherentInteractions(bool opt){
-  NonCoherentInt=opt;
-  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+void SQUIDS::Set_NonCoherentRhoTerms(bool opt){
+  NonCoherentRhoTerms=opt;
+  AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_OtherInteractions(bool opt){
-  OtherInt=opt;
-  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+void SQUIDS::Set_OtherRhoTerms(bool opt){
+  OtherRhoTerms=opt;
+  AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_ScalarInteractions(bool opt){
-  ScalarsInt=opt;
-  AnyNumerics=(CoherentInt||NonCoherentInt||OtherInt||ScalarsInt);
+void SQUIDS::Set_GammaScalarTerms(bool opt){
+  GammaScalarTerms=opt;
+  AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
+}
+void SQUIDS::Set_OtherScalarTerms(bool opt){
+  OtherScalarTerms=opt;
+  AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
 
 void SQUIDS::Set_h_min(double opt){
@@ -293,22 +298,25 @@ int SQUIDS::Derive(double at){
     // Density matrix
     for(unsigned int i = 0; i < nrhos; i++){
       // Coherent interaction
-      if(CoherentInt)
+      if(CoherentRhoTerms)
         dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,i,t));
+      else
+        dstate[ei].rho[i].SetAllComponents(0.);
       
       // Non coherent interaction
-      if(NonCoherentInt)
+      if(NonCoherentRhoTerms)
         dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),state[ei].rho[i]);
       // Other possible interaction, for example involving the Scalars or non linear terms in rho.
-      if(OtherInt)
+      if(OtherRhoTerms)
         dstate[ei].rho[i] += InteractionsRho(ei,i,t);
     }
     //Scalars
-    if(ScalarsInt){
-      for(unsigned int is=0;is<nscalars;is++){
-        dstate[ei].scalar[is] = -state[ei].scalar[is]*GammaScalar(ei,is,t);
+    for(unsigned int is=0;is<nscalars;is++){
+      dstate[ei].scalar[is]=0.;
+      if(GammaScalarTerms)
+        dstate[ei].scalar[is] += -state[ei].scalar[is]*GammaScalar(ei,is,t);
+      if(OtherScalarTerms)
         dstate[ei].scalar[is] += InteractionsScalar(ei,is,t);
-      }
     }
   }
 
