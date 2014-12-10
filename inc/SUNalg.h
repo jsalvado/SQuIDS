@@ -281,7 +281,7 @@ public:
   ///\param time The time over which to do the evolution
   ///\pre op must be diagonal
   ///\returns An object convertible to an SU_vector
-  detail::EvolutionProxy SUEvolve(const SU_vector& op, double time) const;
+  detail::EvolutionProxy Evolve(const SU_vector& op, double time) const;
 
   //**********
   //operators

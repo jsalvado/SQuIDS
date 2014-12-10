@@ -90,7 +90,7 @@ int main(){
   // Evolve and save the evolution
   for(double t=0;t<tf;t+=dt){
     progressbar(100*t/tf);
-    R0.EvolveSUN(dt);
+    R0.Evolve(dt);
     file << t << "\t" << R0.GetExpectationValue(R0.d0,0,0) << "  " 
 	 << R0.GetExpectationValue(R0.evol_b0_proj[0],0,0) << "  " 
 	 << R0.GetExpectationValue(R0.evol_b0_proj[1],0,0) << std::endl;
@@ -100,7 +100,7 @@ int main(){
   std::cout << std::endl << "Computing detuned rabi" << std::endl;
   for(double t=0;t<tf;t+=dt){
     progressbar(100*t/tf);
-    Rd.EvolveSUN(dt);
+    Rd.Evolve(dt);
     file << t << "\t" << Rd.GetExpectationValue(Rd.d0,0,0) << "  " 
 	 << Rd.GetExpectationValue(Rd.b0_proj[0],0,0) << "  " 
 	 << Rd.GetExpectationValue(Rd.b0_proj[1],0,0) << std::endl;

@@ -247,7 +247,7 @@ class SQUIDS {
   //***************************************************************
   ///\brief Numerical evolution of the state using GSL
   ///\param dt evolution time interval.
-  int EvolveSUN(double dt);
+  int Evolve(double dt);
 
   //***************************************************************
   //functions to set parameters in the object.

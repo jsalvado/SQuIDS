@@ -129,7 +129,7 @@ void collective::Adiabatic_mu(double mui, double muf, double per, bool b){
   bar=b;
   mu_i=mui;
   mu_f=muf;
-  EvolveSUN(period);
+  Evolve(period);
   if(bar)
     std::cout << std::endl;  
 }

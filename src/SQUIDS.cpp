@@ -172,7 +172,7 @@ int SQUIDS::Set_xrange(double xi, double xf, std::string type){
 
 double SQUIDS::GetExpectationValue(SU_vector op,  int nrh, int i) const{
   SU_vector h0=H0(x[i]);
-  return state[i].rho[nrh]*op.SUEvolve(h0,t-t_ini);
+  return state[i].rho[nrh]*op.Evolve(h0,t-t_ini);
 }
 
 double SQUIDS::GetExpectationValueD(SU_vector op, int nrh,  double xi) const{
@@ -191,7 +191,7 @@ double SQUIDS::GetExpectationValueD(SU_vector op, int nrh,  double xi) const{
 
   return (state[xid].rho[nrh] + 
 	   (state[xid+1].rho[nrh]-
-	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.SUEvolve(h0,t-t_ini);
+	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.Evolve(h0,t-t_ini);
 }
 
 int SQUIDS::Get_i(double xi) const{
@@ -317,7 +317,7 @@ int SQUIDS::Derive(double at){
   return GSL_SUCCESS;
 }
 
-int SQUIDS::EvolveSUN(double dt){
+int SQUIDS::Evolve(double dt){
   if(AnyNumerics){
     int gsl_status = GSL_SUCCESS;
 
@@ -353,7 +353,7 @@ int SQUIDS::EvolveSUN(double dt){
     
     gsl_odeiv2_driver_free(d);
     if( gsl_status != GSL_SUCCESS ){
-      throw std::runtime_error("SQUIDS::EvolveSUN: Error in GSL ODE solver.");
+      throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver.");
     }
 
 #ifdef CalNeuOscSUN_DEBUG

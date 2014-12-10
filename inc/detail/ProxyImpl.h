@@ -54,7 +54,7 @@ namespace detail{
     ///subtraction with SU_vectors
     SU_vector operator-(const SU_vector& other) const;
     ///time evolution according to an SU_vector operator
-    SU_vector SUEvolve(const SU_vector& other, double t) const;
+    SU_vector Evolve(const SU_vector& other, double t) const;
     
     ///negation
     SU_vector operator-() const &;
@@ -73,7 +73,7 @@ namespace detail{
     SU_vector operator-(const ProxyType& other) const;
     ///time evolution of a proxy according to an operator given by another proxy
     template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
-    SU_vector SUEvolve(const ProxyType& other ,double t) const;
+    SU_vector Evolve(const ProxyType& other ,double t) const;
     
     ///whether the result of the operation can be written directly
     ///into the storage of the first operand
@@ -209,8 +209,8 @@ namespace detail{
     return((SU_vector)*this - other);
   }
   template<typename Op>
-  SU_vector EvaluationProxy<Op>::SUEvolve(const SU_vector& other ,double t) const{
-    return(((SU_vector)*this).SUEvolve(other,t));
+  SU_vector EvaluationProxy<Op>::Evolve(const SU_vector& other ,double t) const{
+    return(((SU_vector)*this).Evolve(other,t));
   }
   
   template<typename Op>
@@ -234,8 +234,8 @@ namespace detail{
   }
   template<typename Op>
   template<typename ProxyType, typename>
-  SU_vector EvaluationProxy<Op>::SUEvolve(const ProxyType& other ,double t) const{
-    return(SU_vector(*this).SUEvolve(other,t));
+  SU_vector EvaluationProxy<Op>::Evolve(const ProxyType& other ,double t) const{
+    return(SU_vector(*this).Evolve(other,t));
   }
 } //namespace detail
 

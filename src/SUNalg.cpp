@@ -471,7 +471,7 @@ detail::NegationProxy SU_vector::operator-() &&{
   return(detail::NegationProxy{*this,detail::Arg1Movable});
 }
 
-detail::EvolutionProxy SU_vector::SUEvolve(const SU_vector& suv1,double t) const{
+detail::EvolutionProxy SU_vector::Evolve(const SU_vector& suv1,double t) const{
   return(detail::EvolutionProxy{suv1,*this,t});
 }
 
