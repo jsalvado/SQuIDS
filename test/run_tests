@@ -54,6 +54,11 @@ FAIL_LABEL="FAIL"
 EXPECTED_FAIL_LABEL="FAIL (Expected)"
 MISSING_REFERENCE_LABEL="NOT RUN (Reference output missing)"
 
+if [ ! "$CXX" ]; then
+	echo "CXX is not set; not sure which compiler to use" 1>&2
+	exit 1
+fi
+
 # set environment for dynamic linking
 if uname | grep -q 'Darwin' ; then
     export DYLD_LIBRARY_PATH="../lib"

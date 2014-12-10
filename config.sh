@@ -211,7 +211,7 @@ $(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Ma
 	@echo Compiling `basename $<` to `basename $@`
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@
 
-.PHONY: clean install doxygen docs
+.PHONY: clean install doxygen docs test check
 clean:
 	@echo Erasing generated files
 	@rm -f $(LIBDIR)/*.o $(LIBDIR)/*.a $(LIBDIR)/*.so $(LIBDIR)/*.dylib
@@ -222,9 +222,9 @@ docs:
 	@doxygen src/doxyfile
 
 test: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd test ; ./run_tests
+	@cd test ; export CXX=$(CXX) ; ./run_tests
 check: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd test ; ./run_tests
+	@cd test ; export CXX=$(CXX) ; ./run_tests
 
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
