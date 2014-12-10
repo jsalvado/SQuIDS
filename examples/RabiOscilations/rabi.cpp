@@ -52,9 +52,6 @@ void rabi::init(double D_E, double wi, double Am){
   }
 
   suH0=SU_vector(nsun);
-  d=SU_vector(nsun);
-  d0=SU_vector(nsun);
-
   d0=(b1_proj[0]-b1_proj[1]);
   suH0 = b0_proj[1]*Delta_E;
 
@@ -71,11 +68,10 @@ void rabi::PreDerive(double t){
   }
 }
 
-SU_vector rabi::H0(double x){
+SU_vector rabi::H0(double x) const{
   return suH0;
 }
 
-SU_vector rabi::HI(int ix,double t){
-  d=(evol_b1_proj[0]-evol_b1_proj[1]);
-  return (A*cos(w*t))*d;
+SU_vector rabi::HI(int ix,double t) const{
+  return (A*cos(w*t))*(evol_b1_proj[0]-evol_b1_proj[1]);
 }

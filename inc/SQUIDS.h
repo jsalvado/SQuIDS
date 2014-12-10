@@ -203,36 +203,36 @@ class SQUIDS {
   //***************************************************************
   ///\brief Returns the closes position in the array x for the value given
   ///\param x value of x to look for
-  int Get_i(double x);
+  int Get_i(double x) const;
 
   //***************************************************************
   ///\brief Returns de value in the position "i"
   ///\param i node position
-  double Get_x(int i){return x[i];};
+  double Get_x(int i) const{return x[i];};
 
   //***************************************************************
   //virtual functions defined in the dervied class
   ///\brief H0 time independent evolution operator
-  virtual SU_vector H0(double x){SU_vector V(nsun); return V;}
+  virtual SU_vector H0(double x) const{ return SU_vector(nsun);}
   ///\brief H1 time dependent evolution operator
-  virtual SU_vector HI(int ix,double t){SU_vector V(nsun); return V;}
+  virtual SU_vector HI(int ix,double t) const{ return SU_vector(nsun);}
   ///\brief Attenuation and/or decoherence operator
   ///\param ix Index in the x-array
   ///\param t time
-  virtual SU_vector GammaRho(int ix, double t){SU_vector V(nsun); return V;}
+  virtual SU_vector GammaRho(int ix, double t) const{ return SU_vector(nsun);}
   ///\brief Function containing other possible operations, like non linear terms in rho
   ///or terms involving the scalar functions
   ///\param ix Index in the x-array
   ///\param t time
-  virtual SU_vector InteractionsRho(int ix,double t){SU_vector V(nsun); return V;}
+  virtual SU_vector InteractionsRho(int ix,double t) const{ return SU_vector(nsun);}
   ///\brief Attenuation for the scalar functions
   ///\param ix Index in the x-array
   ///\param t time
-  virtual double GammaScalar(int ix, double t){return 0.0;}
+  virtual double GammaScalar(int ix, double t) const{return 0.0;}
   ///\brief Other possible interaction terms for the scalar functions.
   ///\param ix Index in the x-array
   ///\param t time
-  virtual double InteractionsScalar(int ix,double t){return 0.0;}
+  virtual double InteractionsScalar(int ix,double t) const{return 0.0;}
   ///\brief Function to be evaluated before the derivative
   ///\param t time
   ///
@@ -305,7 +305,7 @@ class SQUIDS {
   ///\param op operator
   ///\param irho index of rho
   ///\param ix index in the array "x"
-  double GetExpectationValue(SU_vector op,int irho,int ix);
+  double GetExpectationValue(SU_vector op,int irho,int ix) const;
 
   //***************************************************************
   ///\brief Returns the expectation value for a given operator for the rho given by irho 
@@ -313,7 +313,7 @@ class SQUIDS {
   ///\param op operator 
   ///\param irho index of rho
   ///\param x value of x
-  double GetExpectationValueD(SU_vector op,int irho,double x);
+  double GetExpectationValueD(SU_vector op,int irho,double x) const;
   
   ///\brief Returns the current time of the system
   double Get_t() const{ return(t); }

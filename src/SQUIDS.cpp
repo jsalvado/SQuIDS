@@ -170,12 +170,12 @@ int SQUIDS::Set_xrange(double xi, double xf, std::string type){
   return 0;
 }
 
-double SQUIDS::GetExpectationValue(SU_vector op,  int nrh, int i){
+double SQUIDS::GetExpectationValue(SU_vector op,  int nrh, int i) const{
   SU_vector h0=H0(x[i]);
   return state[i].rho[nrh]*op.SUEvolve(h0,t-t_ini);
 }
 
-double SQUIDS::GetExpectationValueD(SU_vector op, int nrh,  double xi){
+double SQUIDS::GetExpectationValueD(SU_vector op, int nrh,  double xi) const{
   SU_vector h0=H0(xi);
   int xid;
   for(unsigned int i = 0; i < nx; i++){
@@ -194,7 +194,7 @@ double SQUIDS::GetExpectationValueD(SU_vector op, int nrh,  double xi){
 	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.SUEvolve(h0,t-t_ini);
 }
 
-int SQUIDS::Get_i(double xi){
+int SQUIDS::Get_i(double xi) const{
   double xl, xr;
   int nr=nx-1;
   int nl=0;

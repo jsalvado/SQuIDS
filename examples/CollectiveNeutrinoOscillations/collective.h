@@ -66,13 +66,13 @@ class collective: public SQUIDS {
   bool bar;
   
   //shows the progress bar
-  void progressbar( int percent, double mu);
+  void progressbar( int percent, double mu) const;
 
   //function that is evaluated before computting the derivatives, it bassically computes the vector P 
   void PreDerive(double t);
 
   //Hamilitonian of the system, in this case we don't use any time independent separation(non in the interaction picutre formalism)
-  SU_vector HI(int ix,double t);
+  SU_vector HI(int ix,double t) const;
 
   //Fermi distribution
   double Fermi(double EoverT);

@@ -43,8 +43,6 @@ class rabi: public SQUIDS {
  private:
   //Hamiltonian no external field
   SU_vector suH0;
-  //dipole
-  SU_vector d;
 
   //Energy difference
   double Delta_E;
@@ -71,9 +69,9 @@ class rabi: public SQUIDS {
   void init(double D_E, double wi, double Am);
   
   //Time independent hamiltonian
-  SU_vector H0(double);
+  SU_vector H0(double) const;
   //Time dependent hamiltonian(Laser)
-  SU_vector HI(int ix,double t);
+  SU_vector HI(int ix,double t) const;
 
 };
 

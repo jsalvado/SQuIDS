@@ -29,8 +29,8 @@
 
 
 
-#ifndef __VACUUM_H
-#define __VACUUM_H
+#ifndef VACUUM_H
+#define VACUUM_H
 
 #include <iostream>
 #include <float.h>
@@ -62,7 +62,7 @@ class vacuum: public SQUIDS {
   //Function to set the parameters.
   void SetVacuum(Const par);  
   //H0 operator
-  SU_vector H0(double);
+  SU_vector H0(double) const;
   
   //get the final flux, the initial one is flat in energy
   double Get_flux(int,double);

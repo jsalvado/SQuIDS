@@ -78,7 +78,7 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
 }
 
 //Function that returns the H0 operator
-SU_vector vacuum::H0(double x){
+SU_vector vacuum::H0(double x) const{
   return DM2*(0.5/x);
 }
 
