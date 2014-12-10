@@ -131,7 +131,7 @@ if [ "$GSL_INCDIR" -a "$GSL_LIBDIR" ]; then
 	fi
 fi
 
-find_package gsl 1.14
+find_package gsl 1.15
 
 if [ ! -d ./lib/ ]; then
     mkdir lib;

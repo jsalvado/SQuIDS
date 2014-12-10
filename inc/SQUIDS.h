@@ -44,7 +44,7 @@
  other compilers as well. 
  
  The GNU Scientific Library (GSL),
- version 1.14 or newer is needed by SQuIDS to perform differential equation 
+ version 1.15 or newer is needed by SQuIDS to perform differential equation 
  integration. The latest version can be found at 
  https://www.gnu.org/software/gsl/ .
  
