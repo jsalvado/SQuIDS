@@ -43,7 +43,7 @@ namespace detail{
     }
     ///compute the stored operation, stealing memory if possible
     operator SU_vector() &&{
-      SU_vector result(static_cast<Op&&>(*this),nullptr);
+      SU_vector result(static_cast<Op&&>(*this),(Op*)nullptr);
       return(result);
     }
     
