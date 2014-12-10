@@ -36,9 +36,14 @@ namespace detail{
       static_cast<const Op*>(this)->compute(target);
     }
     ///compute the stored operation into a temporary SU_vector
-    operator SU_vector() const{
+    operator SU_vector() const &{
       SU_vector result(suv1.dim);
       compute(detail::vector_wrapper<detail::AssignWrapper>{result.dim,result.components});
+      return(result);
+    }
+    ///compute the stored operation, stealing memory if possible
+    operator SU_vector() &&{
+      SU_vector result(static_cast<Op&&>(*this),nullptr);
       return(result);
     }
     
@@ -50,6 +55,10 @@ namespace detail{
     SU_vector operator-(const SU_vector& other) const;
     ///time evolution according to an SU_vector operator
     SU_vector SUEvolve(const SU_vector& other, double t) const;
+    
+    ///negation
+    SU_vector operator-() const &;
+    SU_vector operator-() &&;
     
     ///scalar product between proxies
     template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
@@ -90,7 +99,7 @@ namespace detail{
   
   ///The result of adding two SU_vectors
   struct AdditionProxy : public EvaluationProxy<AdditionProxy>{
-    ///THe sum of suv1 and suv2
+    ///The sum of suv1 and suv2
     AdditionProxy(const SU_vector& suv1,const SU_vector& suv2,int flags=0):
     EvaluationProxy<AdditionProxy>{suv1,suv2,flags}{}
     
@@ -121,6 +130,24 @@ namespace detail{
   
   template<>
   struct operation_traits<SubtractionProxy>{
+    constexpr static bool elementwise=true;
+  };
+  
+  ///The result of negating an SU_vector
+  struct NegationProxy : public EvaluationProxy<NegationProxy>{
+    ///The additive inverse of suv
+    NegationProxy(const SU_vector& suv, int flags=0):
+    EvaluationProxy<NegationProxy>{suv,suv,flags}{}
+    
+    template<typename VW>
+    void compute(VW target) const{
+      for(int i=0; i<target.dim*target.dim; i++)
+        target.components[i] += -suv1.components[i];
+    }
+  };
+  
+  template<>
+  struct operation_traits<NegationProxy>{
     constexpr static bool elementwise=true;
   };
   
@@ -184,6 +211,15 @@ namespace detail{
   template<typename Op>
   SU_vector EvaluationProxy<Op>::SUEvolve(const SU_vector& other ,double t) const{
     return(((SU_vector)*this).SUEvolve(other,t));
+  }
+  
+  template<typename Op>
+  SU_vector EvaluationProxy<Op>::operator-() const &{
+    return(-(SU_vector)*this);
+  }
+  template<typename Op>
+  SU_vector EvaluationProxy<Op>::operator-() &&{
+    return(-(SU_vector)std::move(*this));
   }
   
   template<typename Op>

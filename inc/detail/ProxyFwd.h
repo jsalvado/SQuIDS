@@ -80,6 +80,7 @@ namespace detail{
   struct EvolutionProxy;
   struct AdditionProxy;
   struct SubtractionProxy;
+  struct NegationProxy;
   struct MultiplicationProxy;
   struct iCommutatorProxy;
   struct ACommutatorProxy;

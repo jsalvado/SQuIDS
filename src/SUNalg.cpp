@@ -463,6 +463,14 @@ detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) &&{
   return(detail::SubtractionProxy{*this,other,detail::Arg1Movable});
 }
 
+detail::NegationProxy SU_vector::operator-() const &{
+  return(detail::NegationProxy{*this});
+}
+
+detail::NegationProxy SU_vector::operator-() &&{
+  return(detail::NegationProxy{*this,detail::Arg1Movable});
+}
+
 detail::EvolutionProxy SU_vector::SUEvolve(const SU_vector& suv1,double t) const{
   return(detail::EvolutionProxy{suv1,*this,t});
 }

@@ -354,6 +354,14 @@ public:
   ///\returns An object convertible to an SU_vector
   detail::SubtractionProxy operator -(const SU_vector& other) &&;
   
+  ///\brief Negation
+  ///\returns An object convertible to an SU_vector
+  detail::NegationProxy operator -() const &;
+  
+  ///\brief Negation
+  ///\returns An object convertible to an SU_vector
+  detail::NegationProxy operator -() &&;
+  
   ///\brief Optimized assignment from the result of an arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator=(const ProxyType& proxy){
@@ -427,6 +435,7 @@ public:
   friend struct detail::EvolutionProxy;
   friend struct detail::AdditionProxy;
   friend struct detail::SubtractionProxy;
+  friend struct detail::NegationProxy;
   friend struct detail::MultiplicationProxy;
   friend struct detail::iCommutatorProxy;
   friend struct detail::ACommutatorProxy;
