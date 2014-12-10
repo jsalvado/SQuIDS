@@ -88,8 +88,8 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
     }
 
   //setting errors and step function for the GSL
-  Set_rel_error(1e-8);
-  Set_abs_error(1e-8);
+  Set_rel_error(1e-7);
+  Set_abs_error(1e-7);
   Set_h(1e-10);
   Set_GSL_step(gsl_odeiv2_step_rk4);
   
