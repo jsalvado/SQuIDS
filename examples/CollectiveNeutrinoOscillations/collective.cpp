@@ -92,6 +92,9 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   Set_abs_error(1e-8);
   Set_h(1e-10);
   Set_GSL_step(gsl_odeiv2_step_rk4);
+  
+  buf1.reset(new double[B.Size()]);
+  buf2.reset(new double[B.Size()]);
 }
 
 
@@ -106,7 +109,19 @@ SU_vector collective::HI(int ix,double t){
   mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
   if(bar)
     progressbar(100*t/period, mu);
-  return Get_x(ix)*B+P*(mu*(w_max-w_min)/(double)nx);
+  
+  //the following is equivalent to
+  //return Get_x(ix)*B+P*(mu*(w_max-w_min)/(double)nx);
+  
+  //make temporary vectors which use the preallocated buffers
+  SU_vector t1(nsun,buf1.get());
+  SU_vector t2(nsun,buf2.get());
+  //evaluate the subexpressions into the temporaries
+  t1=Get_x(ix)*B;
+  t2=P*(mu*(w_max-w_min)/(double)nx);
+  //return the sum of the temporaries, noting that t1 is no
+  //longer needed so its storage may be overwritten
+  return(std::move(t1)+t2);
 }
 
 void collective::Adiabatic_mu(double mui, double muf, double per, bool b){

@@ -71,11 +71,13 @@ class collective: public SQUIDS {
   //function that is evaluated before computting the derivatives, it bassically computes the vector P 
   void PreDerive(double t);
 
-  //Hamilitonian of the system, in this case we don't use any time idependent separation(non in the interaction picutre formalism)
+  //Hamilitonian of the system, in this case we don't use any time independent separation(non in the interaction picutre formalism)
   SU_vector HI(int ix,double t);
 
   //Fermi distribution
   double Fermi(double EoverT);
+  
+  std::unique_ptr<double[]> buf1, buf2;
 
  public:
   //basis
