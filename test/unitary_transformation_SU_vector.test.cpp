@@ -8,40 +8,35 @@ int main(){
   double dl=1.231;
   double t=3.456;
 
+  //Check that the time evolution is unitary
   for(unsigned int i=0;i<Ngenerators;i++){
     for(unsigned int j=0;j<Ngenerators;j++){
       SU_vector v1=SU_vector::Generator(dim,i);
       SU_vector v2=SU_vector::Generator(dim,j);
       double sprod=v1*v2;
       for(unsigned int it=0;it<dim;it++){
-	SU_vector v2=SU_vector::Projector(dim,it);
-	double out=sprod-v1.SUEvolve(v2,t)*v2.SUEvolve(v1,t);
+	SU_vector v3=SU_vector::Projector(dim,it);
+	double out=sprod-v1.SUEvolve(v3,t)*v2.SUEvolve(v3,t);
 	if(fabs(out)>1e-15){
-	    std::cout << "Generators: " << i << "  " << j << "  Evolution Operator: " << it << 
-	      "  \t" << out  << std::endl;
-	  }else{
-	    std::cout  << "Generators: " << i << "  " << j << "  Evolution Operator: " << it << 
-	      "  \t OK" <<  std::endl;
-	  }
+	  std::cout << "Generators: " << i << "  " << j << "  Evolution Operator: " << it << 
+	    "  \t" << out  << std::endl;
+	}
       }
     }
   }
 
-
+  //Check that the rotations are unitary transformations
   for(unsigned int i=0;i<Ngenerators;i++){
     for(unsigned int j=0;j<Ngenerators;j++){
       SU_vector v1=SU_vector::Generator(dim,i);
       SU_vector v2=SU_vector::Generator(dim,j);
       double sprod=v1*v2;
-      for(unsigned int ir=1;ir<Ngenerators;ir++){
-	for(unsigned int jr=ir+1;jr<Ngenerators;jr++){
+      for(unsigned int ir=1;ir<dim;ir++){
+	for(unsigned int jr=ir+1;jr<dim;jr++){
 	  double out=sprod-v1.Rotate(ir,jr,th,dl)*v2.Rotate(ir,jr,th,dl);
 	  if(fabs(out)>1e-15){
 	    std::cout << "Generators: " << i << "  " << j << "  Rotation: " << ir << "  " << jr << 
 	      "  \t" << out  << std::endl;
-	  }else{
-	    std::cout  << "Generators: " << i << "  " << j << "  Rotation: " << ir << "  " << jr << 
-	      "  \t OK" << std::endl;
 	  }
 	}
       }
