@@ -29,7 +29,7 @@
 
 #include "vacuum.h"
 
-void vacuum::init(int n,int ns, double Ein, double Efin){
+void vacuum::init(unsigned int n, unsigned int ns, double Ein, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
   //n -> is the number of energy modes
   //ns -> is the number of flavors
@@ -78,7 +78,7 @@ void vacuum::init(int n,int ns, double Ein, double Efin){
 }
 
 //Function that returns the H0 operator
-SU_vector vacuum::H0(double x) const{
+SU_vector vacuum::H0(double x, unsigned int irho) const{
   return DM2*(0.5/x);
 }
 

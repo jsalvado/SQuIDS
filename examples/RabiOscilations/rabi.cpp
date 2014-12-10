@@ -68,10 +68,10 @@ void rabi::PreDerive(double t){
   }
 }
 
-SU_vector rabi::H0(double x) const{
+SU_vector rabi::H0(double x, unsigned int irho) const{
   return suH0;
 }
 
-SU_vector rabi::HI(int ix,double t) const{
+SU_vector rabi::HI(unsigned int ix, unsigned int irho, double t) const{
   return (A*cos(w*t))*(evol_b1_proj[0]-evol_b1_proj[1]);
 }

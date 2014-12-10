@@ -49,20 +49,19 @@ class vacuum: public SQUIDS {
   std::unique_ptr<SU_vector[]> evol_b0_proj;
   std::unique_ptr<SU_vector[]> evol_b1_proj;
 
-
-  vacuum(void){};
+  vacuum(){};
   //constructor and initialization
   //int -> number of energy bins
   //int -> number of flavors
   //double -> initial energy
   //double -> final energy
   vacuum(int n1,int n2,double d1, double d2){init(n1,n2,d1,d2);};
-  void init(int,int,double, double);
+  void init(unsigned int, unsigned int, double, double);
 
   //Function to set the parameters.
   void SetVacuum(Const par);  
   //H0 operator
-  SU_vector H0(double) const;
+  SU_vector H0(double, unsigned int) const;
   
   //get the final flux, the initial one is flat in energy
   double Get_flux(int,double);

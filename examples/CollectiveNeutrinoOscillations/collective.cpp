@@ -30,7 +30,7 @@
 
 #include "collective.h"
 
-void collective::progressbar( int percent, double mu) const{
+void collective::progressbar(int percent, double mu) const{
   static int last=-1;
   if(percent==last)
     return;
@@ -97,7 +97,6 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   buf2.reset(new double[B.Size()]);
 }
 
-
 void collective::PreDerive(double t){
   P=state[0].rho[0];
   for(int ei = 1; ei < nx; ei++){
@@ -106,7 +105,7 @@ void collective::PreDerive(double t){
   mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
 }
 
-SU_vector collective::HI(int ix,double t) const{
+SU_vector collective::HI(unsigned int ix, unsigned int irho, double t) const{
   if(bar)
     progressbar(100*t/period, mu);
   

@@ -69,9 +69,9 @@ class rabi: public SQUIDS {
   void init(double D_E, double wi, double Am);
   
   //Time independent hamiltonian
-  SU_vector H0(double) const;
+  SU_vector H0(double x, unsigned int irho) const;
   //Time dependent hamiltonian(Laser)
-  SU_vector HI(int ix,double t) const;
+  SU_vector HI(unsigned int ix, unsigned int irho, double t) const;
 
 };
 

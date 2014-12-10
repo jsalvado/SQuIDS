@@ -44,7 +44,7 @@
  other compilers as well. 
  
  The GNU Scientific Library (GSL),
- version 1.15 or newer is needed by SQuIDS to perform differential equation 
+ version 1.15 or newer is needed by SQuIDS to perform differential equation
  integration. The latest version can be found at 
  https://www.gnu.org/software/gsl/ .
  
@@ -120,15 +120,12 @@ class SQUIDS {
   double t_ini;
 
   double tunit;
-  int nx;
-  int nsun;
-  int nrhos;
-  int nscalars;
+  unsigned int nx;
+  unsigned int nsun;
+  unsigned int nrhos;
+  unsigned int nscalars;
 
   int nsteps;
-
-  int index_rho;
-  int index_scalar;
 
   int size_rho;
   int size_state;
@@ -177,7 +174,7 @@ class SQUIDS {
   ///\param nscalar Number of scalars in every "x" site
   ///\param ti initial value for the evolution parameter t
 
-  SQUIDS(int nx,int dim,int nrho,int nscalar, double ti=0.0);
+  SQUIDS(unsigned int nx, unsigned int dim, unsigned int nrho, unsigned int nscalar, double ti=0.0);
 
   //***************************************************************
   virtual ~SQUIDS();
@@ -190,7 +187,7 @@ class SQUIDS {
   ///\param nrho Number of density matrix in every "x" site
   ///\param nscalar Number of scalars in every "x" site
   ///\param ti initial value for the evolution parameter t
-  void ini(int nx,int dim,int nrho, int nscalar, double ti=0.0);
+  void ini(unsigned int nx, unsigned int dim, unsigned int nrho, unsigned int nscalar, double ti=0.0);
 
 
   //***************************************************************
@@ -208,31 +205,31 @@ class SQUIDS {
   //***************************************************************
   ///\brief Returns de value in the position "i"
   ///\param i node position
-  double Get_x(int i) const{return x[i];};
+  double Get_x(unsigned int i) const{return x[i];};
 
   //***************************************************************
   //virtual functions defined in the dervied class
   ///\brief H0 time independent evolution operator
-  virtual SU_vector H0(double x) const{ return SU_vector(nsun);}
+  virtual SU_vector H0(double x, unsigned int irho) const{ return SU_vector(nsun);}
   ///\brief H1 time dependent evolution operator
-  virtual SU_vector HI(int ix,double t) const{ return SU_vector(nsun);}
+  virtual SU_vector HI(unsigned int ix, unsigned int irho, double t) const{ return SU_vector(nsun);}
   ///\brief Attenuation and/or decoherence operator
   ///\param ix Index in the x-array
   ///\param t time
-  virtual SU_vector GammaRho(int ix, double t) const{ return SU_vector(nsun);}
+  virtual SU_vector GammaRho(unsigned int ix, unsigned int irho, double t) const{ return SU_vector(nsun);}
   ///\brief Function containing other possible operations, like non linear terms in rho
   ///or terms involving the scalar functions
   ///\param ix Index in the x-array
   ///\param t time
-  virtual SU_vector InteractionsRho(int ix,double t) const{ return SU_vector(nsun);}
+  virtual SU_vector InteractionsRho(unsigned int ix, unsigned int irho, double t) const{ return SU_vector(nsun);}
   ///\brief Attenuation for the scalar functions
   ///\param ix Index in the x-array
   ///\param t time
-  virtual double GammaScalar(int ix, double t) const{return 0.0;}
+  virtual double GammaScalar(unsigned int ix, unsigned int irho, double t) const{return 0.0;}
   ///\brief Other possible interaction terms for the scalar functions.
   ///\param ix Index in the x-array
   ///\param t time
-  virtual double InteractionsScalar(int ix,double t) const{return 0.0;}
+  virtual double InteractionsScalar(unsigned int ix, unsigned int irho, double t) const{return 0.0;}
   ///\brief Function to be evaluated before the derivative
   ///\param t time
   ///
@@ -305,7 +302,7 @@ class SQUIDS {
   ///\param op operator
   ///\param irho index of rho
   ///\param ix index in the array "x"
-  double GetExpectationValue(SU_vector op,int irho,int ix) const;
+  double GetExpectationValue(SU_vector op, unsigned int irho, unsigned int ix) const;
 
   //***************************************************************
   ///\brief Returns the expectation value for a given operator for the rho given by irho 
@@ -313,7 +310,7 @@ class SQUIDS {
   ///\param op operator 
   ///\param irho index of rho
   ///\param x value of x
-  double GetExpectationValueD(SU_vector op,int irho,double x) const;
+  double GetExpectationValueD(SU_vector op, unsigned int irho, double x) const;
   
   ///\brief Returns the current time of the system
   double Get_t() const{ return(t); }

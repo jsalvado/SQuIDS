@@ -34,11 +34,11 @@ SQUIDS::SQUIDS(void){
   is_init=false;
 }
 
-SQUIDS::SQUIDS(int n,int ns,int nrh,int nsc, double ti){
+SQUIDS::SQUIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int nsc, double ti){
   ini(n,ns,nrh,nsc,ti);
 }
 
-void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti){
+void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned int nsc, double ti){
   CoherentInt=false;
   NonCoherentInt=false;
   OtherInt=false;
@@ -170,13 +170,13 @@ int SQUIDS::Set_xrange(double xi, double xf, std::string type){
   return 0;
 }
 
-double SQUIDS::GetExpectationValue(SU_vector op,  int nrh, int i) const{
-  SU_vector h0=H0(x[i]);
+double SQUIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i) const{
+  SU_vector h0=H0(x[i],nrh);
   return state[i].rho[nrh]*op.Evolve(h0,t-t_ini);
 }
 
-double SQUIDS::GetExpectationValueD(SU_vector op, int nrh,  double xi) const{
-  SU_vector h0=H0(xi);
+double SQUIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) const{
+  SU_vector h0=H0(xi,nrh);
   int xid;
   for(unsigned int i = 0; i < nx; i++){
     if ( xi >= x[i] && xi <= x[i+1]){
@@ -289,27 +289,25 @@ void SQUIDS::Set_NumSteps(int opt){
 int SQUIDS::Derive(double at){
   t=at;
   PreDerive(at);
-  for(int ei = 0; ei < nx; ei++){
+  for(unsigned int ei = 0; ei < nx; ei++){
     // Density matrix
-    for(int i = 0; i < nrhos; i++){
-      index_rho=i;
+    for(unsigned int i = 0; i < nrhos; i++){
       // Coherent interaction
       if(CoherentInt)
-        dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,t));
+        dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,i,t));
       
       // Non coherent interaction
       if(NonCoherentInt)
-        dstate[ei].rho[i] -= ACommutator(GammaRho(ei,t),state[ei].rho[i]);
+        dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),state[ei].rho[i]);
       // Other possible interaction, for example involving the Scalars or non linear terms in rho.
       if(OtherInt)
-        dstate[ei].rho[i] += InteractionsRho(ei,t);
+        dstate[ei].rho[i] += InteractionsRho(ei,i,t);
     }
     //Scalars
     if(ScalarsInt){
-      for(int is=0;is<nscalars;is++){
-        index_scalar=is;
-        dstate[ei].scalar[is] = -state[ei].scalar[is]*GammaScalar(ei,t);
-        dstate[ei].scalar[is] += InteractionsScalar(ei,t);
+      for(unsigned int is=0;is<nscalars;is++){
+        dstate[ei].scalar[is] = -state[ei].scalar[is]*GammaScalar(ei,is,t);
+        dstate[ei].scalar[is] += InteractionsScalar(ei,is,t);
       }
     }
   }
