@@ -6,7 +6,13 @@ switch (j){
 case 2:
 #include "RotationSU2_12.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
+break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
 break;
 }
 break;
@@ -20,6 +26,9 @@ break;
 case 3:
 #include "RotationSU3_13.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 2:
@@ -27,7 +36,13 @@ switch (j){
 case 3:
 #include "RotationSU3_23.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
+break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
 break;
 }
 break;
@@ -44,6 +59,9 @@ break;
 case 4:
 #include "RotationSU4_14.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 2:
@@ -54,6 +72,9 @@ break;
 case 4:
 #include "RotationSU4_24.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 3:
@@ -61,7 +82,13 @@ switch (j){
 case 4:
 #include "RotationSU4_34.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
+break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
 break;
 }
 break;
@@ -81,6 +108,9 @@ break;
 case 5:
 #include "RotationSU5_15.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 2:
@@ -94,6 +124,9 @@ break;
 case 5:
 #include "RotationSU5_25.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 3:
@@ -104,6 +137,9 @@ break;
 case 5:
 #include "RotationSU5_35.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 4:
@@ -111,7 +147,13 @@ switch (j){
 case 5:
 #include "RotationSU5_45.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
+break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
 break;
 }
 break;
@@ -134,6 +176,9 @@ break;
 case 6:
 #include "RotationSU6_16.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 2:
@@ -150,6 +195,9 @@ break;
 case 6:
 #include "RotationSU6_26.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 3:
@@ -163,6 +211,9 @@ break;
 case 6:
 #include "RotationSU6_36.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 4:
@@ -173,6 +224,9 @@ break;
 case 6:
 #include "RotationSU6_46.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
 break;
 case 5:
@@ -180,7 +234,13 @@ switch (j){
 case 6:
 #include "RotationSU6_56.txt"
 break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
+break;
 }
+break;
+default: 
+throw std::runtime_error("SUN_rotation error. \n");
 break;
 }
 break;
