@@ -15,26 +15,30 @@
  *   Authors:                                                                  *
  *      Carlos Arguelles (University of Wisconsin Madison)                     * 
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
- *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
+ *         chris.weaver@icecube.wisc.edu                                       *
  ******************************************************************************/
 
-
 #include "SQUIDS.h"
+#include <cmath>
+#include <limits>
 
 //#define CalNeuOscSUN_DEBUG
+
+///\brief Auxiliary function used for the GSL interface
+int RHS(double ,const double*,double*,void*);
 
 SQUIDS::SQUIDS(void){
   is_init=false;
 }
 
-SQUIDS::SQUIDS(int n,int ns,int nrh,int nsc, double ti = 0.0){
+SQUIDS::SQUIDS(int n,int ns,int nrh,int nsc, double ti){
   ini(n,ns,nrh,nsc,ti);
 }
 
-void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti=0.0){
+void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti){
   CoherentInt=false;
   NonCoherentInt=false;
   OtherInt=false;
@@ -86,7 +90,6 @@ void SQUIDS::ini(int n,int nsu,int nrh,int nsc, double ti=0.0){
 
   for(int ei = 0; ei < nx; ei++){
     for(int i=0;i<nrhos;i++){
-      //state[ei].rho[i].InitSU_vector(nsun,&(system[ei*size_state+i*size_rho]));
       state[ei].rho[i]=SU_vector(nsun,&(system[ei*size_state+i*size_rho]));
       dstate[ei].rho[i]=SU_vector(nsun,nullptr);
     }
@@ -275,44 +278,21 @@ void SQUIDS::Set_abs_error(double opt){
   abs_error=opt;
 }
 
-void SQUIDS::Set_t(double opt){
-  t=opt;
-  t_ini=opt;
-}
-
 void SQUIDS::Set_units(double opt){
   tunit=opt;
-}
-
-void SQUIDS::Set_nx(int opt){
-  if(opt!=nx)
-    ini(opt,nsun,nrhos,nscalars);
-}
-
-void SQUIDS::Set_nsun(int opt){
-  if(opt!=nsun)
-    ini(nx,opt,nrhos,nscalars);
 }
 
 void SQUIDS::Set_NumSteps(int opt){
   nsteps=opt;
 }
 
-void SQUIDS::Set_nrhos(int opt){
-  if(opt!=nrhos)
-    ini(nx,nsun,opt,nscalars);
-}
-void SQUIDS::Set_nscalars(int opt){
-  ini(nx,nsun,nrhos,opt);
-}
-
 int SQUIDS::Derive(double at){
   t=at;
   PreDerive(at);
   for(int ei = 0; ei < nx; ei++){
+    // Density matrix
     for(int i = 0; i < nrhos; i++){
       index_rho=i;
-      // Density matrix
       // Coherent interaction
       if(CoherentInt)
         dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,t));
@@ -323,8 +303,8 @@ int SQUIDS::Derive(double at){
       // Other possible interaction, for example involving the Scalars or non linear terms in rho.
       if(OtherInt)
         dstate[ei].rho[i] += InteractionsRho(ei,t);
-      //Scalars
     }
+    //Scalars
     if(ScalarsInt){
       for(int is=0;is<nscalars;is++){
         index_scalar=is;

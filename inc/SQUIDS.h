@@ -86,22 +86,13 @@
 #ifndef SQUIDS_H
 #define SQUIDS_H
 
-#include "const.h"
 #include "SUNalg.h"
 
-#include <iostream>
-#include <float.h>
-#include <math.h>
-#include <complex>
+#include <iosfwd>
 #include <vector>
-#include <limits>
 #include <memory>
 
-#include <gsl/gsl_complex.h>
-#include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_eigen.h>
 #include <gsl/gsl_odeiv2.h>
 
 ///\brief SQuIDS main class
@@ -186,7 +177,7 @@ class SQUIDS {
   ///\param nscalar Number of scalars in every "x" site
   ///\param ti initial value for the evolution parameter t
 
-  SQUIDS(int nx,int dim,int nrho,int nscalar, double ti);
+  SQUIDS(int nx,int dim,int nrho,int nscalar, double ti=0.0);
 
   //***************************************************************
   virtual ~SQUIDS();
@@ -199,7 +190,7 @@ class SQUIDS {
   ///\param nrho Number of density matrix in every "x" site
   ///\param nscalar Number of scalars in every "x" site
   ///\param ti initial value for the evolution parameter t
-  void ini(int nx,int dim,int nrho, int nscalar, double ti);
+  void ini(int nx,int dim,int nrho, int nscalar, double ti=0.0);
 
 
   //***************************************************************
@@ -304,24 +295,13 @@ class SQUIDS {
   void Set_rel_error(double opt);
   ///\brief Set the numerical absolute error
   void Set_abs_error(double opt);
-  ///\brief Set the time value
-  void Set_t(double opt);
   ///\brief Set the time scale
   void Set_units(double opt);
-  ///\brief Set the number of x nodes
-  void Set_nx(int opt);
-  ///\brief Set the hilbert space dimension
-  void Set_nsun(int opt);
   ///\brief Set the number of steps when not using adaptive stepping
   void Set_NumSteps(int opt);
-  ///\brief Set the number of SU_vector per x-node
-  void Set_nrhos(int opt);
-  ///\brief Set the number of scalars per x-node
-  void Set_nscalars(int opt);
   
-
   //***************************************************************
-  ///\briefn Returns the expectation value for a given operator for a give state irho in a node ix.
+  ///\brief Returns the expectation value for a given operator for a give state irho in a node ix.
   ///\param op operator
   ///\param irho index of rho
   ///\param ix index in the array "x"
@@ -334,11 +314,9 @@ class SQUIDS {
   ///\param irho index of rho
   ///\param x value of x
   double GetExpectationValueD(SU_vector op,int irho,double x);
-
-
+  
+  ///\brief Returns the current time of the system
+  double Get_t() const{ return(t); }
 };
-
-///\brief Auxiliar function used for the GSL interface
-int RHS(double ,const double*,double*,void*);
 
 #endif
