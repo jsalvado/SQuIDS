@@ -33,7 +33,7 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   //initialize SQUID with one density matrix and zero scalar functions
   //nbins -> is the number of energy modes
   //nflavor -> is the number of flavors
-  //1 -> is the number of density matrices rho in every enegy bin
+  //1 -> is the number of density matrices, rho, in every energy bin
   //0 -> number of scalar functions
   //0 -> initial time
   ini(nbins,nflavor,1,0,0);
