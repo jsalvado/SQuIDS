@@ -29,14 +29,14 @@
 
 #include "vacuum.h"
 
-void vacuum::init(unsigned int n, unsigned int ns, double Ein, double Efin){
+void vacuum::init(unsigned int nbins, unsigned int nflavor, double Ein, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
-  //n -> is the number of energy modes
-  //ns -> is the number of flavors
+  //nbins -> is the number of energy modes
+  //nflavor -> is the number of flavors
   //1 -> is the number of density matrices rho in every enegy bin
   //0 -> number of scalar functions
   //0 -> initial time
-  ini(n,ns,1,0,0);
+  ini(nbins,nflavor,1,0,0);
   //initialize the SU_vector that contines the delta_m
   DM2=SU_vector(nsun);
   //set the energy range (Ein,Efin) in log scale
@@ -49,9 +49,7 @@ void vacuum::init(unsigned int n, unsigned int ns, double Ein, double Efin){
   params.SetMixingAngle(0,2,8.55*params.degree);  //theta 1,3
   params.SetMixingAngle(1,2,42.3*params.degree);  //theta 2,3
 
-  //Construction of the progectors for the mass an flavor basis
-  evol_b0_proj.reset(new SU_vector[nx*nsun]);
-  evol_b1_proj.reset(new SU_vector[nx*nsun]);
+  //Construction of the projectors for the mass an flavor basis
   b0_proj.reset(new SU_vector[nsun]);
   b1_proj.reset(new SU_vector[nsun]);
 
@@ -59,12 +57,6 @@ void vacuum::init(unsigned int n, unsigned int ns, double Ein, double Efin){
     b0_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i].RotateToB1(params);
-
-    for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
-      evol_b1_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
-      evol_b1_proj[i*nx + ei].RotateToB1(params);
-    }
   }
 
   for(int i = 1; i < nsun; i++)
@@ -91,4 +83,3 @@ double vacuum::Get_flux(int i,double e){
 double vacuum::Get_flux(int i,int e){
   return GetExpectationValue(b1_proj[i],0,e);
 }
-

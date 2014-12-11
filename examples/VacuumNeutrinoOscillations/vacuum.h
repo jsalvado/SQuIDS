@@ -22,12 +22,10 @@
  ******************************************************************************/
 
  /******************************************************************************
-  Very simple example that computes the evolution for vacuum oscilatios of 
+  Very simple example that computes the evolution for vacuum oscillations of 
   neutrinos. The numerical integration is not needed for this since is already
   solved using the SUN_vector evolution.
  ******************************************************************************/
-
-
 
 #ifndef VACUUM_H
 #define VACUUM_H
@@ -46,22 +44,20 @@ class vacuum: public SQUIDS {
  public:
   std::unique_ptr<SU_vector[]> b0_proj;
   std::unique_ptr<SU_vector[]> b1_proj;
-  std::unique_ptr<SU_vector[]> evol_b0_proj;
-  std::unique_ptr<SU_vector[]> evol_b1_proj;
 
   vacuum(){};
   //constructor and initialization
-  //int -> number of energy bins
-  //int -> number of flavors
-  //double -> initial energy
-  //double -> final energy
-  vacuum(int n1,int n2,double d1, double d2){init(n1,n2,d1,d2);};
-  void init(unsigned int, unsigned int, double, double);
+  //nbins -> number of energy bins
+  //nflavor -> number of flavors
+  //Ein -> initial energy
+  //Efin -> final energy
+  vacuum(unsigned int nbins, unsigned int nflavor, double Ein, double Efin){init(nbins,nflavor,Ein,Efin);};
+  void init(unsigned int nbins, unsigned int nflavor, double Ein, double Efin);
 
   //Function to set the parameters.
   void SetVacuum(Const par);  
   //H0 operator
-  SU_vector H0(double, unsigned int) const;
+  SU_vector H0(double E, unsigned int irho) const;
   
   //get the final flux, the initial one is flat in energy
   double Get_flux(int,double);
