@@ -25,11 +25,12 @@
 #include <cmath>
 
 void rabi::init(double D_E, double wi, double Am){
+  ini(1/*nodes*/,2/*SU(2)*/,1/*density matrices*/,0,0);
+  
   params.SetEnergyDifference(1,D_E);
   w=wi;
   A=Am;
   params.SetMixingAngle(0,1,params.pi/4);
-  ini(1,2,1,0,0);
 
   Set_CoherentRhoTerms(true);
 
