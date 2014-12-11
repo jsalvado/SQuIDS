@@ -83,12 +83,12 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   //set initial state
   for(int ei = 0; ei < nx; ei++){
     double w=Get_x(ei);
-      if(w>0){
-        state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(1.0/(Norm*w*w)*Fermi(1/(2*w)));
-      }else{
-        state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(-0.7/(Norm*w*w)*Fermi(-1/(2*w)));
-      }
+    if(w>0){
+      state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(1.0/(Norm*w*w)*Fermi(1/(2*w)));
+    }else{
+      state[ei].rho[0] = (ey*sin(theta) + ez*cos(theta))*(-0.7/(Norm*w*w)*Fermi(-1/(2*w)));
     }
+  }
 
   //setting errors and step function for the GSL
   Set_rel_error(1e-7);
@@ -106,9 +106,8 @@ void collective::PreDerive(double t){
   
   //compute the sum of 'polarizations' of all nodes
   P=state[0].rho[0];
-  for(int ei = 1; ei < nx; ei++){
+  for(int ei = 1; ei < nx; ei++)
     P+=state[ei].rho[0];
-  }
   //update the strength of self-interactions
   mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
 }
