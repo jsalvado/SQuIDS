@@ -27,9 +27,9 @@
 void rabi::init(double D_E, double wi, double Am){
   ini(1/*nodes*/,2/*SU(2)*/,1/*density matrices*/,0/*scalars*/);
   
-  params.SetEnergyDifference(1,D_E);
   w=wi;
   A=Am;
+  params.SetEnergyDifference(1,D_E);
   params.SetMixingAngle(0,1,params.pi/4);
 
   Set_CoherentRhoTerms(true);
@@ -44,7 +44,7 @@ void rabi::init(double D_E, double wi, double Am){
   }
 
   suH0=SU_vector(nsun);
-  suH0 = b0_proj[1]*params.GetEnergyDifference(1);
+  suH0=b0_proj[1]*params.GetEnergyDifference(1);
   
   d0=(b1_proj[0]-b1_proj[1]);
   d.reset(new SU_vector[nx]);
@@ -56,8 +56,8 @@ void rabi::init(double D_E, double wi, double Am){
 }
 
 void rabi::PreDerive(double t){
-  for(int ei = 0; ei < nx; ei++)
-    d[ei] = d0.Evolve(suH0,t-Get_t_initial());
+  for(int ei=0; ei < nx; ei++)
+    d[ei]=d0.Evolve(suH0,t-Get_t_initial());
 }
 
 SU_vector rabi::H0(double x, unsigned int irho) const{
