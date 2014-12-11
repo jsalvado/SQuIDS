@@ -22,6 +22,7 @@
  ******************************************************************************/
 
 #include "rabi.h"
+#include <cmath>
 
 void rabi::init(double D_E, double wi, double Am){
   params.SetEnergyDifference(1,D_E);

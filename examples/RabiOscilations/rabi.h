@@ -22,20 +22,13 @@
  ******************************************************************************/
 
  /*****************************************************************************
- / Simple example computting two rabi models with and whithout dettuning       /
- / reproducing some plots form Phys. Rev. B 84, 075107 J. I. Fuks, N. Helbig,  /
- / I. V. Tokatly, and A. Rubio arXiv:1101.2880                                 /
- ******************************************************************************/
-
+ / Simple example computting two rabi models with and whithout dettuning      /
+ / reproducing some plots from Phys. Rev. B 84, 075107 J. I. Fuks, N. Helbig, /
+ / I. V. Tokatly, and A. Rubio arXiv:1101.2880                                /
+ *****************************************************************************/
 
 #ifndef RABI_H
 #define RABI_H
-
-#include <iostream>
-#include <float.h>
-#include <math.h>
-#include <complex>
-#include <vector>
 
 #include <SQUIDS.h>
 
@@ -68,7 +61,6 @@ class rabi: public SQUIDS {
   SU_vector H0(double x, unsigned int irho) const;
   //Time dependent hamiltonian(Laser)
   SU_vector HI(unsigned int ix, unsigned int irho, double t) const;
-
 };
 
 #endif

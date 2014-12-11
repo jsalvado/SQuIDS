@@ -29,6 +29,7 @@
  ******************************************************************************/
 
 #include "rabi.h"
+#include <iostream>
 #include <fstream>
 
 void progressbar( int percent){
@@ -52,7 +53,6 @@ void progressbar( int percent){
   std::cout.width( 3 );
   std::cout<< percent << "%  " << std::flush;
 }
-
 
 int main(){
   // Declaration of the objects
