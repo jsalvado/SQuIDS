@@ -119,7 +119,6 @@ class SQUIDS {
   double t;
   double t_ini;
 
-  double tunit;
   unsigned int nx;
   unsigned int nsun;
   unsigned int nrhos;
@@ -294,8 +293,6 @@ class SQUIDS {
   void Set_rel_error(double opt);
   ///\brief Set the numerical absolute error
   void Set_abs_error(double opt);
-  ///\brief Set the time scale
-  void Set_units(double opt);
   ///\brief Set the number of steps when not using adaptive stepping
   void Set_NumSteps(int opt);
   

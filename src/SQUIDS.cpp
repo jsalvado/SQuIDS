@@ -62,7 +62,6 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   /*
     Setting time units and initial time
   */
-  tunit=1;
   t_ini=ti;
   t=ti;
   nsteps=1000;
@@ -103,9 +102,9 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   rel_error=1e-20;
   abs_error=1e-20;
 
-  h        = tunit*1e-16;
-  h_min    = tunit*1e-40;
-  h_max    = tunit*1e10;
+  h        = std::numeric_limits<double>::epsilon();
+  h_min    = std::numeric_limits<double>::min();
+  h_max    = std::numeric_limits<double>::max();
 
   // setting up GSL ODE solver
 
@@ -283,10 +282,6 @@ void SQUIDS::Set_abs_error(double opt){
   abs_error=opt;
 }
 
-void SQUIDS::Set_units(double opt){
-  tunit=opt;
-}
-
 void SQUIDS::Set_NumSteps(int opt){
   nsteps=opt;
 }
@@ -327,16 +322,6 @@ int SQUIDS::Evolve(double dt){
   if(AnyNumerics){
     int gsl_status = GSL_SUCCESS;
 
-
-#ifdef CalNeuOscSUN_DEBUG
-    printf("GSL paramers :\n");
-    
-    printf("x_ini : %lf \n", t/tunit);
-    printf("x_end : %lf \n", (t+dt)/tunit);
-    printf("h : %g \n", h/tunit);
-    printf("h_min : %g \n", h_min/tunit);
-#endif
-
     // initial time
     
     // ODE system error control
@@ -344,10 +329,6 @@ int SQUIDS::Evolve(double dt){
     gsl_odeiv2_driver_set_hmin(d,h_min);
     gsl_odeiv2_driver_set_hmax(d,h_max);
     gsl_odeiv2_driver_set_nmax(d,0);
-
-#ifdef CalNeuOscSUN_DEBUG
-    printf("Start calculation.\n");
-#endif
     
     double* gsl_sys = system.get();
     
@@ -361,10 +342,6 @@ int SQUIDS::Evolve(double dt){
     if( gsl_status != GSL_SUCCESS ){
       throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver.");
     }
-
-#ifdef CalNeuOscSUN_DEBUG
-    printf("End calculation. x_final :  %lf \n",x/tunit);
-#endif
   }else{
     t+=dt;
     PreDerive(t);
