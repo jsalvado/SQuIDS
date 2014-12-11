@@ -21,12 +21,10 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-
 #include "rabi.h"
 
-
 void rabi::init(double D_E, double wi, double Am){
-  Delta_E=D_E;
+  params.SetEnergyDifference(1,D_E);
   w=wi;
   A=Am;
   params.SetMixingAngle(0,1,params.pi/4);
@@ -34,8 +32,6 @@ void rabi::init(double D_E, double wi, double Am){
 
   Set_CoherentRhoTerms(true);
 
-  evol_b0_proj.reset(new SU_vector[nx*nsun]);
-  evol_b1_proj.reset(new SU_vector[nx*nsun]);
   b0_proj.reset(new SU_vector[nsun]);
   b1_proj.reset(new SU_vector[nsun]);
 
@@ -43,29 +39,23 @@ void rabi::init(double D_E, double wi, double Am){
     b0_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i]=SU_vector::Projector(nsun,i);
     b1_proj[i].RotateToB1(params);
-
-    for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
-      evol_b1_proj[i*nx + ei]=SU_vector::Projector(nsun,i);
-      evol_b1_proj[i*nx + ei].RotateToB1(params);
-    }
   }
 
   suH0=SU_vector(nsun);
+  suH0 = b0_proj[1]*params.GetEnergyDifference(1);
+  
   d0=(b1_proj[0]-b1_proj[1]);
-  suH0 = b0_proj[1]*Delta_E;
+  d.reset(new SU_vector[nx]);
+  for(unsigned int i=0; i<nx; i++)
+    d[i]=d0;
 
   // set initial conditions for the density matrix.
   state[0].rho[0] = b0_proj[0];
 }
 
 void rabi::PreDerive(double t){
-  for(int i = 0; i < nsun; i++){
-    for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei] = b0_proj[i].Evolve(suH0,t-Get_t_initial());
-      evol_b1_proj[i*nx + ei] = b1_proj[i].Evolve(suH0,t-Get_t_initial());
-    }
-  }
+  for(int ei = 0; ei < nx; ei++)
+    d[ei] = d0.Evolve(suH0,t-Get_t_initial());
 }
 
 SU_vector rabi::H0(double x, unsigned int irho) const{
@@ -73,5 +63,5 @@ SU_vector rabi::H0(double x, unsigned int irho) const{
 }
 
 SU_vector rabi::HI(unsigned int ix, unsigned int irho, double t) const{
-  return (A*cos(w*t))*(evol_b1_proj[0]-evol_b1_proj[1]);
+  return (A*cos(w*t))*d[ix];
 }

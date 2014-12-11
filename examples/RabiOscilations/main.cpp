@@ -28,7 +28,6 @@
  / I. V. Tokatly, and A. Rubio arXiv:1101.2880                                 /
  ******************************************************************************/
 
-
 #include "rabi.h"
 #include <fstream>
 
@@ -66,7 +65,6 @@ int main(){
   // Final time
   double tf=120;
 
-
   // Tuned Rabi system
   R0.init(10,10,0.1);
 
@@ -92,8 +90,8 @@ int main(){
     progressbar(100*t/tf);
     R0.Evolve(dt);
     file << t << "\t" << R0.GetExpectationValue(R0.d0,0,0) << "  " 
-	 << R0.GetExpectationValue(R0.evol_b0_proj[0],0,0) << "  " 
-	 << R0.GetExpectationValue(R0.evol_b0_proj[1],0,0) << std::endl;
+	 << R0.GetExpectationValue(R0.b0_proj[0],0,0) << "  "
+	 << R0.GetExpectationValue(R0.b0_proj[1],0,0) << std::endl;
   }
   file.close();
   file.open("rabi_detuned.dat");

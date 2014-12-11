@@ -28,8 +28,8 @@
  ******************************************************************************/
 
 
-#ifndef __RABI_H
-#define __RABI_H
+#ifndef RABI_H
+#define RABI_H
 
 #include <iostream>
 #include <float.h>
@@ -43,9 +43,8 @@ class rabi: public SQUIDS {
  private:
   //Hamiltonian no external field
   SU_vector suH0;
-
-  //Energy difference
-  double Delta_E;
+  //The time evolved dipole operators
+  std::unique_ptr<SU_vector[]> d;
   //Laser Frequency
   double w;
   //Laser Amplitude
@@ -57,13 +56,10 @@ class rabi: public SQUIDS {
   //Projectors in the different basis
   std::unique_ptr<SU_vector[]> b0_proj;
   std::unique_ptr<SU_vector[]> b1_proj;
-  std::unique_ptr<SU_vector[]> evol_b0_proj;
-  std::unique_ptr<SU_vector[]> evol_b1_proj;
 
   //Function evaluated before any derivative
   void PreDerive(double t);
   //Constructors and initializer
-  // 
   rabi(){};
   rabi(double D_E, double wi, double Am){init(D_E,wi,Am);};
   void init(double D_E, double wi, double Am);
