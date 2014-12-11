@@ -61,8 +61,6 @@ class vacuum: public SQUIDS {
   
   //get the final flux, the initial one is flat in energy
   double Get_flux(int,double);
-  double Get_flux(int,int);
-
 };
 
 #endif
