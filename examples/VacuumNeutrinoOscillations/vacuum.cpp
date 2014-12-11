@@ -49,7 +49,7 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   params.SetMixingAngle(0,2,8.55*params.degree);  //theta 1,3
   params.SetMixingAngle(1,2,42.3*params.degree);  //theta 2,3
 
-  //Construction of the projectors for the mass an flavor basis
+  //Construction of the projectors for the mass and flavor bases
   b0_proj.reset(new SU_vector[nsun]);
   b1_proj.reset(new SU_vector[nsun]);
 
@@ -62,7 +62,7 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   for(int i = 1; i < nsun; i++)
     DM2 += (b0_proj[i])*params.GetEnergyDifference(i);
 
-  //set initial conditions for the density mattrix.
+  //set initial conditions for the density matrix.
   //Here b1 is the flavor basis, and we set a flat spectra with value 1 to the flavor number 0  
   for(int ei = 0; ei < nx; ei++)
     state[ei].rho[0]=b1_proj[0];
