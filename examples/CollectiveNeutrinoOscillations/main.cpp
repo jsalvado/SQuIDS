@@ -29,9 +29,8 @@
  ******************************************************************************/
 
 #include "collective.h"
+#include <iostream>
 #include <fstream>
-
-
 
 int main(){
   //Parameters
@@ -42,13 +41,9 @@ int main(){
   double th=0.01;
   double th2=0.01;
   int Nbins=200;
-
   
   collective ColNus(mu,th,wmin,wmax,Nbins);
   collective ColNus_notevolved(mu2,th2,wmin,wmax,Nbins);
-  
-  std::ofstream file;
-
 
   //Evolution from mu=10 to mu=0 in a time period of 100
   ColNus.Adiabatic_mu(10,0,100,true);
@@ -65,13 +60,12 @@ int main(){
   //col 1 value of w
   //col 2 expectation value of ez for the evolved system normalized to the maximum
   //col 3 expectation value of ez for the non evolved system normalized to the maximum
-  file.open("collective.dat");
+  std::ofstream file("collective.dat");
   for(int w=0;w<Nbins;w++){
     file << std::scientific << ColNus.Get_x(w) << "\t" 
 	 << ColNus.GetExpectationValue(o,0,w)/max <<"  " <<  
       ColNus_notevolved.GetExpectationValue(o,0,w)/max << std::endl;
   }
-  file.close();
 
   //runs the gnuplot script if yes
   std::string plt;
@@ -83,6 +77,4 @@ int main(){
   }
   
   return 0;
-
-
 }

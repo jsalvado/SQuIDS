@@ -29,8 +29,9 @@
  ******************************************************************************/
 
 #include "collective.h"
+#include <iostream>
 
-void collective::progressbar(int percent, double mu) const{
+void progressbar(int percent, double mu){
   static int last=-1;
   if(percent==last)
     return;
@@ -53,8 +54,9 @@ void collective::progressbar(int percent, double mu) const{
 }
 
 void collective::init(double m,double th, double wmin, double wmax, int Nbins){
+  ini(Nbins/*nodes*/,2/*SU(2)*/,1/*density matrices*/,0/*scalars*/);
+  
   mu=m;
-  ini(Nbins,2,1,0,0.0);
   w_min=wmin;
   w_max=wmax;
   theta=th;
@@ -70,14 +72,15 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   B=ez;
 
   // set initial conditions for the density matrix.
+  //integrate the fermi distribution to get the normalization
   double Norm=0;
-
   for(int ei = 0; ei < nx; ei++){
     double w=Get_x(ei);
     if(w>0) Norm+=(1.0/(w*w)*Fermi(1/(2*w)));
   }
   Norm=Norm*(w_max-w_min)/((double)nx);
 
+  //set initial state
   for(int ei = 0; ei < nx; ei++){
     double w=Get_x(ei);
       if(w>0){
@@ -98,17 +101,19 @@ void collective::init(double m,double th, double wmin, double wmax, int Nbins){
 }
 
 void collective::PreDerive(double t){
+  if(bar)
+    progressbar(100*t/period, mu);
+  
+  //compute the sum of 'polarizations' of all nodes
   P=state[0].rho[0];
   for(int ei = 1; ei < nx; ei++){
     P+=state[ei].rho[0];
   }
+  //update the strength of self-interactions
   mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
 }
 
 SU_vector collective::HI(unsigned int ix, unsigned int irho, double t) const{
-  if(bar)
-    progressbar(100*t/period, mu);
-  
   //the following is equivalent to
   //return Get_x(ix)*B+P*(mu*(w_max-w_min)/(double)nx);
   

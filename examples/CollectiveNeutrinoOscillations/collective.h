@@ -15,10 +15,10 @@
  *   Authors:                                                                  *
  *      Carlos Arguelles (University of Wisconsin Madison)                     * 
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
- *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
+ *         chris.weaver@icecube.wisc.edu                                       *
  ******************************************************************************/
 
 
@@ -28,17 +28,8 @@
  * arXiv:1103.2891                                                             *
  ******************************************************************************/
 
-#ifndef __COLLECTIVE_H
-#define __COLLECTIVE_H
-
-
-
-
-#include <iostream>
-#include <float.h>
-#include <math.h>
-#include <complex>
-#include <vector>
+#ifndef COLLECTIVE_H
+#define COLLECTIVE_H
 
 #include <SQUIDS.h>
 
@@ -64,9 +55,6 @@ class collective: public SQUIDS {
   
   //sets on and off the progress bar
   bool bar;
-  
-  //shows the progress bar
-  void progressbar(int percent, double mu) const;
 
   //function that is evaluated before computting the derivatives, it bassically computes the vector P 
   void PreDerive(double t);
@@ -77,13 +65,14 @@ class collective: public SQUIDS {
   //Fermi distribution
   double Fermi(double EoverT);
   
+  //scratch buffers for calculation
   std::unique_ptr<double[]> buf1, buf2;
 
  public:
   //basis
   SU_vector ex,ey,ez;
 
-  collective(void){};
+  collective(){};
 
   //Constructor and initializer
   // mu -> value of the self interacting strengh, is proportional to the neutrino density
@@ -96,8 +85,8 @@ class collective: public SQUIDS {
   //Function that sets the value of mu
   void Set_mu(double m){mu=m;}
 
-  //Function that solve the evolution changing mu from mu_i to mu_f in the time period given by period
-  // bar shows the progress bar if it's true.
+  //Function that computes the evolution changing mu from mu_i to mu_f in the time period given by period
+  // bar determines whether a progress bar is shown
   void Adiabatic_mu(double mu_i, double mu_f, double period, bool bar);
 
 };
