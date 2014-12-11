@@ -67,9 +67,8 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   nsteps=1000;
 
   //Allocate memeroy for the system
-  Nsystem = nx*size_state;
-  numeqn=Nsystem;
-  system.reset(new double[Nsystem]);
+  int numeqn=nx*size_state;
+  system.reset(new double[numeqn]);
 
   /*
     Initializing the SU algebra object, needed to compute algebraic operations like commutators,
@@ -78,7 +77,6 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
 
   //Allocate memory
   x.reset(new double[nx]);
-  delx.reset(new double[nx]);
 
   state.reset(new SU_state[nx]);
   dstate.reset(new SU_state[nx]);
@@ -163,10 +161,7 @@ int SQUIDS::Set_xrange(double xi, double xf, std::string type){
   }else{
     throw std::runtime_error("SQUIDS::Set_xrange : Not well deffined X range");
   }
-
-  for(int e1 = 1; e1 < nx; e1++){
-    delx[e1] = x[e1] - x[e1-1];
-  }
+  
   return 0;
 }
 

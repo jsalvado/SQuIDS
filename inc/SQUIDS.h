@@ -109,53 +109,51 @@ class SQUIDS {
     ///\brief Vector of scalars that represents the classic part of the state
     double* scalar; //not owned
   };
-  
+
+ private:
   bool CoherentRhoTerms,NonCoherentRhoTerms,OtherRhoTerms,GammaScalarTerms,OtherScalarTerms,AnyNumerics;
   bool is_init;
   bool adaptive_step;
  
   std::unique_ptr<double[]> x;
-  std::unique_ptr<double[]> delx;
   double t;
   double t_ini;
-
-  unsigned int nx;
-  unsigned int nsun;
-  unsigned int nrhos;
-  unsigned int nscalars;
-
+  
   int nsteps;
-
+  
   int size_rho;
   int size_state;
-
+  
   std::unique_ptr<double[]> system;
   double* deriv_system; //not owned
-
-  int Nsystem;
-
-  Const params;
-
-  std::unique_ptr<SU_state[]> state;
-
-  int numeqn;
-
-  // setting up GSL ODE solver
   gsl_odeiv2_step_type* step; //not owned
-
   gsl_odeiv2_system sys;
-
+  
   double h;
   double h_min;
   double h_max;
   double abs_error;
   double rel_error;
-    
+  
   //***************************************************************
   ///\brief Sets the derivative system pointer for GSL use
   void set_deriv_system_pointer(double*);
   //interface function called by GSL
   friend int RHS(double ,const double*,double*,void*);
+ 
+ protected:
+  ///The number of nodes in the system
+  unsigned int nx;
+  ///The dimension of the hilbert space used for each density matrix
+  unsigned int nsun;
+  ///The number of density matrices per node
+  unsigned int nrhos;
+  ///The number of scalars per node
+  unsigned int nscalars;
+  ///contains constants and basis transformation
+  Const params;
+  ///the state of the system
+  std::unique_ptr<SU_state[]> state;
 
  public:
   ///\todo
@@ -310,7 +308,9 @@ class SQUIDS {
   ///\param irho index of rho
   ///\param x value of x
   double GetExpectationValueD(SU_vector op, unsigned int irho, double x) const;
-  
+
+  ///\brief Returns the initial time of the system
+  double Get_t_initial() const{ return(t_ini); }
   ///\brief Returns the current time of the system
   double Get_t() const{ return(t); }
 };

@@ -62,8 +62,8 @@ void rabi::init(double D_E, double wi, double Am){
 void rabi::PreDerive(double t){
   for(int i = 0; i < nsun; i++){
     for(int ei = 0; ei < nx; ei++){
-      evol_b0_proj[i*nx + ei] = b0_proj[i].Evolve(suH0,t-t_ini);
-      evol_b1_proj[i*nx + ei] = b1_proj[i].Evolve(suH0,t-t_ini);
+      evol_b0_proj[i*nx + ei] = b0_proj[i].Evolve(suH0,t-Get_t_initial());
+      evol_b1_proj[i*nx + ei] = b1_proj[i].Evolve(suH0,t-Get_t_initial());
     }
   }
 }
