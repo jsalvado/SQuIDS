@@ -47,17 +47,14 @@ void rabi::init(double D_E, double wi, double Am){
   suH0=b0_proj[1]*params.GetEnergyDifference(1);
   
   d0=(b1_proj[0]-b1_proj[1]);
-  d.reset(new SU_vector[nx]);
-  for(unsigned int i=0; i<nx; i++)
-    d[i]=d0;
+  d=d0;
 
   // set initial conditions for the density matrix.
   state[0].rho[0] = b0_proj[0];
 }
 
 void rabi::PreDerive(double t){
-  for(int ei=0; ei < nx; ei++)
-    d[ei]=d0.Evolve(suH0,t-Get_t_initial());
+  d=d0.Evolve(suH0,t-Get_t_initial());
 }
 
 SU_vector rabi::H0(double x, unsigned int irho) const{
@@ -65,5 +62,5 @@ SU_vector rabi::H0(double x, unsigned int irho) const{
 }
 
 SU_vector rabi::HI(unsigned int ix, unsigned int irho, double t) const{
-  return (A*cos(w*t))*d[ix];
+  return (A*cos(w*t))*d;
 }

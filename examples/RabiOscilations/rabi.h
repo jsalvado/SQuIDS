@@ -37,7 +37,7 @@ class rabi: public SQUIDS {
   //Hamiltonian no external field
   SU_vector suH0;
   //The time evolved dipole operators
-  std::unique_ptr<SU_vector[]> d;
+  SU_vector d;
   //Laser Frequency
   double w;
   //Laser Amplitude
