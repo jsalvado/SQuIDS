@@ -43,8 +43,8 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   Set_xrange(Eini, Efin,"log");
   
   // set the oscillation parameters
-  params.SetSquaredEnergyDifference(1,7.5e-5); //delta m^2 2,1
-  params.SetSquaredEnergyDifference(2,2.45e-3); //delta m^2 3,1
+  params.SetEnergyDifference(1,7.5e-5); //delta m^2 2,1
+  params.SetEnergyDifference(2,2.45e-3); //delta m^2 3,1
   params.SetMixingAngle(0,1,33.48*params.degree); //theta 1,2
   params.SetMixingAngle(0,2,8.55*params.degree);  //theta 1,3
   params.SetMixingAngle(1,2,42.3*params.degree);  //theta 2,3
@@ -60,13 +60,12 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   }
 
   for(int i = 1; i < nsun; i++)
-    DM2 += (b0_proj[i])*params.GetSquaredEnergyDifference(i);
+    DM2 += (b0_proj[i])*params.GetEnergyDifference(i);
 
   //set initial conditions for the density mattrix.
   //Here b1 is the flavor basis, and we set a flat spectra with value 1 to the flavor number 0  
-  for(int ei = 0; ei < nx; ei++){
+  for(int ei = 0; ei < nx; ei++)
     state[ei].rho[0]=b1_proj[0];
-  }
 }
 
 //Function that returns the H0 operator

@@ -122,15 +122,15 @@ public :
   ///
   ///\param upperState the (zero-based) index of the upper state;
   ///                  the lower state is implicitly the ground state (0)
-  ///\param sqdiff the square of the energy difference between the states
-  void SetSquaredEnergyDifference(unsigned int upperState, double sqdiff);
+  ///\param diff the energy difference between the states
+  void SetEnergyDifference(unsigned int upperState, double diff);
   
   ///\brief get the energy splitting between two states of the system
   ///
   ///\param upperState the (zero-based) index of the upper state;
   ///                  the lower state is implicitly the ground state (0)
-  ///\return the square of the energy difference between the states
-  double GetSquaredEnergyDifference(unsigned int upperState) const;
+  ///\return the energy difference between the states
+  double GetEnergyDifference(unsigned int upperState) const;
   
   ///\brief set the complex phase between two states of the system
   ///
@@ -157,8 +157,8 @@ private:
   gsl_matrix *th;
   // cp-phases
   gsl_matrix *dcp;
-  // square mass differences
-  gsl_matrix *dmsq;
+  // energy differences
+  gsl_matrix *de;
 };
 
 #endif //ifdef SQUIDS_CONST_H
