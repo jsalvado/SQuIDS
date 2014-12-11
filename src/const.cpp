@@ -109,9 +109,9 @@ Const::Const(){
     
     // initializing matrices
     
-    dmsq = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1);
+    de = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1);
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM-1; i++)
-        gsl_matrix_set(dmsq,i,0,0.0);
+        gsl_matrix_set(de,i,0,0.0);
     
     th = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM);
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
@@ -140,7 +140,7 @@ Const::Const(){
 };
 
 Const::~Const(){
-    gsl_matrix_free(dmsq);
+    gsl_matrix_free(de);
     gsl_matrix_free(th);
     gsl_matrix_free(dcp);
 }
@@ -169,22 +169,22 @@ double Const::GetMixingAngle(unsigned int state1, unsigned int state2) const{
     return(gsl_matrix_get(th,state1,state2));
 }
 
-void Const::SetSquaredEnergyDifference(unsigned int upperState, double sqdiff){
+void Const::SetEnergyDifference(unsigned int upperState, double diff){
     if(upperState==0)
         throw std::runtime_error("Const::SetSquaredEnergyDifference: Upper state index must be greater than 0");
     if(upperState>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::SetSquaredEnergyDifference: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    gsl_matrix_set(dmsq,upperState-1,0,sqdiff);
+    gsl_matrix_set(de,upperState-1,0,diff);
 }
 
-double Const::GetSquaredEnergyDifference(unsigned int upperState) const{
+double Const::GetEnergyDifference(unsigned int upperState) const{
     if(upperState==0)
         throw std::runtime_error("Const::GetSquaredEnergyDifference: Upper state index must be greater than 0");
     if(upperState>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::GetSquaredEnergyDifference: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    return(gsl_matrix_get(dmsq,upperState-1,0));
+    return(gsl_matrix_get(de,upperState-1,0));
 }
 
 void Const::SetPhase(unsigned int state1, unsigned int state2, double phase){
