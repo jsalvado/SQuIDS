@@ -312,6 +312,9 @@ class SQUIDS {
   double Get_t_initial() const{ return(t_ini); }
   ///\brief Returns the current time of the system
   double Get_t() const{ return(t); }
+  
+  ///\brief Returns the parameter object for this system
+  const Const& GetParams() const{ return(params); }
 };
 
 #endif
