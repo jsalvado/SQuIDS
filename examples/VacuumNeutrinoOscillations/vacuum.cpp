@@ -29,7 +29,7 @@
 
 #include "vacuum.h"
 
-void vacuum::init(unsigned int nbins, unsigned int nflavor, double Ein, double Efin){
+void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
   //nbins -> is the number of energy modes
   //nflavor -> is the number of flavors
@@ -40,7 +40,7 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Ein, double E
   //initialize the SU_vector that contines the delta_m
   DM2=SU_vector(nsun);
   //set the energy range (Ein,Efin) in log scale
-  Set_xrange(Ein, Efin,"log");
+  Set_xrange(Eini, Efin,"log");
   
   // set the oscillation parameters
   params.SetSquaredEnergyDifference(1,7.5e-5); //delta m^2 2,1

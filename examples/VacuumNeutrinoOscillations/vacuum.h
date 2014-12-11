@@ -51,8 +51,8 @@ class vacuum: public SQUIDS {
   //nflavor -> number of flavors
   //Ein -> initial energy
   //Efin -> final energy
-  vacuum(unsigned int nbins, unsigned int nflavor, double Ein, double Efin){init(nbins,nflavor,Ein,Efin);};
-  void init(unsigned int nbins, unsigned int nflavor, double Ein, double Efin);
+  vacuum(unsigned int nbins, unsigned int nflavor, double Eini, double Efin){init(nbins,nflavor,Eini,Efin);};
+  void init(unsigned int nbins, unsigned int nflavor, double Eini, double Efin);
 
   //Function to set the parameters.
   void SetVacuum(Const par);  
