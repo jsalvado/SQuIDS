@@ -79,7 +79,4 @@ double vacuum::Get_flux(int i,double e){
   return GetExpectationValueD(b1_proj[i],0,e);
 }
 
-//function that returns the flux for the neutrino with flavor "i" and energy "e"
-double vacuum::Get_flux(int i,int e){
-  return GetExpectationValue(b1_proj[i],0,e);
-}
+
