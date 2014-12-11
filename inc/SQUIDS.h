@@ -134,6 +134,7 @@ class SQUIDS {
   double h_max;
   double abs_error;
   double rel_error;
+  std::unique_ptr<SU_state[]> dstate;
   
   //***************************************************************
   ///\brief Sets the derivative system pointer for GSL use
@@ -156,8 +157,6 @@ class SQUIDS {
   std::unique_ptr<SU_state[]> state;
 
  public:
-  ///\todo
-  std::unique_ptr<SU_state[]> dstate;
   //****************
   //Constructors
   //****************
