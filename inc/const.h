@@ -98,6 +98,9 @@ public :
 
   double tau_lifetime;
   double tau_mass;
+  double muon_lifetime;
+  double muon_mass;
+  double electron_mass;
 
   double proton_mass;
   double neutron_mass;

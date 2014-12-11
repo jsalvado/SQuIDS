@@ -135,6 +135,10 @@ Const::Const(){
     tau_mass = 1776.82*MeV;
     tau_lifetime = 2.906e-13*sec;
     
+    muon_lifetime = 2.196e-6*sec;
+    muon_mass = 105.658*MeV;
+    electron_mass = 0.5109*MeV;
+
     proton_mass = 938.272*MeV;
     neutron_mass = 939.565*MeV;
 };
