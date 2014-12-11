@@ -6,7 +6,6 @@ if ( GPVAL_VERSION < 4.4 ) print "gnuplot is too old to check for available term
 set key opaque
 
 #set yrange [-1.5:1.5]
-set xrange [0.001:5]
 set logscale x
 
 set xlabel "Energy(GeV)"

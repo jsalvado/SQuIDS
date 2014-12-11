@@ -37,14 +37,15 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   //0 -> number of scalar functions
   //0 -> initial time
   ini(nbins,nflavor,1,0,0);
-  //initialize the SU_vector that contines the delta_m
+  //initialize the SU_vector that contains the delta_m
   DM2=SU_vector(nsun);
   //set the energy range (Ein,Efin) in log scale
   Set_xrange(Eini, Efin,"log");
   
   // set the oscillation parameters
-  params.SetEnergyDifference(1,7.5e-5); //delta m^2 2,1
-  params.SetEnergyDifference(2,2.45e-3); //delta m^2 3,1
+  const double ev2=params.eV*params.eV;
+  params.SetEnergyDifference(1,7.5e-5*ev2); //delta m^2 2,1
+  params.SetEnergyDifference(2,2.45e-3*ev2); //delta m^2 3,1
   params.SetMixingAngle(0,1,33.48*params.degree); //theta 1,2
   params.SetMixingAngle(0,2,8.55*params.degree);  //theta 1,3
   params.SetMixingAngle(1,2,42.3*params.degree);  //theta 2,3
