@@ -1,37 +1,54 @@
 SQuIDS
 ===========
 
-A user manual can be found in docs/source/;
-
 Prerequisites
 *************
 
-The following packages are required to build and use the client library, and 
-can probably be had from your favorite package manager:
+The following packages are required to build and use the library, and
+can probably be obtained from your favorite package manager:
 
 * gsl (>= 1.15): http://www.gnu.org/software/gsl/
 * C++ compiler with C++11 support.
 
+Configuration
+*************
+
+A configure script, config.sh, is provided in the root directory.
+
+The path for the GSL libraries can be specified running:
+
+./config.sh --with-gsl-incdir=DIR --with-gsl-libdir=DIR
+
+if not specified pkg-config will be used to try to find
+the your GSL instalation. After succesful configuration run:
+
+make
+
 Examples
 *************
 
-Additionally for plotting:
+Three examples programs can be found in the examples subdirectory.
+
+In order to plot the example results you will need:
 
 * gnuplot (>4.0): http://www.gnuplot.info/
 
 Documentation
 *************
 
-The latex and pdf files are included in SQUIDS/doc/ folder.
+Documentation can be made by running:
+
+make docs
+
+and will be put in the docs subdirectory.
+
+Citation
+********
+
+If you want cite this work, or want to look at further description
+please refer to
+
+A Simple Quantum Integro-Differential Solver (SQuIDS)
+Carlos A. Arguelles Delgado, Jordi Salvado, Christopher N. Weaver
 
 
-Configuration
-*************
-
-The path for the GSL libraries can be specified running:
-
-
-./config.sh --with-gsl-incdir=DIR --with-gsl-libdir=DIR 
- 
-
-  
