@@ -118,7 +118,6 @@ class SQUIDS {
   std::unique_ptr<double[]> x;
   double t;
   double t_ini;
-  
   int nsteps;
   
   int size_rho;
