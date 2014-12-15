@@ -16,7 +16,7 @@ int main(){
       double sprod=v1*v2;
       for(unsigned int it=0;it<dim;it++){
 	SU_vector v3=SU_vector::Projector(dim,it);
-	double out=sprod-v1.SUEvolve(v3,t)*v2.SUEvolve(v3,t);
+	double out=sprod-v1.Evolve(v3,t)*v2.Evolve(v3,t);
 	if(fabs(out)>1e-15){
 	  std::cout << "Generators: " << i << "  " << j << "  Evolution Operator: " << it << 
 	    "  \t" << out  << std::endl;
