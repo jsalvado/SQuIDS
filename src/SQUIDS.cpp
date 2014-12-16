@@ -30,24 +30,35 @@
 ///\brief Auxiliary function used for the GSL interface
 int RHS(double ,const double*,double*,void*);
 
-SQUIDS::SQUIDS(){
-  is_init=false;
+SQUIDS::SQUIDS():
+CoherentRhoTerms(false),
+NonCoherentRhoTerms(false),
+OtherRhoTerms(false),
+GammaScalarTerms(false),
+OtherScalarTerms(false),
+AnyNumerics(false),
+adaptive_step(true),
+rel_error(1e-20),
+abs_error(1e-20),
+h(std::numeric_limits<double>::epsilon()),
+h_min(std::numeric_limits<double>::min()),
+h_max(std::numeric_limits<double>::max()),
+step((gsl_odeiv2_step_type*)gsl_odeiv2_step_rkf45),
+nsteps(1000),
+is_init(false)
+{
+  sys.function = &RHS;
+  sys.jacobian = NULL;
+  sys.dimension = 0;
+  sys.params = this;
 }
 
-SQUIDS::SQUIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int nsc, double ti){
+SQUIDS::SQUIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int nsc, double ti):
+SQUIDS(){
   ini(n,ns,nrh,nsc,ti);
 }
 
 void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned int nsc, double ti){
-  CoherentRhoTerms=false;
-  NonCoherentRhoTerms=false;
-  OtherRhoTerms=false;
-  GammaScalarTerms=false;
-  OtherScalarTerms=false;
-  AnyNumerics=false;
-
-  adaptive_step=true;
-
   /*
     Setting the number of energy bins, number of components for the density matrix and
     number of scalar functions
@@ -64,11 +75,11 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   */
   t_ini=ti;
   t=ti;
-  nsteps=1000;
 
   //Allocate memeroy for the system
   int numeqn=nx*size_state;
   system.reset(new double[numeqn]);
+  sys.dimension = (size_t)numeqn;
 
   /*
     Initializing the SU algebra object, needed to compute algebraic operations like commutators,
@@ -95,23 +106,6 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
       state[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
     }
   }
-
-  //default errors
-  rel_error=1e-20;
-  abs_error=1e-20;
-
-  h        = std::numeric_limits<double>::epsilon();
-  h_min    = std::numeric_limits<double>::min();
-  h_max    = std::numeric_limits<double>::max();
-
-  // setting up GSL ODE solver
-
-  step = (gsl_odeiv2_step_type*)gsl_odeiv2_step_rkf45;
-
-  sys.function = &RHS;
-  sys.jacobian = NULL;
-  sys.dimension = (size_t)numeqn;
-  sys.params = this;
 
   is_init=true;
 };
