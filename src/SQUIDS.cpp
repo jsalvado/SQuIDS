@@ -30,7 +30,7 @@
 ///\brief Auxiliary function used for the GSL interface
 int RHS(double ,const double*,double*,void*);
 
-SQUIDS::SQUIDS(void){
+SQUIDS::SQUIDS(){
   is_init=false;
 }
 
@@ -76,7 +76,7 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   */
 
   //Allocate memory
-  x.reset(new double[nx]);
+  x.resize(nx);
 
   state.reset(new SU_state[nx]);
   dstate.reset(new SU_state[nx]);
@@ -177,16 +177,22 @@ double SQUIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) c
     if ( xi >= x[i] && xi <= x[i+1]){
       xid = i;
       break;
-    }else{
-      if(i==nx-1){
-	throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
-      }
+    }else if(i==nx-1){
+      throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
     }
   }
 
   return (state[xid].rho[nrh] + 
 	   (state[xid+1].rho[nrh]-
 	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.Evolve(h0,t-t_ini);
+}
+
+void SQUIDS::Set_xrange(const std::vector<double>& xs){
+  if(xs.size()!=nx)
+    throw std::runtime_error("SQUIDS::Set_xrange : wrong number of x values");
+  if(!std::is_sorted(xs.begin(),xs.end()))
+    throw std::runtime_error("SQUIDS::Set_xrange : x values must be sorted");
+  x=xs;
 }
 
 int SQUIDS::Get_i(double xi) const{

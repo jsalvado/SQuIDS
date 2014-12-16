@@ -115,7 +115,7 @@ class SQUIDS {
   bool is_init;
   bool adaptive_step;
  
-  std::unique_ptr<double[]> x;
+  std::vector<double> x;
   double t;
   double t_ini;
   int nsteps;
@@ -184,13 +184,30 @@ class SQUIDS {
   ///\param ti initial value for the evolution parameter t
   void ini(unsigned int nx, unsigned int dim, unsigned int nrho, unsigned int nscalar, double ti=0.0);
 
-
+  //***************************************************************
+  ///\brief Get the number of nodes in the system
+  unsigned int Get_nx() const{ return(nx); }
+  
+  ///\brief Get the number of density matrices per node
+  unsigned int Get_nrhos() const{ return(nrhos); }
+  
+  ///\brief Get the number of scalars per node
+  unsigned int Get_nscalars() const{ return(nscalars); }
+  
   //***************************************************************
   ///\brief Set the range of values for the array "x"
   ///\param xini  x_min
   ///\param xend  x_max
   ///\param scale "log or lin" type of scale
   int Set_xrange(double xini, double xend, std::string scale);
+  
+  ///\brief Set the range of values for the array "x"
+  ///\param xs  The x values to set
+  ///\pre xs.size()==nx
+  void Set_xrange(const std::vector<double>& xs);
+  
+  ///\brief Get the range of values for the array "x"
+  std::vector<double> Get_xrange() const{ return(x); }
 
   //***************************************************************
   ///\brief Returns the closes position in the array x for the value given
