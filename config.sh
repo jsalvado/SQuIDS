@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function check_pkgconfig(){
+check_pkgconfig(){
 	if [ "$CHECKED_PKGCONFIG" ]; then return; fi
 	echo "Looking for pkg-config..."
 	which pkg-config 2>&1 > /dev/null
@@ -11,7 +11,7 @@ function check_pkgconfig(){
 	CHECKED_PKGCONFIG=1
 }
 
-function find_package(){
+find_package(){
 	PKG=$1
 	VAR_PREFIX=`echo $PKG | tr [:lower:] [:upper:]`
 	TMP_FOUND=`eval echo "$"${VAR_PREFIX}_FOUND`
@@ -48,16 +48,15 @@ GUESS_CC=gcc
 GUESS_CXX=g++
 GUESS_AR=ar
 GUESS_LD=ld
-if [ "$OS_NAME" = Linux ]; then
-	DYN_SUFFIX=.so
-	DYN_OPT='-shared -Wl,-soname,$(shell basename $(DYN_PRODUCT))'
-fi
 if [ "$OS_NAME" = Darwin ]; then
 	GUESS_CC=clang
 	GUESS_CXX=clang++
 	GUESS_LD=clang++
 	DYN_SUFFIX=.dylib
 	DYN_OPT='-dynamiclib -compatibility_version $(VERSION) -current_version $(VERSION)'
+else
+	DYN_SUFFIX=.so
+	DYN_OPT='-shared -Wl,-soname,$(shell basename $(DYN_PRODUCT))'
 fi
 
 CC=${CC-$GUESS_CC}
@@ -166,8 +165,6 @@ DYN_SUFFIX:=$DYN_SUFFIX
 DYN_OPT=$DYN_OPT
 " > Makefile
 echo '
-CURRENT_DIR := $(shell pwd)
-PATH_SQUIDS:=$(CURRENT_DIR)
 
 CXXFLAGS:= -std=c++11
 
@@ -176,10 +173,10 @@ CXXFLAGS:= -std=c++11
 echo "GSL_CFLAGS=$GSL_CFLAGS" >> Makefile
 echo "GSL_LDFLAGS=$GSL_LDFLAGS" >> Makefile
 echo '
-LIBDIR:=$(PATH_SQUIDS)/lib
-INCDIR:=$(PATH_SQUIDS)/inc
-SUINCDIR:=$(PATH_SQUIDS)/inc/SU_inc
-SRCDIR:=$(PATH_SQUIDS)/src
+LIBDIR:=lib
+INCDIR:=inc
+SUINCDIR:=inc/SU_inc
+SRCDIR:=src
 CFLAGS:= -O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)
 LDFLAGS:= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)
 
@@ -202,13 +199,13 @@ $(STAT_PRODUCT) : $(OBJECTS)
 	@$(AR) -rcs $(STAT_PRODUCT) $(OBJECTS)
 
 $(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(INCDIR)/const.h Makefile
-	@echo Compiling `basename $<` to `basename $@`
+	@echo Compiling `basename $(SRCDIR)/const.cpp` to `basename $@`
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/const.cpp -o $@
 $(LIBDIR)/SQUIDS.o: $(SRCDIR)/SQUIDS.cpp $(INCDIR)/SQUIDS.h $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
-	@echo Compiling `basename $<` to `basename $@`
+	@echo Compiling `basename $(SRCDIR)/SQUIDS.cpp` to `basename $@`
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQUIDS.cpp -o $@
 $(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
-	@echo Compiling `basename $<` to `basename $@`
+	@echo Compiling `basename $(SRCDIR)/SUNalg.cpp` to `basename $@`
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@
 
 .PHONY: clean install doxygen docs test check
