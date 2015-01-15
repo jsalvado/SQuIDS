@@ -1,18 +1,18 @@
 include ../../settings.mk
 
 PATH_SQUIDS=../..
-INCCFLAGS=-I$(PATH_SQUIDS)/$(INCDIR)
-LDFLAGS= -Wl,-rpath -Wl,$(PATH_SQUIDS)/$(LIBDIR) -L$(PATH_SQUIDS)/$(LIBDIR) -lSQuIDS
+CXXFLAGS+=-I$(PATH_SQUIDS)/$(INCDIR)
+LDFLAGS+= -Wl,-rpath -Wl,$(PATH_SQUIDS)/$(LIBDIR) -L$(PATH_SQUIDS)/$(LIBDIR) -lSQuIDS
 EXE=rabi.exe
 
 # Compilation rules
 all: $(EXE)
 
 rabi.o: rabi.cpp rabi.h
-	$(CXX) -c $(CXXFLAGS) $(INCCFLAGS) rabi.cpp 
+	$(CXX) -c $(CXXFLAGS) $(CFLAGS) rabi.cpp 
 main.o: main.cpp rabi.h
-	$(CXX) -c $(CXXFLAGS) $(INCCFLAGS) main.cpp 
+	$(CXX) -c $(CXXFLAGS) $(CFLAGS) main.cpp 
 $(EXE): main.o rabi.o
-	$(CXX) $(CXXFLAGS) $(INCCFLAGS) main.o rabi.o $(LDFLAGS)  -o $(EXE)
+	$(CXX) $(CXXFLAGS) $(CFLAGS) main.o rabi.o $(LDFLAGS)  -o $(EXE)
 clean:
 	rm -f *.o *.dat *.eps  $(EXE)
