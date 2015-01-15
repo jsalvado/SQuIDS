@@ -24,7 +24,7 @@
 #include "SQUIDS.h"
 #include <cmath>
 #include <limits>
-
+#include <algorithm>
 //#define CalNeuOscSUN_DEBUG
 
 ///\brief Auxiliary function used for the GSL interface
