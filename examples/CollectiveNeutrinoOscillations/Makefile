@@ -1,5 +1,4 @@
-# Compiler
-CXX = g++ 
+include ../../settings.mk
 
 PATH_SQUIDS=../..
 # Directories
@@ -7,8 +6,8 @@ LIBDIR=$(PATH_SQUIDS)/lib
 INCDIR=$(PATH_SQUIDS)/inc
 SUINCDIR=$(PATH_SQUIDS)/inc/SU_inc
 CXXFLAGS= -O3 -std=c++11  
-INCCFLAGS=-I$(INCDIR) -I$(SUINCDIR) 
-LDFLAGS= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) -lSQuIDS -lgsl -lgslcblas
+INCCFLAGS=-I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)
+LDFLAGS= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) -lSQuIDS $(GSL_LDFLAGS)
 EXE=collective.exe
 
 # Compilation rules

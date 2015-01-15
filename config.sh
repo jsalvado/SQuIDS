@@ -54,6 +54,9 @@ if [ "$OS_NAME" = Darwin ]; then
 	GUESS_LD=clang++
 	DYN_SUFFIX=.dylib
 	DYN_OPT='-dynamiclib -compatibility_version $(VERSION) -current_version $(VERSION)'
+elif [ "$OS_NAME" = FreeBSD ]; then
+	DYN_SUFFIX=.so
+	DYN_OPT='-shared'
 else
 	DYN_SUFFIX=.so
 	DYN_OPT='-shared -Wl,-soname,$(shell basename $(DYN_PRODUCT))'
@@ -152,11 +155,17 @@ Cflags: -I${includedir}
 ' >> lib/squids.pc
 
 echo "Generating makefile..."
+
 echo "# Compiler
 CC:=$CC
 CXX:=$CXX
 AR:=$AR
 LD:=$LD
+
+GSL_CFLAGS=$GSL_CFLAGS
+GSL_LDFLAGS=$GSL_LDFLAGS" > settings.mk
+
+echo "include settings.mk
 
 VERSION:=$VERSION
 PREFIX:=$PREFIX
@@ -169,10 +178,6 @@ echo '
 CXXFLAGS:= -std=c++11
 
 # Directories
-' >> Makefile
-echo "GSL_CFLAGS=$GSL_CFLAGS" >> Makefile
-echo "GSL_LDFLAGS=$GSL_LDFLAGS" >> Makefile
-echo '
 LIBDIR:=lib
 INCDIR:=inc
 SUINCDIR:=inc/SU_inc
@@ -199,13 +204,13 @@ $(STAT_PRODUCT) : $(OBJECTS)
 	@$(AR) -rcs $(STAT_PRODUCT) $(OBJECTS)
 
 $(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(INCDIR)/const.h Makefile
-	@echo Compiling `basename $(SRCDIR)/const.cpp` to `basename $@`
+	@echo Compiling const.cpp to const.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/const.cpp -o $@
 $(LIBDIR)/SQUIDS.o: $(SRCDIR)/SQUIDS.cpp $(INCDIR)/SQUIDS.h $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
-	@echo Compiling `basename $(SRCDIR)/SQUIDS.cpp` to `basename $@`
+	@echo Compiling SQUIDS.cpp to SQUIDS.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQUIDS.cpp -o $@
 $(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
-	@echo Compiling `basename $(SRCDIR)/SUNalg.cpp` to `basename $@`
+	@echo Compiling SUNalg.cpp to SUNalg.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@
 
 .PHONY: clean install doxygen docs test check
