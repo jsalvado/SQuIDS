@@ -238,6 +238,7 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@cp $(INCDIR)/SU_inc/*.h $(PREFIX)/include/SQuIDS/SU_inc
 	@cp $(INCDIR)/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
 	@echo Installing libraries in $(PREFIX)/lib
+	@mkdir -p $(PREFIX)/lib
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
 	@mkdir -p $(PREFIX)/lib/pkgconfig
