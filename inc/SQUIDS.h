@@ -168,11 +168,17 @@ class SQUIDS {
   ///\param nrho Number of density matrix in every "x" site
   ///\param nscalar Number of scalars in every "x" site
   ///\param ti initial value for the evolution parameter t
-
   SQUIDS(unsigned int nx, unsigned int dim, unsigned int nrho, unsigned int nscalar, double ti=0.0);
+
+  ///\brief Move constructs a SQUIDS object from an existing object
+  SQUIDS(SQUIDS&&);
 
   //***************************************************************
   virtual ~SQUIDS();
+  
+  //***************************************************************
+  ///\brief Move assigns a SQUIDS object from an existing object
+  SQUIDS& operator=(SQUIDS&&);
 
   //***************************************************************
   ///\brief Initializes a SQUIDS object

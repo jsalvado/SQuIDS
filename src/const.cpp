@@ -27,7 +27,11 @@
 
 #include "SU_inc/dimension.h"
 
-Const::Const(){
+Const::Const():
+de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free),
+th(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free),
+dcp(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free)
+{
     /* PHYSICS CONSTANTS
     #===============================================================================
     # MATH
@@ -109,20 +113,18 @@ Const::Const(){
     
     // initializing matrices
     
-    de = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1);
+  
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM-1; i++)
-        gsl_matrix_set(de,i,0,0.0);
-    
-    th = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM);
+        gsl_matrix_set(de.get(),i,0,0.0);
+  
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
         for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM; j++)
-            gsl_matrix_set(th,i,j,0.0);
+            gsl_matrix_set(th.get(),i,j,0.0);
     }
-    
-    dcp = gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM);
+  
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
         for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM; j++)
-            gsl_matrix_set(dcp,i,j,0.0);
+            gsl_matrix_set(dcp.get(),i,j,0.0);
     }
     
     electron = 0;
@@ -141,13 +143,9 @@ Const::Const(){
 
     proton_mass = 938.272*MeV;
     neutron_mass = 939.565*MeV;
-};
-
-Const::~Const(){
-    gsl_matrix_free(de);
-    gsl_matrix_free(th);
-    gsl_matrix_free(dcp);
 }
+
+Const::~Const(){}
 
 void Const::SetMixingAngle(unsigned int state1, unsigned int state2, double angle){
     if(state2<=state1)
@@ -158,7 +156,7 @@ void Const::SetMixingAngle(unsigned int state1, unsigned int state2, double angl
     if(state2>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::SetMixingAngle: Second mass state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    gsl_matrix_set(th,state1,state2,angle);
+    gsl_matrix_set(th.get(),state1,state2,angle);
 }
 
 double Const::GetMixingAngle(unsigned int state1, unsigned int state2) const{
@@ -170,7 +168,7 @@ double Const::GetMixingAngle(unsigned int state1, unsigned int state2) const{
     if(state2>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::GetMixingAngle: Second mass state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    return(gsl_matrix_get(th,state1,state2));
+    return(gsl_matrix_get(th.get(),state1,state2));
 }
 
 void Const::SetEnergyDifference(unsigned int upperState, double diff){
@@ -179,7 +177,7 @@ void Const::SetEnergyDifference(unsigned int upperState, double diff){
     if(upperState>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::SetSquaredEnergyDifference: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    gsl_matrix_set(de,upperState-1,0,diff);
+    gsl_matrix_set(de.get(),upperState-1,0,diff);
 }
 
 double Const::GetEnergyDifference(unsigned int upperState) const{
@@ -188,7 +186,7 @@ double Const::GetEnergyDifference(unsigned int upperState) const{
     if(upperState>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::GetSquaredEnergyDifference: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    return(gsl_matrix_get(de,upperState-1,0));
+    return(gsl_matrix_get(de.get(),upperState-1,0));
 }
 
 void Const::SetPhase(unsigned int state1, unsigned int state2, double phase){
@@ -198,7 +196,7 @@ void Const::SetPhase(unsigned int state1, unsigned int state2, double phase){
     if(state2>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::SetPhase: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    gsl_matrix_set(dcp,state1,state2,phase);
+    gsl_matrix_set(dcp.get(),state1,state2,phase);
 }
 
 double Const::GetPhase(unsigned int state1, unsigned int state2) const{
@@ -208,5 +206,5 @@ double Const::GetPhase(unsigned int state1, unsigned int state2) const{
     if(state2>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::GetPhase: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
-    return(gsl_matrix_get(dcp,state1,state2));
+    return(gsl_matrix_get(dcp.get(),state1,state2));
 }

@@ -152,16 +152,18 @@ public :
   double GetPhase(unsigned int state1, unsigned int state2) const;
 
   Const();
+  Const(Const&&)=default;
   ~Const();
+  Const& operator=(Const&&)=default;
   
 private:
   // matrices
   // angles
-  gsl_matrix *th;
+  std::unique_ptr<gsl_matrix,void (*)(gsl_matrix*)> th;
   // cp-phases
-  gsl_matrix *dcp;
+  std::unique_ptr<gsl_matrix,void (*)(gsl_matrix*)> dcp;
   // energy differences
-  gsl_matrix *de;
+  std::unique_ptr<gsl_matrix,void (*)(gsl_matrix*)> de;
 };
 
 #endif //ifdef SQUIDS_CONST_H

@@ -25,7 +25,6 @@
 #include <cmath>
 #include <limits>
 #include <algorithm>
-//#define CalNeuOscSUN_DEBUG
 
 ///\brief Auxiliary function used for the GSL interface
 int RHS(double ,const double*,double*,void*);
@@ -56,6 +55,41 @@ is_init(false)
 SQUIDS::SQUIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int nsc, double ti):
 SQUIDS(){
   ini(n,ns,nrh,nsc,ti);
+}
+
+SQUIDS::SQUIDS(SQUIDS&& other):
+CoherentRhoTerms(other.CoherentRhoTerms),
+NonCoherentRhoTerms(other.NonCoherentRhoTerms),
+OtherRhoTerms(other.OtherRhoTerms),
+GammaScalarTerms(other.GammaScalarTerms),
+OtherScalarTerms(other.OtherScalarTerms),
+AnyNumerics(other.AnyNumerics),
+is_init(other.is_init),
+adaptive_step(other.adaptive_step),
+x(std::move(other.x)),
+t(other.t),
+t_ini(other.t_ini),
+nsteps(other.nsteps),
+size_rho(other.size_rho),
+size_state(other.size_state),
+system(std::move(other.system)),
+step(other.step),
+sys(other.sys),
+h(other.h),
+h_min(other.h_min),
+h_max(other.h_max),
+abs_error(other.abs_error),
+rel_error(other.rel_error),
+dstate(std::move(other.dstate)),
+nx(other.nx),
+nsun(other.nsun),
+nrhos(other.nrhos),
+nscalars(other.nscalars),
+params(std::move(other.params)),
+state(std::move(other.state))
+{
+  sys.params=this;
+  other.is_init=false; //other is no longer usable, since we stole its contents
 }
 
 void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned int nsc, double ti){
@@ -121,6 +155,45 @@ void SQUIDS::set_deriv_system_pointer(double *p){
 }
 
 SQUIDS::~SQUIDS(){}
+
+SQUIDS& SQUIDS::operator=(SQUIDS&& other){
+  if(&other==this)
+    return(*this);
+  
+  CoherentRhoTerms=other.CoherentRhoTerms;
+  NonCoherentRhoTerms=other.NonCoherentRhoTerms;
+  OtherRhoTerms=other.OtherRhoTerms;
+  GammaScalarTerms=other.GammaScalarTerms;
+  OtherScalarTerms=other.OtherScalarTerms;
+  AnyNumerics=other.AnyNumerics;
+  is_init=other.is_init;
+  adaptive_step=other.adaptive_step;
+  x=std::move(other.x);
+  t=other.t;
+  t_ini=other.t_ini;
+  nsteps=other.nsteps;
+  size_rho=other.size_rho;
+  size_state=other.size_state;
+  system=std::move(other.system);
+  step=other.step;
+  sys=other.sys;
+  h=other.h;
+  h_min=other.h_min;
+  h_max=other.h_max;
+  abs_error=other.abs_error;
+  rel_error=other.rel_error;
+  dstate=std::move(other.dstate);
+  nx=other.nx;
+  nsun=other.nsun;
+  nrhos=other.nrhos;
+  nscalars=other.nscalars;
+  params=std::move(other.params);
+  state=std::move(other.state);
+  sys.params=this;
+  other.is_init=false; //other is no longer usable, since we stole its contents
+  
+  return(*this);
+}
 
 /*
   This functions sets the grid of points in where we have a
