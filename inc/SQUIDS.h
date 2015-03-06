@@ -118,14 +118,14 @@ class SQUIDS {
   std::vector<double> x;
   double t;
   double t_ini;
-  int nsteps;
+  unsigned int nsteps;
   
-  int size_rho;
-  int size_state;
+  unsigned int size_rho;
+  unsigned int size_state;
   
   std::unique_ptr<double[]> system;
   double* deriv_system; //not owned
-  gsl_odeiv2_step_type* step; //not owned
+  gsl_odeiv2_step_type const* step; //not owned
   gsl_odeiv2_system sys;
   
   double h;
@@ -205,7 +205,7 @@ class SQUIDS {
   ///\param xini  x_min
   ///\param xend  x_max
   ///\param scale "log or lin" type of scale
-  int Set_xrange(double xini, double xend, std::string scale);
+  void Set_xrange(double xini, double xend, std::string scale);
   
   ///\brief Set the range of values for the array "x"
   ///\param xs  The x values to set
@@ -218,12 +218,12 @@ class SQUIDS {
   //***************************************************************
   ///\brief Returns the closes position in the array x for the value given
   ///\param x value of x to look for
-  int Get_i(double x) const;
+  unsigned int Get_i(double x) const;
 
   //***************************************************************
   ///\brief Returns de value in the position "i"
   ///\param i node position
-  double Get_x(unsigned int i) const{return x[i];};
+  double Get_x(unsigned int i) const{return x[i];}
 
   //***************************************************************
   //virtual functions defined in the dervied class
@@ -252,7 +252,7 @@ class SQUIDS {
   ///\param t time
   ///
   /// This function enables the user to perform operations or updates before the derivative.
-  virtual void PreDerive(double t){};
+  virtual void PreDerive(double t){}
 
   //***************************************************************
   ///\brief Computes the right hand side of the kinetic equation.
@@ -287,7 +287,7 @@ class SQUIDS {
   // The parameters in the struc "const" are also available from this functions
   ///\brief Sets the GSL stepper function (numerical method)
   ///\param opt GSL step function
-  void Set_GSL_step(const gsl_odeiv2_step_type * opt);
+  void Set_GSL_step(gsl_odeiv2_step_type const* opt);
 
   ///\brief Turns on and off adaptive runge-kutta stepping
   ///\param opt If true: uses adaptive stepping, else: it does not.
@@ -313,7 +313,7 @@ class SQUIDS {
   ///\brief Set the numerical absolute error
   void Set_abs_error(double opt);
   ///\brief Set the number of steps when not using adaptive stepping
-  void Set_NumSteps(int opt);
+  void Set_NumSteps(unsigned int opt);
   
   //***************************************************************
   ///\brief Returns the expectation value for a given operator for a give state irho in a node ix.

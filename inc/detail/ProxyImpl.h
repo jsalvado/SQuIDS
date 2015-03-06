@@ -43,7 +43,7 @@ namespace detail{
     }
     ///compute the stored operation, stealing memory if possible
     operator SU_vector() &&{
-      SU_vector result(static_cast<Op&&>(*this),(Op*)nullptr);
+      SU_vector result(static_cast<Op&&>(*this),static_cast<Op*>(nullptr));
       return(result);
     }
     
@@ -105,7 +105,7 @@ namespace detail{
     
     template<typename VW>
     void compute(VW target) const{
-      for(int i=0; i<target.dim*target.dim; i++)
+      for(unsigned int i=0; i<target.dim*target.dim; i++)
         target.components[i] += suv1.components[i] + suv2.components[i];
     }
   };
@@ -123,7 +123,7 @@ namespace detail{
     
     template<typename VW>
     void compute(VW target) const{
-      for(int i=0; i<target.dim*target.dim; i++)
+      for(unsigned int i=0; i<target.dim*target.dim; i++)
         target.components[i] += suv1.components[i] - suv2.components[i];
     }
   };
@@ -141,7 +141,7 @@ namespace detail{
     
     template<typename VW>
     void compute(VW target) const{
-      for(int i=0; i<target.dim*target.dim; i++)
+      for(unsigned int i=0; i<target.dim*target.dim; i++)
         target.components[i] += -suv1.components[i];
     }
   };
@@ -161,7 +161,7 @@ namespace detail{
     
     template<typename VW>
     void compute(VW target) const{
-      for(int i=0; i<target.dim*target.dim; i++)
+      for(unsigned int i=0; i<target.dim*target.dim; i++)
         target.components[i] += a*suv1.components[i];
     }
   };
@@ -198,28 +198,28 @@ namespace detail{
   
   template<typename Op>
   SU_vector EvaluationProxy<Op>::operator*(double a) const{
-    return(((SU_vector)*this) * a);
+    return(static_cast<SU_vector>(*this) * a);
   }
   template<typename Op>
   SU_vector EvaluationProxy<Op>::operator+(const SU_vector& other) const{
-    return((SU_vector)*this + other);
+    return(static_cast<SU_vector>(*this) + other);
   }
   template<typename Op>
   SU_vector EvaluationProxy<Op>::operator-(const SU_vector& other) const{
-    return((SU_vector)*this - other);
+    return(static_cast<SU_vector>(*this) - other);
   }
   template<typename Op>
   SU_vector EvaluationProxy<Op>::Evolve(const SU_vector& other ,double t) const{
-    return(((SU_vector)*this).Evolve(other,t));
+    return(static_cast<SU_vector>(*this).Evolve(other,t));
   }
   
   template<typename Op>
   SU_vector EvaluationProxy<Op>::operator-() const &{
-    return(-(SU_vector)*this);
+    return(-static_cast<SU_vector>(*this));
   }
   template<typename Op>
   SU_vector EvaluationProxy<Op>::operator-() &&{
-    return(-(SU_vector)std::move(*this));
+    return(-static_cast<SU_vector>(std::move(*this)));
   }
   
   template<typename Op>

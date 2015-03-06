@@ -36,15 +36,15 @@ OtherRhoTerms(false),
 GammaScalarTerms(false),
 OtherScalarTerms(false),
 AnyNumerics(false),
+is_init(false),
 adaptive_step(true),
-rel_error(1e-20),
-abs_error(1e-20),
+nsteps(1000),
+step(gsl_odeiv2_step_rkf45),
 h(std::numeric_limits<double>::epsilon()),
 h_min(std::numeric_limits<double>::min()),
 h_max(std::numeric_limits<double>::max()),
-step((gsl_odeiv2_step_type*)gsl_odeiv2_step_rkf45),
-nsteps(1000),
-is_init(false)
+abs_error(1e-20),
+rel_error(1e-20)
 {
   sys.function = &RHS;
   sys.jacobian = NULL;
@@ -111,9 +111,9 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   t=ti;
 
   //Allocate memeroy for the system
-  int numeqn=nx*size_state;
+  unsigned int numeqn=nx*size_state;
   system.reset(new double[numeqn]);
-  sys.dimension = (size_t)numeqn;
+  sys.dimension = static_cast<size_t>(numeqn);
 
   /*
     Initializing the SU algebra object, needed to compute algebraic operations like commutators,
@@ -126,13 +126,13 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   state.reset(new SU_state[nx]);
   dstate.reset(new SU_state[nx]);
 
-  for(int ei = 0; ei < nx; ei++){
+  for(unsigned int ei = 0; ei < nx; ei++){
     state[ei].rho.reset(new SU_vector[nrhos]);
     dstate[ei].rho.reset(new SU_vector[nrhos]);
   }
 
-  for(int ei = 0; ei < nx; ei++){
-    for(int i=0;i<nrhos;i++){
+  for(unsigned int ei = 0; ei < nx; ei++){
+    for(unsigned int i=0;i<nrhos;i++){
       state[ei].rho[i]=SU_vector(nsun,&(system[ei*size_state+i*size_rho]));
       dstate[ei].rho[i]=SU_vector(nsun,nullptr);
     }
@@ -146,8 +146,8 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
 
 void SQUIDS::set_deriv_system_pointer(double *p){
   deriv_system=p;
-  for(int ei = 0; ei < nx; ei++){
-    for(int i=0;i<nrhos;i++){
+  for(unsigned int ei = 0; ei < nx; ei++){
+    for(unsigned int i=0;i<nrhos;i++){
       dstate[ei].rho[i].SetBackingStore(&(p[ei*size_state+i*size_rho]));
     }
     dstate[ei].scalar=&(p[ei*size_state+nrhos*size_rho]);
@@ -200,15 +200,15 @@ SQUIDS& SQUIDS::operator=(SQUIDS&& other){
   density matrix and a set of scalars
  */
 
-int SQUIDS::Set_xrange(double xi, double xf, std::string type){
+void SQUIDS::Set_xrange(double xi, double xf, std::string type){
   if (xi == xf){
     x[0] = xi;
-    return 0;
+    return;
   }
 
   if(type=="linear" || type=="Linear" || type=="lin" || type=="Lin"){
-    for(int e1 = 0; e1 < nx; e1++){
-      x[e1]=xi+(xf-xi)*(double)e1/(double)(nx-1);
+    for(unsigned int e1 = 0; e1 < nx; e1++){
+      x[e1]=xi+(xf-xi)*static_cast<double>(e1)/static_cast<double>(nx-1);
     }
   }else if(type=="log" || type=="Log"){
     double xmin_log,xmax_log;
@@ -219,17 +219,13 @@ int SQUIDS::Set_xrange(double xi, double xf, std::string type){
     }
     xmax_log = log(xf);
 
-    double step_log = (xmax_log - xmin_log)/double(nx);
-    int i=0;
-    for(int e1 = 0; e1 < nx; e1++){
-      double X=xmin_log+(xmax_log-xmin_log)*(double)e1/(double)(nx-1);
+    for(unsigned int e1 = 0; e1 < nx; e1++){
+      double X=xmin_log+(xmax_log-xmin_log)*static_cast<double>(e1)/static_cast<double>(nx-1);
       x[e1]=exp(X);
     }
   }else{
     throw std::runtime_error("SQUIDS::Set_xrange : Not well deffined X range");
   }
-  
-  return 0;
 }
 
 double SQUIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i) const{
@@ -239,17 +235,18 @@ double SQUIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int 
 
 double SQUIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) const{
   SU_vector h0=H0(xi,nrh);
-  int xid;
+  int xid=-1;
   for(unsigned int i = 0; i < nx; i++){
     if ( xi >= x[i] && xi <= x[i+1]){
       xid = i;
       break;
-    }else if(i==nx-1){
-      throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
     }
   }
+  if(xid==-1){
+    throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
+  }
 
-  return (state[xid].rho[nrh] + 
+  return (state[xid].rho[nrh] +
 	   (state[xid+1].rho[nrh]-
 	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.Evolve(h0,t-t_ini);
 }
@@ -262,10 +259,10 @@ void SQUIDS::Set_xrange(const std::vector<double>& xs){
   x=xs;
 }
 
-int SQUIDS::Get_i(double xi) const{
+unsigned int SQUIDS::Get_i(double xi) const{
   double xl, xr;
-  int nr=nx-1;
-  int nl=0;
+  unsigned int nr=nx-1;
+  unsigned int nl=0;
 
   xl=x[nl];
   xr=x[nr];
@@ -289,8 +286,8 @@ int SQUIDS::Get_i(double xi) const{
   return nl;
 }
 
-void SQUIDS::Set_GSL_step(const gsl_odeiv2_step_type * opt){
-  step = (gsl_odeiv2_step_type *) opt;  
+void SQUIDS::Set_GSL_step(gsl_odeiv2_step_type const* opt){
+  step = opt;
 }
 
 void SQUIDS::Set_AdaptiveStep(bool opt){
@@ -350,7 +347,7 @@ void SQUIDS::Set_abs_error(double opt){
   abs_error=opt;
 }
 
-void SQUIDS::Set_NumSteps(int opt){
+void SQUIDS::Set_NumSteps(unsigned int opt){
   nsteps=opt;
 }
 
@@ -419,7 +416,7 @@ int SQUIDS::Evolve(double dt){
 }
 
 int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
-  SQUIDS *dms=(SQUIDS*)par;
+  SQUIDS *dms=static_cast<SQUIDS*>(par);
   dms->set_deriv_system_pointer(state_dbl_out);
   dms->Derive(t);
   return 0;

@@ -28,9 +28,9 @@
 #include "SU_inc/dimension.h"
 
 Const::Const():
-de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free),
 th(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free),
-dcp(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free)
+dcp(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free),
+de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
 {
     /* PHYSICS CONSTANTS
     #===============================================================================
@@ -152,7 +152,7 @@ void Const::SetMixingAngle(unsigned int state1, unsigned int state2, double angl
         throw std::runtime_error("Const::SetMixingAngle: state indices should be ordered and unequal"
                                  " (Got "+std::to_string(state1)+" and "+std::to_string(state2)+")");
     if(state1>=SQUIDS_MAX_HILBERT_DIM-1)
-        throw std::runtime_error("Const::SetMixingAngle: First state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR-1);
+        throw std::runtime_error("Const::SetMixingAngle: First state index must be less than "+std::to_string(SQUIDS_MAX_HILBERT_DIM-1));
     if(state2>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::SetMixingAngle: Second mass state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
@@ -164,7 +164,7 @@ double Const::GetMixingAngle(unsigned int state1, unsigned int state2) const{
         throw std::runtime_error("Const::GetMixingAngle: state indices should be ordered and unequal"
                                  " (Got "+std::to_string(state1)+" and "+std::to_string(state2)+")");
     if(state1>=SQUIDS_MAX_HILBERT_DIM-1)
-        throw std::runtime_error("Const::GetMixingAngle: First state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR-1);
+        throw std::runtime_error("Const::GetMixingAngle: First state index must be less than "+std::to_string(SQUIDS_MAX_HILBERT_DIM-1));
     if(state2>=SQUIDS_MAX_HILBERT_DIM)
         throw std::runtime_error("Const::GetMixingAngle: Second mass state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     

@@ -130,8 +130,8 @@ isinit_d(false)
   std::fill(components,components+size,0.0);
   
   double m_real[dim][dim]; double m_imag[dim][dim];
-  for(int i=0; i<dim; i++){
-    for(int j=0; j<dim; j++){
+  for(unsigned int i=0; i<dim; i++){
+    for(unsigned int j=0; j<dim; j++){
       m_real[i][j] = gsl_matrix_complex_get(m,i,j).dat[0];
       m_imag[i][j] = gsl_matrix_complex_get(m,i,j).dat[1];
     }
@@ -170,8 +170,8 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
   
   double m_real[d][d]; double m_imag[d][d];
-  for(int i=0; i<d; i++){
-    for(int j=0; j<d; j++){
+  for(unsigned int i=0; i<d; i++){
+    for(unsigned int j=0; j<d; j++){
       m_real[i][j] = KRONECKER(i,j)*KRONECKER(i,ii);
       m_imag[i][j] = 0.0;
     }
@@ -187,8 +187,8 @@ SU_vector SU_vector::Identity(unsigned int d){
     throw std::runtime_error("SU_vector::Identity(unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   
   double m_real[d][d]; double m_imag[d][d];
-  for(int i=0; i<d; i++){
-    for(int j=0; j<d; j++){
+  for(unsigned int i=0; i<d; i++){
+    for(unsigned int j=0; j<d; j++){
       m_real[i][j] = KRONECKER(i,j);
       m_imag[i][j] = 0.0;
     }
@@ -206,8 +206,8 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
   
   double m_real[d][d]; double m_imag[d][d];
-  for(int i=0; i<d; i++){
-    for(int j=0; j<d; j++){
+  for(unsigned int i=0; i<d; i++){
+    for(unsigned int j=0; j<d; j++){
       if(i<ii)
         m_real[i][j] = KRONECKER(i,j);
       else
@@ -228,8 +228,8 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
   
   double m_real[d][d]; double m_imag[d][d];
-  for(int i=0; i<d; i++){
-    for(int j=0; j<d; j++){
+  for(unsigned int i=0; i<d; i++){
+    for(unsigned int j=0; j<d; j++){
       if(d-i<ii)
         m_real[i][j] = KRONECKER(i,j);
       else
@@ -261,13 +261,13 @@ Operations
 */
 
 void SU_vector::SetAllComponents(double x){  
-  for(int i = 0; i < size; i++)
+  for(unsigned int i = 0; i < size; i++)
     components[i] = x;
 }
 
 std::vector<double> SU_vector::GetComponents() const{
   std::vector<double> x ( dim*dim );
-  for ( int i = 0; i < dim*dim ; i++ )
+  for (unsigned int i = 0; i < dim*dim ; i++)
     x[i] = components[i];
   return x;
 }
@@ -302,7 +302,7 @@ double SUTrace(const SU_vector& suv1,const SU_vector& suv2){
   double gen_trace = 0.0;
   double id_trace = 0.0;
 
-  for(int i=1; i < suv1.Size(); i++)
+  for(unsigned int i=1; i < suv1.Size(); i++)
     gen_trace += (suv1.components[i])*(suv2.components[i]);
 
   id_trace = (suv1.components[0])*(suv2.components[0])*double(suv1.dim);
@@ -319,7 +319,7 @@ bool SU_vector::operator==(const SU_vector& other) const{
   if(!isinit && !isinit_d)
     return true;
   //test whether all components are equal
-  for(int i=0; i < size; i++){
+  for(unsigned int i=0; i < size; i++){
     if(components[i] != other.components[i])
       return false;
   }
@@ -401,7 +401,7 @@ SU_vector& SU_vector::operator=(SU_vector&& other){
 SU_vector& SU_vector::operator+=(const SU_vector &other){
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector increment");
-  for(int i=0; i < size; i++)
+  for(unsigned int i=0; i < size; i++)
     components[i] += other.components[i];
   return *this;
 }
@@ -409,19 +409,19 @@ SU_vector& SU_vector::operator+=(const SU_vector &other){
 SU_vector& SU_vector::operator-=(const SU_vector &other){
   if(size!=other.size)
     throw std::runtime_error("Non-matching dimensions in SU_vector decrement");
-  for(int i=0; i < size; i++)
+  for(unsigned int i=0; i < size; i++)
     components[i] -= other.components[i];
   return *this;
 }
 
 SU_vector& SU_vector::operator *=(double x){
-  for(int i = 0; i < size; i++)
+  for(unsigned int i = 0; i < size; i++)
     components[i] *= x;
   return *this;
 }
 
 SU_vector& SU_vector::operator /=(double x){
-  for(int i = 0; i < size; i++)
+  for(unsigned int i = 0; i < size; i++)
     components[i] /= x;
   return *this;
 }
@@ -476,7 +476,7 @@ detail::EvolutionProxy SU_vector::Evolve(const SU_vector& suv1,double t) const{
 }
 
 std::ostream& operator<<(std::ostream& os, const SU_vector& V){
-  for(int i=0; i< V.size-1; i++)
+  for(unsigned int i=0; i< V.size-1; i++)
     os << V.components[i] << "  ";
   os << V.components[V.size-1];
   return os;

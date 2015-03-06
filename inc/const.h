@@ -140,7 +140,7 @@ public :
   ///\param state1 the (zero-based) index of the first state
   ///\param state2 the (zero-based) index of the second state;
   ///              must be larger than state1
-  ///\param angle the phase to use
+  ///\param phase the phase to use
   void SetPhase(unsigned int state1, unsigned int state2, double phase);
   
   ///\brief get the complex phase between two states of the system

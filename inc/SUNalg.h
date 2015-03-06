@@ -124,7 +124,7 @@ private:
   template<typename WrapperType, typename ProxyType>
   SU_vector& assignProxy(const ProxyType& proxy){
     if(components==proxy.suv1.components || components==proxy.suv2.components) //beware of aliasing
-      return(WrapperType::apply(*this,(SU_vector)proxy)); //evaluate via a temporary
+      return(WrapperType::apply(*this,static_cast<SU_vector>(proxy))); //evaluate via a temporary
     //check whether sizes match
     if(this->size!=proxy.suv1.size){
       if(isinit_d) //can't resize
@@ -393,7 +393,7 @@ public:
 
   ///\brief Array-like indexing
   ///\pre i < dimension^2
-  double& operator[](unsigned int i) {assert(i < size); return components[i];};
+  double& operator[](unsigned int i) {assert(i < size); return components[i];}
   ///\brief Array-like indexing
   ///\pre i < dimension^2
   const double& operator[](unsigned int i) const {assert(i < size); return components[i];}
