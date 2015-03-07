@@ -25,6 +25,10 @@
 #ifndef SQUIDS_SUNALG_H
 #define SQUIDS_SUNALG_H
 
+#if __cplusplus < 201103L
+#error C++11 compiler required. Update your compiler and use the flag -std=c++11
+#endif
+
 #include <cassert>
 #include <vector>
 #include <iosfwd>

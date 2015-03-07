@@ -26,6 +26,10 @@
 #ifndef SQUIDS_CONST_H
 #define SQUIDS_CONST_H
 
+#if __cplusplus < 201103L
+#error C++11 compiler required. Update your compiler and use the flag -std=c++11
+#endif
+
 #include <string>
 #include <gsl/gsl_matrix.h>
 #include <stdexcept>
