@@ -1,0 +1,58 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         cweaver@icecube.wisc.edu                                            *
+ ******************************************************************************/
+gsl_matrix_complex_set(matrix,0,0,(gsl_complex){{components[0] + components[7] + components[14]/sqrt(3) + components[21]/sqrt(6) + components[28]/sqrt(10) + components[35]/sqrt(15),0}});
+gsl_matrix_complex_set(matrix,0,1,(gsl_complex){{components[1],-components[6]}});
+gsl_matrix_complex_set(matrix,0,2,(gsl_complex){{components[2],-components[12]}});
+gsl_matrix_complex_set(matrix,0,3,(gsl_complex){{components[3],-components[18]}});
+gsl_matrix_complex_set(matrix,0,4,(gsl_complex){{components[4],-components[24]}});
+gsl_matrix_complex_set(matrix,0,5,(gsl_complex){{components[5],-components[30]}});
+gsl_matrix_complex_set(matrix,1,0,(gsl_complex){{components[1],components[6]}});
+gsl_matrix_complex_set(matrix,1,1,(gsl_complex){{components[0] - components[7] + components[14]/sqrt(3) + components[21]/sqrt(6) + components[28]/sqrt(10) + components[35]/sqrt(15),0}});
+gsl_matrix_complex_set(matrix,1,2,(gsl_complex){{components[8],-components[13]}});
+gsl_matrix_complex_set(matrix,1,3,(gsl_complex){{components[9],-components[19]}});
+gsl_matrix_complex_set(matrix,1,4,(gsl_complex){{components[10],-components[25]}});
+gsl_matrix_complex_set(matrix,1,5,(gsl_complex){{components[11],-components[31]}});
+gsl_matrix_complex_set(matrix,2,0,(gsl_complex){{components[2],components[12]}});
+gsl_matrix_complex_set(matrix,2,1,(gsl_complex){{components[8],components[13]}});
+gsl_matrix_complex_set(matrix,2,2,(gsl_complex){{components[0] - (2*components[14])/sqrt(3) + components[21]/sqrt(6) + components[28]/sqrt(10) + components[35]/sqrt(15),0}});
+gsl_matrix_complex_set(matrix,2,3,(gsl_complex){{components[15],-components[20]}});
+gsl_matrix_complex_set(matrix,2,4,(gsl_complex){{components[16],-components[26]}});
+gsl_matrix_complex_set(matrix,2,5,(gsl_complex){{components[17],-components[32]}});
+gsl_matrix_complex_set(matrix,3,0,(gsl_complex){{components[3],components[18]}});
+gsl_matrix_complex_set(matrix,3,1,(gsl_complex){{components[9],components[19]}});
+gsl_matrix_complex_set(matrix,3,2,(gsl_complex){{components[15],components[20]}});
+gsl_matrix_complex_set(matrix,3,3,(gsl_complex){{components[0] - sqrt(1.5)*components[21] + components[28]/sqrt(10) + components[35]/sqrt(15),0}});
+gsl_matrix_complex_set(matrix,3,4,(gsl_complex){{components[22],-components[27]}});
+gsl_matrix_complex_set(matrix,3,5,(gsl_complex){{components[23],-components[33]}});
+gsl_matrix_complex_set(matrix,4,0,(gsl_complex){{components[4],components[24]}});
+gsl_matrix_complex_set(matrix,4,1,(gsl_complex){{components[10],components[25]}});
+gsl_matrix_complex_set(matrix,4,2,(gsl_complex){{components[16],components[26]}});
+gsl_matrix_complex_set(matrix,4,3,(gsl_complex){{components[22],components[27]}});
+gsl_matrix_complex_set(matrix,4,4,(gsl_complex){{components[0] - 2*sqrt(0.4)*components[28] + components[35]/sqrt(15),0}});
+gsl_matrix_complex_set(matrix,4,5,(gsl_complex){{components[29],-components[34]}});
+gsl_matrix_complex_set(matrix,5,0,(gsl_complex){{components[5],components[30]}});
+gsl_matrix_complex_set(matrix,5,1,(gsl_complex){{components[11],components[31]}});
+gsl_matrix_complex_set(matrix,5,2,(gsl_complex){{components[17],components[32]}});
+gsl_matrix_complex_set(matrix,5,3,(gsl_complex){{components[23],components[33]}});
+gsl_matrix_complex_set(matrix,5,4,(gsl_complex){{components[29],components[34]}});
+gsl_matrix_complex_set(matrix,5,5,(gsl_complex){{components[0] - sqrt(1.6666666666666667)*components[35],0}});

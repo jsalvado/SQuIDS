@@ -1,0 +1,47 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         cweaver@icecube.wisc.edu                                            *
+ ******************************************************************************/
+gsl_matrix_complex_set(matrix,0,0,(gsl_complex){{components[0] + components[6] + components[12]/sqrt(3) + components[18]/sqrt(6) + components[24]/sqrt(10),0}});
+gsl_matrix_complex_set(matrix,0,1,(gsl_complex){{components[1],-components[5]}});
+gsl_matrix_complex_set(matrix,0,2,(gsl_complex){{components[2],-components[10]}});
+gsl_matrix_complex_set(matrix,0,3,(gsl_complex){{components[3],-components[15]}});
+gsl_matrix_complex_set(matrix,0,4,(gsl_complex){{components[4],-components[20]}});
+gsl_matrix_complex_set(matrix,1,0,(gsl_complex){{components[1],components[5]}});
+gsl_matrix_complex_set(matrix,1,1,(gsl_complex){{components[0] - components[6] + components[12]/sqrt(3) + components[18]/sqrt(6) + components[24]/sqrt(10),0}});
+gsl_matrix_complex_set(matrix,1,2,(gsl_complex){{components[7],-components[11]}});
+gsl_matrix_complex_set(matrix,1,3,(gsl_complex){{components[8],-components[16]}});
+gsl_matrix_complex_set(matrix,1,4,(gsl_complex){{components[9],-components[21]}});
+gsl_matrix_complex_set(matrix,2,0,(gsl_complex){{components[2],components[10]}});
+gsl_matrix_complex_set(matrix,2,1,(gsl_complex){{components[7],components[11]}});
+gsl_matrix_complex_set(matrix,2,2,(gsl_complex){{components[0] - (2*components[12])/sqrt(3) + components[18]/sqrt(6) + components[24]/sqrt(10),0}});
+gsl_matrix_complex_set(matrix,2,3,(gsl_complex){{components[13],-components[17]}});
+gsl_matrix_complex_set(matrix,2,4,(gsl_complex){{components[14],-components[22]}});
+gsl_matrix_complex_set(matrix,3,0,(gsl_complex){{components[3],components[15]}});
+gsl_matrix_complex_set(matrix,3,1,(gsl_complex){{components[8],components[16]}});
+gsl_matrix_complex_set(matrix,3,2,(gsl_complex){{components[13],components[17]}});
+gsl_matrix_complex_set(matrix,3,3,(gsl_complex){{components[0] - sqrt(1.5)*components[18] + components[24]/sqrt(10),0}});
+gsl_matrix_complex_set(matrix,3,4,(gsl_complex){{components[19],-components[23]}});
+gsl_matrix_complex_set(matrix,4,0,(gsl_complex){{components[4],components[20]}});
+gsl_matrix_complex_set(matrix,4,1,(gsl_complex){{components[9],components[21]}});
+gsl_matrix_complex_set(matrix,4,2,(gsl_complex){{components[14],components[22]}});
+gsl_matrix_complex_set(matrix,4,3,(gsl_complex){{components[19],components[23]}});
+gsl_matrix_complex_set(matrix,4,4,(gsl_complex){{components[0] - 2*sqrt(0.4)*components[24],0}});

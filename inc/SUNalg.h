@@ -274,6 +274,9 @@ public:
   ///\brief Gets the number of components in the vector
   unsigned int Size() const { return size; }
 
+  ///\brief Construct a GSL matrix from a SU_vector
+  gsl_matrix_complex * GetGSLMatrix() const;
+
   ///\brief Compute the time evolution of the SU_vector
   ///
   /// Evolves the SU_vector with the evolution operator given by op.
@@ -282,6 +285,7 @@ public:
   ///\pre op must be diagonal
   ///\returns An object convertible to an SU_vector
   detail::EvolutionProxy Evolve(const SU_vector& op, double time) const;
+
 
   //**********
   //operators

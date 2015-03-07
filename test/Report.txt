@@ -1,0 +1,16 @@
+GSL_SU_vector_conversion         : PASS
+SU_vector_addition               : PASS
+SU_vector_negation               : PASS
+SU_vector_subtraction            : PASS
+anticommutator_SU_vector         : PASS
+commutator_SU_vector             : PASS
+construct_SU_vector_from_proxy   : PASS
+copy_assign_SU_vector            : PASS
+copy_construct_SU_vector         : PASS
+default_construct_SU_vector      : PASS
+ext_buffer_construct_SU_vector   : PASS
+move_assign_SU_vector            : PASS
+move_construct_SU_vector         : PASS
+sized_construct_SU_vector        : PASS
+unitary_transformation_SU_vector : PASS
+      15 Tests: 15 passes, 0 failures
