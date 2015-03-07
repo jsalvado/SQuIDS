@@ -8,7 +8,7 @@
 // works both ways.
 
 double DC(double x){
-  if (x < 1.0e-15)
+  if (fabs(x) < 1.0e-15)
     return 0.;
   else
     return x;
