@@ -61,9 +61,9 @@ fi
 
 # set environment for dynamic linking
 if uname | grep -q 'Darwin' ; then
-    export DYLD_LIBRARY_PATH="../lib"
+    export DYLD_LIBRARY_PATH="../lib":$DYLD_LIBRARY_PATH
 else
-    export LD_LIBRARY_PATH="../lib"
+    export LD_LIBRARY_PATH="../lib":$LD_LIBRARY_PATH
 fi
 
 if [ $# -eq 0 ] ; then
