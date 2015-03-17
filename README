@@ -24,6 +24,23 @@ the your GSL instalation. After succesful configuration run:
 
 make
 
+To verify that the software is functioning correctly, the 
+unit tests can be run with the command:
+
+make test
+
+Finally, the software can be installed using the command:
+
+make install
+
+By default this will attempt to install the library within /usr/local; 
+this can be changed by using the --prefix option when running config.sh:
+
+./config --prefix=$HOME
+
+will select to install the softare in the current user's home directory, 
+for example. 
+
 Examples
 *************
 
