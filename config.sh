@@ -67,6 +67,8 @@ CXX=${CXX-$GUESS_CXX}
 AR=${AR-$GUESS_AR}
 LD=${LD-$GUESS_LD}
 
+CXXFLAGS="$CXXFLAGS -std=c++11"
+
 HELP="Usage: ./config.sh [OPTION]... 
 
 Installation directories:
@@ -88,6 +90,9 @@ CC          C compiler command
 CXX         C++ compiler command
 AR          Static linker command
 LD          Dynamic linker command
+CFLAGS      C compiler flags
+CXXFLAGS    C++ compiler flags
+LDFLAGS     Linker flags
 " #`
 
 for var in "$@"
@@ -107,12 +112,24 @@ do
 	if [ "$TMP" ]; then GSL_LIBDIR="$TMP"; continue; fi
 done
 
-$CXX -std=c++11 resources/compiler_test.cpp -o lib/compiler_test.exe >/dev/null 2>&1
+$CXX $CXXFLAGS resources/compiler_test.cpp -o lib/compiler_test.exe >/dev/null 2>&1
 RESULT=$?
+
+if [ "$RESULT" -ne 0 ];
+then
+	if $CXX --version | grep -q 'clang';
+	then #maybe libc++ is available and will make compilation succeed
+		CXXFLAGS="$CXXFLAGS -stdlib=libc++"
+		LDFLAGS="$LDFLAGS -stdlib=libc++"
+		$CXX $CXXFLAGS resources/compiler_test.cpp -o lib/compiler_test.exe >/dev/null 2>&1
+		RESULT=$?
+	fi
+fi
+
 if [ "$RESULT" -ne 0 ];
 then
 	rm -f lib/compiler_test.exe
-	echo "Your C++ compiler ($CXX) is too old to compile this library." >&2
+	echo "Your C++ compiler ($CXX) is not able to compile this library." >&2
 	echo "Plese set the CXX environment variable to point to a compiler which supports C++11." >&2
 	echo "Version 4.8.1 or newer of gcc or version 3.3 or newer of clang are recommended." >&2
 	exit 1
@@ -135,6 +152,8 @@ fi
 
 find_package gsl 1.15
 
+CFLAGS=$CFLAGS
+
 if [ ! -d ./lib/ ]; then
     mkdir lib;
 fi
@@ -156,14 +175,24 @@ Cflags: -I${includedir}
 
 echo "Generating makefile..."
 
-echo "# Compiler
+echo "# Directories
+LIBDIR:=lib
+INCDIR:=inc
+SUINCDIR:=inc/SU_inc
+SRCDIR:=src
+
+# Compiler
 CC:=$CC
 CXX:=$CXX
 AR:=$AR
 LD:=$LD
 
 GSL_CFLAGS=$GSL_CFLAGS
-GSL_LDFLAGS=$GSL_LDFLAGS" > settings.mk
+GSL_LDFLAGS=$GSL_LDFLAGS
+
+CFLAGS:=$CFLAGS "'-O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)'"
+CXXFLAGS:=$CXXFLAGS
+LDFLAGS:=$LDFLAGS "'-Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)' > settings.mk
 
 echo "include settings.mk
 
@@ -174,17 +203,6 @@ DYN_SUFFIX:=$DYN_SUFFIX
 DYN_OPT=$DYN_OPT
 " > Makefile
 echo '
-
-CXXFLAGS:= -std=c++11
-
-# Directories
-LIBDIR:=lib
-INCDIR:=inc
-SUINCDIR:=inc/SU_inc
-SRCDIR:=src
-CFLAGS:= -O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)
-LDFLAGS:= -Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)
-
 # Project files
 NAME:=SQuIDS
 STAT_PRODUCT:=$(LIBDIR)/lib$(NAME).a
