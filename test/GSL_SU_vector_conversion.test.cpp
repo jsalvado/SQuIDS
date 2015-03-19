@@ -31,11 +31,11 @@ int main(){
 
   gsl_matrix_complex_add(matrix_1,matrix_2);
 
-  gsl_matrix_complex * matrix_sum = SU_vector(m1+m2).GetGSLMatrix();
+  auto matrix_sum = SU_vector(m1+m2).GetGSLMatrix();
 
   for(unsigned int i = 0; i < dim; i++){
     for(unsigned int j = 0; j < dim; j++){
-      gsl_complex x = gsl_matrix_complex_get(matrix_sum,i,j);
+      gsl_complex x = gsl_matrix_complex_get(matrix_sum.get(),i,j);
       std::cout << DC(GSL_REAL(x)) << "," << DC(GSL_IMAG(x)) << " ";
     }
     std::cout << std::endl;
@@ -48,6 +48,9 @@ int main(){
     }
     std::cout << std::endl;
   }
+	
+  gsl_matrix_complex_free(matrix_1);
+  gsl_matrix_complex_free(matrix_2);
 
   return 0;
 }

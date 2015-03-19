@@ -272,12 +272,13 @@ std::vector<double> SU_vector::GetComponents() const{
   return x;
 }
 
-gsl_matrix_complex * SU_vector::GetGSLMatrix() const {
+std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>
+SU_vector::GetGSLMatrix() const {
   if( !isinit and !isinit_d)
     throw std::runtime_error("SU_vector::GetGSLMatrix(): SU_vector not initialized.");
   gsl_matrix_complex * matrix = gsl_matrix_complex_alloc(dim,dim);
 #include "SUToMatrixSelect.txt"
-  return matrix;
+  return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{

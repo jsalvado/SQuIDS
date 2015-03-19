@@ -279,7 +279,7 @@ public:
   unsigned int Size() const { return size; }
 
   ///\brief Construct a GSL matrix from a SU_vector
-  gsl_matrix_complex * GetGSLMatrix() const;
+  std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetGSLMatrix() const;
 
   ///\brief Compute the time evolution of the SU_vector
   ///
