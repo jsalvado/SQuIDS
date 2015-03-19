@@ -42,8 +42,8 @@ CLEANED_TEST_SUFFIX=".clean.cpp"
 # the subdirectory in which to stash produced files
 PRODUCT_DIR="products"
 
-COMPILE_COMMAND="$CXX -std=c++11 -g -I./ -L../lib"
-TEST_LIB_FLAGS="-lSQuIDS -lgsl -lgslcblas"
+COMPILE_COMMAND="$CXX $CFLAGS $CXXFLAGS -g -I. -/ -L../lib"
+TEST_LIB_FLAGS="$LDFLAGS -lSQuIDS -lgsl -lgslcblas"
 CLEAN_COMMAND_FILE="clean_fail.sed"
 
 NAME_FILTER_REGEX='\('$COMPILE_FAIL_FLAG'\)*'$TEST_SUFFIX'$'

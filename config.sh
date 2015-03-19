@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 check_pkgconfig(){
 	if [ "$CHECKED_PKGCONFIG" ]; then return; fi
@@ -242,9 +242,17 @@ docs:
 	@doxygen src/doxyfile
 
 test: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd test ; export CXX=$(CXX) ; ./run_tests
+	@cd test ; export CXX=$(CXX) ; \
+	export CFLAGS="$(CFLAGS)" ; \
+	export CXXFLAGS="$(CXXFLAGS)" ; \
+	export LDFLAGS="$(LDFLAGS)" ; \
+	./run_tests
 check: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd test ; export CXX=$(CXX) ; ./run_tests
+	@cd test ; export CXX=$(CXX) ; \
+	export CFLAGS="$(CFLAGS)" ; \
+	export CXXFLAGS="$(CXXFLAGS)" ; \
+	export LDFLAGS="$(LDFLAGS)" ; \
+	./run_tests
 
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
