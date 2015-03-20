@@ -158,7 +158,11 @@ class SQUIDS {
   Const params;
   ///the state of the system
   std::unique_ptr<SU_state[]> state;
-
+  ///\brief Sets the current time of the system
+  ///\param t_ Time to set.
+  ///\warning Do not use this function unless you are setting the same time
+  /// as the time to the system has already being evolved at.
+  void Set_t(double t_) { t = t_; }
  public:
   //****************
   //Constructors
@@ -339,6 +343,7 @@ class SQUIDS {
   ///\brief Returns the current time of the system
   double Get_t() const{ return(t); }
   
+
   ///\brief Returns the parameter object for this system
   const Const& GetParams() const{ return(params); }
 };
