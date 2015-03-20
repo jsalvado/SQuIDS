@@ -40,7 +40,14 @@ find_package(){
 }
 
 PREFIX=/usr/local
-VERSION=1.0.0
+
+VERSION_NUM=100200
+VERSION=`echo $VERSION_NUM | awk '{
+	major = int($1/100000);
+	minor = ($1/100)%1000;
+	patch = $1%100;
+	print major"."minor"."patch;
+}'`
 
 OS_NAME=`uname -s`
 
@@ -172,6 +179,11 @@ echo 'Requires: gsl >= 1.14
 Libs: -L${libdir} -lSQuIDS
 Cflags: -I${includedir}
 ' >> lib/squids.pc
+
+echo "Generating version header..."
+sed -e "s|__SQUIDS_VERSION__|$VERSION_NUM|g" \
+    -e "s|__SQUIDS_VERSION_STR__|$VERSION|g" \
+    < resources/version.h.in > inc/version.h
 
 echo "Generating makefile..."
 

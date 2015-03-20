@@ -39,7 +39,7 @@
  ------------
  
  SQuIDS is written using features of C++11 for efficiency, so it requires a
- reasonably new C++ compiler. GCC 4.7 or newer or Clang 3.3 or newer is 
+ reasonably new C++ compiler. GCC 4.8.1 or newer or Clang 3.3 or newer is
  recommended, but the code is written to be portable and should work with 
  other compilers as well. 
  

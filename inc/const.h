@@ -35,6 +35,8 @@
 #include <gsl/gsl_matrix.h>
 #include <stdexcept>
 
+#include "version.h"
+
 ///Contains physical and mathematical constants
 class Const{
 public : 
