@@ -30,7 +30,7 @@
 #ifndef RABI_H
 #define RABI_H
 
-#include <SQUIDS.h>
+#include <SQuIDS.h>
 
 class rabi: public SQUIDS {
  private:

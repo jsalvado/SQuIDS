@@ -36,7 +36,7 @@
 #include <complex>
 #include <vector>
 
-#include <SQUIDS.h>
+#include <SQuIDS.h>
 
 class vacuum: public SQUIDS {
  private:

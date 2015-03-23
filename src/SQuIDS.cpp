@@ -21,7 +21,7 @@
  *         chris.weaver@icecube.wisc.edu                                       *
  ******************************************************************************/
 
-#include "SQUIDS.h"
+#include "SQuIDS.h"
 #include <cmath>
 #include <limits>
 #include <algorithm>

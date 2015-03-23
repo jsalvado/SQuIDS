@@ -220,7 +220,7 @@ NAME:=SQuIDS
 STAT_PRODUCT:=$(LIBDIR)/lib$(NAME).a
 DYN_PRODUCT:=$(LIBDIR)/lib$(NAME)$(DYN_SUFFIX)
 
-OBJECTS:= $(LIBDIR)/const.o $(LIBDIR)/SUNalg.o $(LIBDIR)/SQUIDS.o
+OBJECTS:= $(LIBDIR)/const.o $(LIBDIR)/SUNalg.o $(LIBDIR)/SQuIDS.o
 
 # Compilation rules
 all: $(STAT_PRODUCT) $(DYN_PRODUCT)
@@ -236,9 +236,9 @@ $(STAT_PRODUCT) : $(OBJECTS)
 $(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(INCDIR)/const.h Makefile
 	@echo Compiling const.cpp to const.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/const.cpp -o $@
-$(LIBDIR)/SQUIDS.o: $(SRCDIR)/SQUIDS.cpp $(INCDIR)/SQUIDS.h $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
-	@echo Compiling SQUIDS.cpp to SQUIDS.o
-	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQUIDS.cpp -o $@
+$(LIBDIR)/SQuIDS.o: $(SRCDIR)/SQuIDS.cpp $(INCDIR)/SQuIDS.h $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
+	@echo Compiling SQuIDS.cpp to SQuIDS.o
+	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQuIDS.cpp -o $@
 $(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
 	@echo Compiling SUNalg.cpp to SUNalg.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@

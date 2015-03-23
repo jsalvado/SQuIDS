@@ -31,7 +31,7 @@
 #ifndef COLLECTIVE_H
 #define COLLECTIVE_H
 
-#include <SQUIDS.h>
+#include <SQuIDS.h>
 
 class collective: public SQUIDS {
  private:
