@@ -33,7 +33,7 @@
 
 #include <SQuIDS.h>
 
-class collective: public SQUIDS {
+class collective: public SQuIDS {
  private:
   //Hamiltonian vectors for the H0 part and the self interacting term
   SU_vector B;

@@ -102,7 +102,7 @@
 ///\brief SQuIDS main class
 
 //density matrix kinetic equation solver
-class SQUIDS {
+class SQuIDS {
  protected:
   
   ///\brief Structure that contains the node state
@@ -167,7 +167,7 @@ class SQUIDS {
   //****************
   //Constructors
   //****************
-  SQUIDS();
+  SQuIDS();
   //***************************************************************
   ///\brief Constructs a SQUIDS object
   ///
@@ -176,17 +176,17 @@ class SQUIDS {
   ///\param nrho Number of density matrix in every "x" site
   ///\param nscalar Number of scalars in every "x" site
   ///\param ti initial value for the evolution parameter t
-  SQUIDS(unsigned int nx, unsigned int dim, unsigned int nrho, unsigned int nscalar, double ti=0.0);
+  SQuIDS(unsigned int nx, unsigned int dim, unsigned int nrho, unsigned int nscalar, double ti=0.0);
 
   ///\brief Move constructs a SQUIDS object from an existing object
-  SQUIDS(SQUIDS&&);
+  SQuIDS(SQuIDS&&);
 
   //***************************************************************
-  virtual ~SQUIDS();
+  virtual ~SQuIDS();
   
   //***************************************************************
   ///\brief Move assigns a SQUIDS object from an existing object
-  SQUIDS& operator=(SQUIDS&&);
+  SQuIDS& operator=(SQuIDS&&);
 
   //***************************************************************
   ///\brief Initializes a SQUIDS object

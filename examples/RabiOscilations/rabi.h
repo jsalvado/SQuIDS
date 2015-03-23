@@ -32,7 +32,7 @@
 
 #include <SQuIDS.h>
 
-class rabi: public SQUIDS {
+class rabi: public SQuIDS {
  private:
   //Hamiltonian no external field
   SU_vector suH0;

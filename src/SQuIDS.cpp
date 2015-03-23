@@ -29,7 +29,7 @@
 ///\brief Auxiliary function used for the GSL interface
 int RHS(double ,const double*,double*,void*);
 
-SQUIDS::SQUIDS():
+SQuIDS::SQuIDS():
 CoherentRhoTerms(false),
 NonCoherentRhoTerms(false),
 OtherRhoTerms(false),
@@ -52,12 +52,12 @@ rel_error(1e-20)
   sys.params = this;
 }
 
-SQUIDS::SQUIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int nsc, double ti):
-SQUIDS(){
+SQuIDS::SQuIDS(unsigned int n, unsigned int ns, unsigned int nrh, unsigned int nsc, double ti):
+SQuIDS(){
   ini(n,ns,nrh,nsc,ti);
 }
 
-SQUIDS::SQUIDS(SQUIDS&& other):
+SQuIDS::SQuIDS(SQuIDS&& other):
 CoherentRhoTerms(other.CoherentRhoTerms),
 NonCoherentRhoTerms(other.NonCoherentRhoTerms),
 OtherRhoTerms(other.OtherRhoTerms),
@@ -92,7 +92,7 @@ state(std::move(other.state))
   other.is_init=false; //other is no longer usable, since we stole its contents
 }
 
-void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned int nsc, double ti){
+void SQuIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned int nsc, double ti){
   /*
     Setting the number of energy bins, number of components for the density matrix and
     number of scalar functions
@@ -144,7 +144,7 @@ void SQUIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   is_init=true;
 };
 
-void SQUIDS::set_deriv_system_pointer(double *p){
+void SQuIDS::set_deriv_system_pointer(double *p){
   deriv_system=p;
   for(unsigned int ei = 0; ei < nx; ei++){
     for(unsigned int i=0;i<nrhos;i++){
@@ -154,9 +154,9 @@ void SQUIDS::set_deriv_system_pointer(double *p){
   }
 }
 
-SQUIDS::~SQUIDS(){}
+SQuIDS::~SQuIDS(){}
 
-SQUIDS& SQUIDS::operator=(SQUIDS&& other){
+SQuIDS& SQuIDS::operator=(SQuIDS&& other){
   if(&other==this)
     return(*this);
   
@@ -200,7 +200,7 @@ SQUIDS& SQUIDS::operator=(SQUIDS&& other){
   density matrix and a set of scalars
  */
 
-void SQUIDS::Set_xrange(double xi, double xf, std::string type){
+void SQuIDS::Set_xrange(double xi, double xf, std::string type){
   if (xi == xf){
     x[0] = xi;
     return;
@@ -228,12 +228,12 @@ void SQUIDS::Set_xrange(double xi, double xf, std::string type){
   }
 }
 
-double SQUIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i) const{
+double SQuIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i) const{
   SU_vector h0=H0(x[i],nrh);
   return state[i].rho[nrh]*op.Evolve(h0,t-t_ini);
 }
 
-double SQUIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) const{
+double SQuIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) const{
   SU_vector h0=H0(xi,nrh);
   int xid=-1;
   for(unsigned int i = 0; i < nx; i++){
@@ -251,7 +251,7 @@ double SQUIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) c
 	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.Evolve(h0,t-t_ini);
 }
 
-void SQUIDS::Set_xrange(const std::vector<double>& xs){
+void SQuIDS::Set_xrange(const std::vector<double>& xs){
   if(xs.size()!=nx)
     throw std::runtime_error("SQUIDS::Set_xrange : wrong number of x values");
   if(!std::is_sorted(xs.begin(),xs.end()))
@@ -259,7 +259,7 @@ void SQUIDS::Set_xrange(const std::vector<double>& xs){
   x=xs;
 }
 
-unsigned int SQUIDS::Get_i(double xi) const{
+unsigned int SQuIDS::Get_i(double xi) const{
   double xl, xr;
   unsigned int nr=nx-1;
   unsigned int nl=0;
@@ -286,35 +286,35 @@ unsigned int SQUIDS::Get_i(double xi) const{
   return nl;
 }
 
-void SQUIDS::Set_GSL_step(gsl_odeiv2_step_type const* opt){
+void SQuIDS::Set_GSL_step(gsl_odeiv2_step_type const* opt){
   step = opt;
 }
 
-void SQUIDS::Set_AdaptiveStep(bool opt){
+void SQuIDS::Set_AdaptiveStep(bool opt){
   adaptive_step=opt;
 }
-void SQUIDS::Set_CoherentRhoTerms(bool opt){
+void SQuIDS::Set_CoherentRhoTerms(bool opt){
   CoherentRhoTerms=opt;
   AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_NonCoherentRhoTerms(bool opt){
+void SQuIDS::Set_NonCoherentRhoTerms(bool opt){
   NonCoherentRhoTerms=opt;
   AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_OtherRhoTerms(bool opt){
+void SQuIDS::Set_OtherRhoTerms(bool opt){
   OtherRhoTerms=opt;
   AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_GammaScalarTerms(bool opt){
+void SQuIDS::Set_GammaScalarTerms(bool opt){
   GammaScalarTerms=opt;
   AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
-void SQUIDS::Set_OtherScalarTerms(bool opt){
+void SQuIDS::Set_OtherScalarTerms(bool opt){
   OtherScalarTerms=opt;
   AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
 
-void SQUIDS::Set_h_min(double opt){
+void SQuIDS::Set_h_min(double opt){
   h_min=opt;
   if(h<h_min){
     if(h_max<50.0*h_min){
@@ -324,7 +324,7 @@ void SQUIDS::Set_h_min(double opt){
     }
   }
 }
-void SQUIDS::Set_h_max(double opt){
+void SQuIDS::Set_h_max(double opt){
   h_max=opt;
   if(h>h_max){
     if(h_max<50.0*h_min){
@@ -335,23 +335,23 @@ void SQUIDS::Set_h_max(double opt){
   }
 }
 
-void SQUIDS::Set_h(double opt){
+void SQuIDS::Set_h(double opt){
   h=opt;
 }
 
-void SQUIDS::Set_rel_error(double opt){
+void SQuIDS::Set_rel_error(double opt){
   rel_error=opt;
 }
 
-void SQUIDS::Set_abs_error(double opt){
+void SQuIDS::Set_abs_error(double opt){
   abs_error=opt;
 }
 
-void SQUIDS::Set_NumSteps(unsigned int opt){
+void SQuIDS::Set_NumSteps(unsigned int opt){
   nsteps=opt;
 }
 
-int SQUIDS::Derive(double at){
+int SQuIDS::Derive(double at){
   t=at;
   PreDerive(at);
   for(unsigned int ei = 0; ei < nx; ei++){
@@ -383,7 +383,7 @@ int SQUIDS::Derive(double at){
   return GSL_SUCCESS;
 }
 
-int SQUIDS::Evolve(double dt){
+int SQuIDS::Evolve(double dt){
   if(AnyNumerics){
     int gsl_status = GSL_SUCCESS;
 
@@ -416,7 +416,7 @@ int SQUIDS::Evolve(double dt){
 }
 
 int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
-  SQUIDS *dms=static_cast<SQUIDS*>(par);
+  SQuIDS *dms=static_cast<SQuIDS*>(par);
   dms->set_deriv_system_pointer(state_dbl_out);
   dms->Derive(t);
   return 0;

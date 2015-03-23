@@ -38,7 +38,7 @@
 
 #include <SQuIDS.h>
 
-class vacuum: public SQUIDS {
+class vacuum: public SQuIDS {
  private:
   SU_vector DM2;
  public:
