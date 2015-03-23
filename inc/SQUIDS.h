@@ -161,7 +161,7 @@ class SQUIDS {
   ///\brief Sets the current time of the system
   ///\param t_ Time to set.
   ///\warning Do not use this function unless you are setting the same time
-  /// as the time to the system has already being evolved at.
+  /// as the time to which the system has already been evolved.
   void Set_t(double t_) { t = t_; }
  public:
   //****************
@@ -236,24 +236,39 @@ class SQUIDS {
   //***************************************************************
   //virtual functions defined in the dervied class
   ///\brief H0 time independent evolution operator
+  ///
+  ///Computes the time independent hamiltonian for a particular
+  ///density matrix, at a particular node parameter value
+  ///\param x continuous representation of the node parameter
+  ///\param irho density matrix index
   virtual SU_vector H0(double x, unsigned int irho) const{ return SU_vector(nsun);}
   ///\brief H1 time dependent evolution operator
+  ///
+  ///Computes the time dependent hamiltonian for a particular
+  ///density matrix, at a particular node
+  ///\param ix node index
+  ///\param irho density matrix index
+  ///\param t time
   virtual SU_vector HI(unsigned int ix, unsigned int irho, double t) const{ return SU_vector(nsun);}
   ///\brief Attenuation and/or decoherence operator
-  ///\param ix Index in the x-array
+  ///\param ix node index
+  ///\param irho density matrix index
   ///\param t time
   virtual SU_vector GammaRho(unsigned int ix, unsigned int irho, double t) const{ return SU_vector(nsun);}
   ///\brief Function containing other possible operations, like non linear terms in rho
   ///or terms involving the scalar functions
-  ///\param ix Index in the x-array
+  ///\param ix node index
+  ///\param irho density matrix index
   ///\param t time
   virtual SU_vector InteractionsRho(unsigned int ix, unsigned int irho, double t) const{ return SU_vector(nsun);}
   ///\brief Attenuation for the scalar functions
-  ///\param ix Index in the x-array
+  ///\param ix node index
+  ///\param irho density matrix index
   ///\param t time
   virtual double GammaScalar(unsigned int ix, unsigned int irho, double t) const{return 0.0;}
   ///\brief Other possible interaction terms for the scalar functions.
-  ///\param ix Index in the x-array
+  ///\param ix node index
+  ///\param irho density matrix index
   ///\param t time
   virtual double InteractionsScalar(unsigned int ix, unsigned int irho, double t) const{return 0.0;}
   ///\brief Function to be evaluated before the derivative
