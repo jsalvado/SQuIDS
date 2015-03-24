@@ -385,7 +385,7 @@ int SQuIDS::Derive(double at){
   return GSL_SUCCESS;
 }
 
-int SQuIDS::Evolve(double dt){
+void SQuIDS::Evolve(double dt){
   if(AnyNumerics){
     int gsl_status = GSL_SUCCESS;
 
@@ -413,8 +413,6 @@ int SQuIDS::Evolve(double dt){
     t+=dt;
     PreDerive(t);
   }
-
-  return GSL_SUCCESS;
 }
 
 int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){

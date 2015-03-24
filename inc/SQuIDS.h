@@ -272,7 +272,7 @@ class SQuIDS {
   //***************************************************************
   ///\brief Numerical evolution of the state using GSL
   ///\param dt evolution time interval.
-  int Evolve(double dt);
+  void Evolve(double dt);
 
   //***************************************************************
   //functions to set parameters in the object.
