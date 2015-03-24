@@ -32,7 +32,7 @@
 #include <fstream>
 
 int main(){
-  Const units;
+  squids::Const units;
   
   //Number of energy bins
   unsigned int Nenergy=1000;

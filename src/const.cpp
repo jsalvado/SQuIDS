@@ -27,6 +27,8 @@
 
 #include "SU_inc/dimension.h"
 
+namespace squids{
+
 Const::Const():
 th(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free),
 dcp(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM,SQUIDS_MAX_HILBERT_DIM),gsl_matrix_free),
@@ -208,3 +210,5 @@ double Const::GetPhase(unsigned int state1, unsigned int state2) const{
     
     return(gsl_matrix_get(dcp.get(),state1,state2));
 }
+
+} //namespace squids

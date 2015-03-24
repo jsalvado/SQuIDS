@@ -27,12 +27,7 @@
 
 #define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )
 
-
-/*
- * We implement the SU(N) semialgebraic solution of the
- * diffusion problem. We wil asumme that the problem
- * will be solve in the mass-interaction basis
-*/
+namespace squids{
 
 /*
 -----------------------------------------------------------------------
@@ -501,3 +496,5 @@ detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2
     throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
   return(detail::ACommutatorProxy{suv1,suv2});
 }
+
+} //namespace squids

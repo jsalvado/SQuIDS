@@ -4,7 +4,7 @@
 #include "alloc_counting.h"
 
 void exercise_constructor(unsigned int dim){
-	SU_vector v(dim);
+	squids::SU_vector v(dim);
 	//check the number of components
 	auto components=v.GetComponents();
 	std::cout << components.size() << " components stored\n";

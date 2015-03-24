@@ -26,6 +26,8 @@
 #include <limits>
 #include <algorithm>
 
+namespace squids{
+
 ///\brief Auxiliary function used for the GSL interface
 int RHS(double ,const double*,double*,void*);
 
@@ -416,8 +418,10 @@ int SQuIDS::Evolve(double dt){
 }
 
 int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
-  SQuIDS *dms=static_cast<SQuIDS*>(par);
+  SQuIDS::SQuIDS *dms=static_cast<SQuIDS::SQuIDS*>(par);
   dms->set_deriv_system_pointer(state_dbl_out);
   dms->Derive(t);
   return 0;
 }
+  
+} //namespace squids

@@ -20,6 +20,8 @@
 //subtracting an SU_vector and a proxy
 //constructing or assigning a vector from a proxy which refences an r-value
 
+using squids::SU_vector;
+
 void check_all_components_equal(const SU_vector& v, double expected){
 	auto components=v.GetComponents();
 	std::cout << "components " <<

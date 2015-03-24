@@ -37,6 +37,8 @@
 
 #include "version.h"
 
+namespace squids{
+
 ///Contains physical and mathematical constants
 class Const{
 public : 
@@ -172,5 +174,7 @@ private:
   // energy differences
   std::unique_ptr<gsl_matrix,void (*)(gsl_matrix*)> de;
 };
+  
+} //namespace squids
 
 #endif //ifdef SQUIDS_CONST_H

@@ -24,6 +24,8 @@
 #include "rabi.h"
 #include <cmath>
 
+using squids::SU_vector;
+
 void rabi::init(double D_E, double wi, double Am){
   ini(1/*nodes*/,2/*SU(2)*/,1/*density matrices*/,0/*scalars*/);
   

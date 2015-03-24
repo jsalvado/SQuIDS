@@ -29,6 +29,8 @@
 
 #include "vacuum.h"
 
+using squids::SU_vector;
+
 void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double Efin){
   //initialize SQUID with one density matrix and zero scalar functions
   //nbins -> is the number of energy modes

@@ -3,6 +3,8 @@
 #include <SQuIDs/SUNalg.h>
 
 int main(){
+  using squids::SU_vector;
+  
   int dim;
   int Ngenerators;
   std::ifstream file("FNumber.txt");

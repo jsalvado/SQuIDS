@@ -3,6 +3,8 @@
 #include <SQuIDs/SUNalg.h>
 #include "alloc_counting.h"
 
+using squids::SU_vector;
+
 void exercise_constructor(unsigned int dim){
 	std::cout << "Dimension " << dim << '\n';
 	const size_t size=dim*dim;

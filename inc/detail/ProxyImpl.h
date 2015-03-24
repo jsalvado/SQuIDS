@@ -1,6 +1,8 @@
 #ifndef SQUIDS_DETAIL_PROXYIMPL_H
 #define SQUIDS_DETAIL_PROXYIMPL_H
 
+namespace squids{
+
 namespace detail{
   ///Constant used to indicate that the first argument of a proxy was an
   ///r-value reference and may be moved from
@@ -243,4 +245,6 @@ namespace detail{
 #undef REQUIRE_EVALUATION_PROXY_TPARAM
 #undef REQUIRE_EVALUATION_PROXY_FPARAM
 
+} //namespace squids
+  
 #endif //SQUIDS_DETAIL_PROXYIMPL_H

@@ -3,6 +3,8 @@
 #include <SQuIDs/SUNalg.h>
 #include "alloc_counting.h"
 
+using squids::SU_vector;
+
 void check_all_components_equal(const SU_vector& v, double expected){
   auto components=v.GetComponents();
   std::cout << "components " <<

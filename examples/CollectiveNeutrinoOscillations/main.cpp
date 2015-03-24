@@ -48,7 +48,7 @@ int main(){
   //Evolution from mu=10 to mu=0 in a time period of 100
   ColNus.Adiabatic_mu(10,0,100,true);
 
-  SU_vector o=ColNus.ez;
+  squids::SU_vector o=ColNus.ez;
   double max=0;
   //find the maximum of the initial spectrum
   for(int w=0;w<Nbins;w++){

@@ -53,6 +53,8 @@ void progressbar(int percent, double mu){
   std::cout<< percent << "%   mu: " << mu << std::flush;
 }
 
+using squids::SU_vector;
+
 void collective::init(double m,double th, double wmin, double wmax, int Nbins){
   ini(Nbins/*nodes*/,2/*SU(2)*/,1/*density matrices*/,0/*scalars*/);
   

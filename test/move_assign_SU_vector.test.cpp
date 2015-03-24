@@ -8,6 +8,8 @@
 // dest storage: none/internal/external
 // size: matching/nonmatching
 
+using squids::SU_vector;
+
 void exercise_assignment(SU_vector& source, SU_vector& dest, double expectedVal){
 	try{
 		alloc_counting::reset_allocation_counters();

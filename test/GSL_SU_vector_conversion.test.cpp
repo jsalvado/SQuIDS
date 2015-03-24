@@ -15,6 +15,8 @@ double DC(double x){
 }
 
 int main(){
+  using squids::SU_vector;
+  
   unsigned int dim = 3;
   gsl_matrix_complex * matrix_1 = gsl_matrix_complex_alloc(dim,dim);
   gsl_matrix_complex * matrix_2 = gsl_matrix_complex_alloc(dim,dim);

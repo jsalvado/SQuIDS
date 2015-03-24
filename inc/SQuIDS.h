@@ -99,9 +99,11 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>
 
-///\brief SQuIDS main class
+namespace squids{
 
-//density matrix kinetic equation solver
+///\brief SQuIDS main class
+///
+///density matrix kinetic equation solver
 class SQuIDS {
  protected:
   
@@ -348,4 +350,6 @@ class SQuIDS {
   const Const& GetParams() const{ return(params); }
 };
 
+} //namespace squids
+  
 #endif

@@ -8,6 +8,8 @@
 //allocating its own.
 
 int main(){
+	using squids::SU_vector;
+	
 	{
 		SU_vector v(6);
 		v.SetAllComponents(1);

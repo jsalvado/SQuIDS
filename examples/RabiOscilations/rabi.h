@@ -32,12 +32,12 @@
 
 #include <SQuIDS.h>
 
-class rabi: public SQuIDS {
+class rabi: public squids::SQuIDS {
  private:
   //Hamiltonian no external field
-  SU_vector suH0;
+  squids::SU_vector suH0;
   //The time evolved dipole operators
-  SU_vector d;
+  squids::SU_vector d;
   //Laser Frequency
   double w;
   //Laser Amplitude
@@ -45,10 +45,10 @@ class rabi: public SQuIDS {
 
  public:
   //Dipole operator
-  SU_vector d0;
+  squids::SU_vector d0;
   //Projectors in the different basis
-  std::unique_ptr<SU_vector[]> b0_proj;
-  std::unique_ptr<SU_vector[]> b1_proj;
+  std::unique_ptr<squids::SU_vector[]> b0_proj;
+  std::unique_ptr<squids::SU_vector[]> b1_proj;
 
   //Function evaluated before any derivative
   void PreDerive(double t);
@@ -58,9 +58,9 @@ class rabi: public SQuIDS {
   void init(double D_E, double wi, double Am);
   
   //Time independent hamiltonian
-  SU_vector H0(double x, unsigned int irho) const;
+  squids::SU_vector H0(double x, unsigned int irho) const;
   //Time dependent hamiltonian(Laser)
-  SU_vector HI(unsigned int ix, unsigned int irho, double t) const;
+  squids::SU_vector HI(unsigned int ix, unsigned int irho, double t) const;
 };
 
 #endif

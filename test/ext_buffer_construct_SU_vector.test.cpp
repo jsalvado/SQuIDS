@@ -4,6 +4,8 @@
 #include "alloc_counting.h"
 
 void exercise_constructor(unsigned int dim){
+	using squids::SU_vector;
+	
 	const size_t size=dim*dim;
 	const double initVal=3.14;
 	std::unique_ptr<double[]> buffer(new double[size]);

@@ -5,6 +5,8 @@
 #define REQUIRE_EVALUATION_PROXY_TPARAM typename= REQUIRE_EVALUATION_PROXY_CORE
 #define REQUIRE_EVALUATION_PROXY_FPARAM REQUIRE_EVALUATION_PROXY_CORE ::type* =nullptr
 
+namespace squids{
+
 ///This namespace contains implementation details
 ///which most users should not need to use directly
 namespace detail{
@@ -85,5 +87,7 @@ namespace detail{
   struct iCommutatorProxy;
   struct ACommutatorProxy;
 }
+  
+} //namespace SQuIDS
 
 #endif //SQUIDS_DETAIL_PROXYFWD_H

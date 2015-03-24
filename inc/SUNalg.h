@@ -44,6 +44,8 @@
 #include "SU_inc/dimension.h"
 #include "detail/ProxyFwd.h"
 
+namespace squids{
+
 ///\brief A vector represented in the SU(n) basis
 ///
 /// An object in SU(n) has n^2 components. By default SU_vector will
@@ -472,6 +474,8 @@ detail::MultiplicationProxy operator*(double x, const SU_vector& v);
 
 ///\brief Multiplication of an SU_vector by a scalar from the left.
 detail::MultiplicationProxy operator*(double x, SU_vector&& v);
+  
+} //namespace squids
 
 #include "detail/ProxyImpl.h"
 

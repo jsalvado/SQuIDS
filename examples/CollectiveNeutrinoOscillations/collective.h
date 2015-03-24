@@ -33,11 +33,11 @@
 
 #include <SQuIDS.h>
 
-class collective: public SQuIDS {
+class collective: public squids::SQuIDS {
  private:
   //Hamiltonian vectors for the H0 part and the self interacting term
-  SU_vector B;
-  SU_vector P;
+  squids::SU_vector B;
+  squids::SU_vector P;
 
   //self interaction strengh sqrt(2) G_F n_\nu
   double mu;
@@ -60,7 +60,7 @@ class collective: public SQuIDS {
   void PreDerive(double t);
 
   //Hamilitonian of the system, in this case we don't use any time independent separation(non in the interaction picutre formalism)
-  SU_vector HI(unsigned int ix, unsigned int irho, double t) const;
+  squids::SU_vector HI(unsigned int ix, unsigned int irho, double t) const;
 
   //Fermi distribution
   double Fermi(double EoverT);
@@ -70,7 +70,7 @@ class collective: public SQuIDS {
 
  public:
   //basis
-  SU_vector ex,ey,ez;
+  squids::SU_vector ex,ey,ez;
 
   collective(){};
 
