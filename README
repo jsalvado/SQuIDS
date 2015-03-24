@@ -25,7 +25,7 @@ known to compile the software successfully.
        as well but has not been tested. 
 
 It is also necessary to have a sufficiently new standard library
-implmentation. The libstdc++ supplied with gcc 4.8 or newer, and
+implementation. The libstdc++ supplied with gcc 4.8 or newer, and
 libc++ are known to work. 
 
 The software has been tested and found to work on the following
@@ -45,7 +45,7 @@ The path for the GSL libraries can be specified running:
 	./config.sh --with-gsl-incdir=DIR --with-gsl-libdir=DIR
 
 if not specified pkg-config will be used to try to find
-the your GSL instalation. After succesful configuration run:
+the your GSL installation. After successful configuration run:
 
 	make
 
@@ -63,7 +63,7 @@ this can be changed by using the --prefix option when running config.sh:
 
 	./config --prefix=$HOME
 
-will select to install the softare in the current user's home directory, 
+will select to install the software in the current user's home directory, 
 for example. 
 
 Examples
