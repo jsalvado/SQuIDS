@@ -353,7 +353,7 @@ void SQuIDS::Set_NumSteps(unsigned int opt){
   nsteps=opt;
 }
 
-int SQuIDS::Derive(double at){
+void SQuIDS::Derive(double at){
   t=at;
   PreDerive(at);
   for(unsigned int ei = 0; ei < nx; ei++){
@@ -381,8 +381,6 @@ int SQuIDS::Derive(double at){
         dstate[ei].scalar[is] += InteractionsScalar(ei,is,t);
     }
   }
-
-  return GSL_SUCCESS;
 }
 
 void SQuIDS::Evolve(double dt){

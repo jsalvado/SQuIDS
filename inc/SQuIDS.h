@@ -267,7 +267,7 @@ class SQuIDS {
   //***************************************************************
   ///\brief Computes the right hand side of the kinetic equation.
   ///\param t time
-  int Derive(double t);
+  void Derive(double t);
 
   //***************************************************************
   ///\brief Numerical evolution of the state using GSL
