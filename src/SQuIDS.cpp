@@ -418,7 +418,7 @@ int SQuIDS::Evolve(double dt){
 }
 
 int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
-  SQuIDS::SQuIDS *dms=static_cast<SQuIDS::SQuIDS*>(par);
+  SQuIDS *dms=static_cast<SQuIDS*>(par);
   dms->set_deriv_system_pointer(state_dbl_out);
   dms->Derive(t);
   return 0;
