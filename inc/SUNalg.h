@@ -39,6 +39,8 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_blas.h>
 
 #include "const.h"
 #include "SU_inc/dimension.h"
@@ -279,7 +281,9 @@ public:
   
   ///\brief Gets the number of components in the vector
   unsigned int Size() const { return size; }
-
+  
+  SU_vector UTransform(const SU_vector& v);
+  
   ///\brief Construct a GSL matrix from a SU_vector
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetGSLMatrix() const;
 
