@@ -276,73 +276,75 @@ SU_vector::GetGSLMatrix() const {
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
   
+  
+  void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, gsl_matrix_complex *A, int dimx)
+  {
+    int j,k=0;
+    gsl_complex temp;
+    gsl_matrix *matreal =gsl_matrix_alloc(2*dimx,2*dimx);
+    gsl_matrix *expmatreal =gsl_matrix_alloc(2*dimx,2*dimx);
+    //Converting the complex matrix into real one using A=[Areal, Aimag;-Aimag,Areal]
+    for (j = 0; j < dimx;j++)
+      for (k = 0; k < dimx;k++)
+        {
+	  temp=gsl_matrix_complex_get(A,j,k);
+	  gsl_matrix_set(matreal,j,k,GSL_REAL(temp));
+	  gsl_matrix_set(matreal,dimx+j,dimx+k,GSL_REAL(temp));
+	  gsl_matrix_set(matreal,j,dimx+k,GSL_IMAG(temp));
+	  gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
+        }
+    
+    gsl_linalg_exponential_ss(matreal,expmatreal,.01);
+    
+    double realp;
+    double imagp;
+    for (j = 0; j < dimx;j++)
+      for (k = 0; k < dimx;k++)
+        {
+	  realp=gsl_matrix_get(expmatreal,j,k);
+	  imagp=gsl_matrix_get(expmatreal,j,dimx+k);
+	  gsl_matrix_complex_set(eA,j,k,gsl_complex_rect(realp,imagp));
+        }
+    gsl_matrix_free(matreal);
+    gsl_matrix_free(expmatreal);
+  }  
+  
+  void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
+    int numneu = U->size1;
+    gsl_matrix_complex *U1 = gsl_matrix_complex_alloc(numneu,numneu);
+    gsl_matrix_complex *U2 = gsl_matrix_complex_alloc(numneu,numneu);
+    gsl_matrix_complex_memcpy(U1,U);
+    gsl_matrix_complex_memcpy(U2,U);
+    
+    gsl_matrix_complex *T1 = gsl_matrix_complex_alloc(numneu,numneu);
+    
+    // doing : U M U^dagger
+    
+    gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
+                   gsl_complex_rect(1.0,0.0),M,
+                   U1,gsl_complex_rect(0.0,0.0),T1);
+    gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
+                   gsl_complex_rect(1.0,0.0),U2,
+                   T1,gsl_complex_rect(0.0,0.0),M);
+    // now H_current is in the interaction basis of the mass basis
+    
+    gsl_matrix_complex_free(U1);
+    gsl_matrix_complex_free(U2);
+    gsl_matrix_complex_free(T1);
+  }
+  
+  
   SU_vector SU_vector::UTransform(const SU_vector& v){
-    auto mv=v.GetGSLMatrix();
-    auto mu=(*this).GetGSLMatrix();
-
-    gsl_complex img = gsl_complex_rect (0.,1.);
-    gsl_matrix * gA = gsl_matrix_alloc (size, size);
+    auto mv=v.GetGSLMatrix().get();
+    auto mu=(*this).GetGSLMatrix().get();
+    gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
+    gsl_matrix_complex * em = gsl_matrix_complex_alloc (size, size);
     
-    gsl_matrix * U = gsl_matrix_alloc (size, size);
-    gsl_matrix * V= gsl_matrix_alloc (size, size);
-    gsl_vector * S = gsl_vector_alloc (size);
-    
-    gsl_matrix * gA_t = gsl_matrix_alloc (size, size);
-    gsl_matrix_transpose_memcpy (gA_t, mv);                 
-    
-    
-    gsl_vector * work = gsl_vector_alloc (size);
-    gsl_linalg_SV_decomp (gA_t, V, S, work);
-    gsl_vector_free(work);
-    
-    gsl_matrix_memcpy (U, gA_t);
-    
-    //Take exponential of S and form matrix
-    gsl_matrix_complex * Sp = gsl_matrix_complex_alloc (size, size);
-    gsl_matrix_complex_set_zero (Sp);
-    for (unsigned int i = 0; i < size; i++) {
-      gsl_matrix_complex_set (Sp, i, i, gsl_complex_exp ( gsl_complex_mul_real ( img, gsl_vector_get(S, i) ) ) ); // Vector 'S' to matrix 'Sp'
-    }
-    
-    gsl_matrix_complex * Uc = gsl_matrix_complex_alloc (size, size);
-    
-    
-    //convert U to a complex matrix for next step   
-    for ( unsigned int i = 0; i < size; i++) {
-      for (unsigned int j = 0; j<size; j++) {
-	gsl_matrix_complex_set (Uc, i, j, gsl_complex_rect ( gsl_matrix_get(U, i, j), 0. ) );       
-      }
-    }
-
-
-    //recombine U S Utranspose  
-    gsl_matrix_complex * tA = gsl_matrix_complex_alloc (size, size);
-    gsl_matrix_complex * eA = gsl_matrix_complex_alloc (size, size);
-    gsl_blas_zgemm (CblasNoTrans, CblasNoTrans, GSL_COMPLEX_ONE, Uc, Sp, GSL_COMPLEX_ZERO, tA);
-    gsl_blas_zgemm (CblasNoTrans, CblasTrans, GSL_COMPLEX_ONE, tA, Uc, GSL_COMPLEX_ZERO, eA);
-
-    gsl_blas_zgemm (CblasTrans, CblasNoTrans, GSL_COMPLEX_ONE, eA, mu, GSL_COMPLEX_ZERO, tA);
-    gsl_blas_zgemm (CblasNoTrans, CblasNoTrans, GSL_COMPLEX_ONE, tA, eA, GSL_COMPLEX_ZERO,  ( gsl_matrix_complex*) gA_t);
-
-
-    
-    
-
-
-    //Free up
-    gsl_matrix_free(gA_t);
-    gsl_matrix_free(U);
-    gsl_matrix_free(gA);
-    gsl_matrix_free(V);
-    gsl_vector_free(S);
-    gsl_matrix_complex_free(Uc);
-    gsl_matrix_complex_free(tA);    
-    gsl_matrix_complex_free(eA);    
-
-    
-    SU_vector out((const gsl_matrix_complex*) gA_t);
+    gsl_complex_matrix_exponential(em,mv,size);    
+    gsl_matrix_complex_change_basis_UCMU(em, mv);
+      
+    SU_vector out((const gsl_matrix_complex*) mv);
     return out;
- 
   }
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
