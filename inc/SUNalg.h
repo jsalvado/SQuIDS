@@ -37,10 +37,6 @@
 #include <stdexcept>
 
 #include <gsl/gsl_complex.h>
-#include <gsl/gsl_complex_math.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_blas.h>
 
 #include "const.h"
 #include "SU_inc/dimension.h"

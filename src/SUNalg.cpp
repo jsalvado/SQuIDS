@@ -24,6 +24,9 @@
 #include "SUNalg.h"
 
 #include <ostream>
+#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_blas.h>
 
 #define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )
 
@@ -275,8 +278,8 @@ SU_vector::GetGSLMatrix() const {
 #include "SUToMatrixSelect.txt"
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
-  
-  
+
+
   void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, gsl_matrix_complex *A, int dimx)
   {
     int j,k=0;
@@ -293,9 +296,9 @@ SU_vector::GetGSLMatrix() const {
 	  gsl_matrix_set(matreal,j,dimx+k,GSL_IMAG(temp));
 	  gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
         }
-    
-    gsl_linalg_exponential_ss(matreal,expmatreal,.01);
-    
+
+    gsl_linalg_exponential_ss(matreal,expmatreal,GSL_PREC_DOUBLE);
+
     double realp;
     double imagp;
     for (j = 0; j < dimx;j++)
@@ -307,15 +310,15 @@ SU_vector::GetGSLMatrix() const {
         }
     gsl_matrix_free(matreal);
     gsl_matrix_free(expmatreal);
-  }  
-  
+  }
+
   void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
     int numneu = U->size1;
     gsl_matrix_complex *U1 = gsl_matrix_complex_alloc(numneu,numneu);
     gsl_matrix_complex *U2 = gsl_matrix_complex_alloc(numneu,numneu);
     gsl_matrix_complex_memcpy(U1,U);
     gsl_matrix_complex_memcpy(U2,U);
-    
+ 
     gsl_matrix_complex *T1 = gsl_matrix_complex_alloc(numneu,numneu);
     
     // doing : U M U^dagger
