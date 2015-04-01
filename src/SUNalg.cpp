@@ -363,9 +363,9 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
 }
 
 void SU_vector::RotateToB0(const Const& param){
-  for(unsigned int j=dim-1; j>0; j--){
-    for(unsigned int i=j-1; i<dim; i--)
-      *this=Rotate(i,j,-param.GetMixingAngle(i,j),-param.GetPhase(i,j)); //note negated angle, and phase
+  for(unsigned int j=1; j<dim; j++){
+    for(unsigned int i=0; i<j; i++)
+      *this=Rotate(i,j,-param.GetMixingAngle(i,j),param.GetPhase(i,j)); //note negated angle
   }
 }
 
