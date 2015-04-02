@@ -339,8 +339,8 @@ SU_vector::GetGSLMatrix() const {
   
   SU_vector SU_vector::UTransform(const SU_vector& v){
     auto mv=v.GetGSLMatrix().get();
-    auto mu=(*this).GetGSLMatrix().get();
-    gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
+    //auto mu=(*this).GetGSLMatrix().get();
+    //gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
     gsl_matrix_complex * em = gsl_matrix_complex_alloc (size, size);
     
     gsl_complex_matrix_exponential(em,mv,size);    
