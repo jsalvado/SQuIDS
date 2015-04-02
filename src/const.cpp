@@ -90,7 +90,7 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     day = 24.0*hour;                // [eV^-1/d]
     year = 365.0*day;               // [eV^-1/yr]
     // Distance
-    meter = 5.076e6;                // [eV^-1/m]
+    meter = 5.06773093741e6;        // [eV^-1/m]
     cm = 1.0e-2*meter;              // [eV^-1/cm]
     km = 1.0e3*meter;               // [eV^-1/km]
     fermi = 1.0e-15*meter;          // [eV^-1/fm]
