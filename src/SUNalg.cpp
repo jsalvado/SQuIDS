@@ -27,7 +27,7 @@
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
-
+#include <iostream>
 #define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )
 
 namespace squids{
@@ -275,7 +275,9 @@ SU_vector::GetGSLMatrix() const {
   if( !isinit and !isinit_d)
     throw std::runtime_error("SU_vector::GetGSLMatrix(): SU_vector not initialized.");
   gsl_matrix_complex * matrix = gsl_matrix_complex_alloc(dim,dim);
+  //  std::cout << matrix->size1 << "  " << matrix->size2 << std::endl;   
 #include "SUToMatrixSelect.txt"
+  //std::cout << matrix->size1 << "  " << matrix->size2 << std::endl; 
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
 
@@ -329,24 +331,28 @@ SU_vector::GetGSLMatrix() const {
     gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
                    gsl_complex_rect(1.0,0.0),U2,
                    T1,gsl_complex_rect(0.0,0.0),M);
-    // now H_current is in the interaction basis of the mass basis
     
     gsl_matrix_complex_free(U1);
     gsl_matrix_complex_free(U2);
     gsl_matrix_complex_free(T1);
   }
   
-  
+
   SU_vector SU_vector::UTransform(const SU_vector& v){
-    auto mv=v.GetGSLMatrix().get();
+    //auto mv=v.GetGSLMatrix().get();
     //auto mu=(*this).GetGSLMatrix().get();
-    //gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
-    gsl_matrix_complex * em = gsl_matrix_complex_alloc (size, size);
+    auto mu2=(*this).GetGSLMatrix().get();
+
+    std::cout << mu2->size1 << "  " << mu2->size2 << std::endl; 
     
-    gsl_complex_matrix_exponential(em,mv,size);    
-    gsl_matrix_complex_change_basis_UCMU(em, mv);
+    //gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
+    // gsl_matrix_complex * em = gsl_matrix_complex_alloc (dim, dim);
+    
+    // gsl_complex_matrix_exponential(em,mv,dim);    
+    // gsl_matrix_complex_change_basis_UCMU(em, mu);
       
-    SU_vector out((const gsl_matrix_complex*) mv);
+    
+    SU_vector out(mu2);
     return out;
   }
 

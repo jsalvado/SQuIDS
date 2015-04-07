@@ -44,6 +44,15 @@ int main(){
       }
     }
   }
-  
+
+
+  SU_vector v1=(SU_vector::Generator(dim,1)+SU_vector::Generator(dim,3));
+  SU_vector v2=SU_vector::Generator(dim,2);
+  SU_vector v3=v2.UTransform(v1);
+  //  SU_vector v4=(v2-v3.UTransform(-0.0*v1));
+  // auto out=v4.GetComponents();
+  // for(int i=0;i<dim*dim;i++){
+  //       if(fabs(out[i])>1e-15) std::cout <<"Component: "<<i<<" --> " << out[i] << std::endl;
+  // }
   return(0);
 }
