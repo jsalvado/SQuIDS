@@ -276,7 +276,7 @@ public:
   ///\brief Gets the number of components in the vector
   unsigned int Size() const { return size; }
   
-  SU_vector UTransform(const SU_vector& v);
+  SU_vector UTransform(const SU_vector& v) const;
   
   ///\brief Construct a GSL matrix from a SU_vector
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetGSLMatrix() const;

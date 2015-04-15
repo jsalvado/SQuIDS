@@ -338,7 +338,7 @@ SU_vector::GetGSLMatrix() const {
   }
   
 
-  SU_vector SU_vector::UTransform(const SU_vector& v){
+  SU_vector SU_vector::UTransform(const SU_vector& v) const{
     //auto mv=v.GetGSLMatrix().get();
     //auto mu=(*this).GetGSLMatrix().get();
     auto mu2=(*this).GetGSLMatrix().get();
