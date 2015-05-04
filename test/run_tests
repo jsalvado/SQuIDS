@@ -42,6 +42,11 @@ CLEANED_TEST_SUFFIX=".clean.cpp"
 # the subdirectory in which to stash produced files
 PRODUCT_DIR="products"
 
+# fetch any compilation flags set during library configuration
+if [ -f env_vars.sh ]; then
+	source env_vars.sh
+fi
+
 COMPILE_COMMAND="$CXX $CFLAGS $CXXFLAGS -g -I./ -L../lib"
 TEST_LIB_FLAGS="$LDFLAGS -lSQuIDS -lgsl -lgslcblas"
 CLEAN_COMMAND_FILE="clean_fail.sed"

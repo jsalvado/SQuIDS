@@ -254,16 +254,10 @@ docs:
 	@doxygen src/doxyfile
 
 test: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd test ; export CXX=$(CXX) ; \
-	export CFLAGS="$(CFLAGS)" ; \
-	export CXXFLAGS="$(CXXFLAGS)" ; \
-	export LDFLAGS="$(LDFLAGS)" ; \
+	@cd test ; \
 	./run_tests
 check: $(DYN_PRODUCT) $(STAT_PRODUCT)
-	@cd test ; export CXX=$(CXX) ; \
-	export CFLAGS="$(CFLAGS)" ; \
-	export CXXFLAGS="$(CXXFLAGS)" ; \
-	export LDFLAGS="$(LDFLAGS)" ; \
+	@cd test ; \
 	./run_tests
 
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
@@ -282,5 +276,13 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@mkdir -p $(PREFIX)/lib/pkgconfig
 	@cp $(LIBDIR)/squids.pc $(PREFIX)/lib/pkgconfig
 ' >> Makefile
+
+echo "
+export CXX=\"${CXX}\"
+export CFLAGS=\"${CFLAGS}\"
+export CXXFLAGS=\"${CXXFLAGS}\"
+export LDFLAGS=\"${LDFLAGS}\"
+" > test/env_vars.sh
+
 echo "Done."
 echo "To build, run 'make'"
