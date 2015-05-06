@@ -5,7 +5,7 @@
 
 int main(){
   using squids::SU_vector;
-  
+
   gsl_matrix_complex *mb=gsl_matrix_complex_alloc(2,2);
   gsl_matrix_complex *mb2=gsl_matrix_complex_alloc(2,2);
 
@@ -20,7 +20,6 @@ int main(){
   SU_vector v3(mb);
   auto m3=v3.GetGSLMatrix();
 
-  
   for (size_t i = 0; i < mb->size1; i++) {
     for (size_t j = 0; j < mb->size2; j++) {
       if( GSL_REAL(gsl_matrix_complex_get(mb, i, j)) -
@@ -37,12 +36,6 @@ int main(){
 
     }
   }
-
-  
-  
-  
-  
-   
 
   return(0);
 }

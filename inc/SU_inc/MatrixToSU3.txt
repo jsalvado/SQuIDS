@@ -17,33 +17,26 @@
  *         carguelles@icecube.wisc.edu                                         *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         cweaver@icecube.wisc.edu                                            *
  ******************************************************************************/
-
 components[0]+=0.3333333333333333*m_real[0][0];
 components[4]+=0.5*m_real[0][0];
 components[8]+=1/(2.*sqrt(3))*m_real[0][0];
-components[0]+=-0.3333333333333333*m_imag[0][0];
-components[4]+=-0.5*m_imag[0][0];
-components[8]+=-1/(2.*sqrt(3))*m_imag[0][0];
 components[1]+=0.5*m_real[0][1];
-components[1]+=-0.5*m_imag[0][1];
+components[3]+=-0.5*m_imag[0][1];
 components[2]+=0.5*m_real[0][2];
-components[2]+=-0.5*m_imag[0][2];
+components[6]+=-0.5*m_imag[0][2];
 components[1]+=0.5*m_real[1][0];
-components[1]+=-0.5*m_imag[1][0];
+components[3]+=0.5*m_imag[1][0];
 components[0]+=0.3333333333333333*m_real[1][1];
 components[4]+=-0.5*m_real[1][1];
 components[8]+=1/(2.*sqrt(3))*m_real[1][1];
-components[0]+=-0.3333333333333333*m_imag[1][1];
-components[4]+=0.5*m_imag[1][1];
-components[8]+=-1/(2.*sqrt(3))*m_imag[1][1];
 components[5]+=0.5*m_real[1][2];
-components[5]+=-0.5*m_imag[1][2];
+components[7]+=-0.5*m_imag[1][2];
 components[2]+=0.5*m_real[2][0];
-components[2]+=-0.5*m_imag[2][0];
+components[6]+=0.5*m_imag[2][0];
 components[5]+=0.5*m_real[2][1];
-components[5]+=-0.5*m_imag[2][1];
+components[7]+=0.5*m_imag[2][1];
 components[0]+=0.3333333333333333*m_real[2][2];
 components[8]+=-(1/sqrt(3))*m_real[2][2];
-components[0]+=-0.3333333333333333*m_imag[2][2];
-components[8]+=1/sqrt(3)*m_imag[2][2];
