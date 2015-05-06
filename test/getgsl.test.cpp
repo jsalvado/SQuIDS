@@ -10,8 +10,8 @@ int main(){
   gsl_matrix_complex *mb2=gsl_matrix_complex_alloc(2,2);
 
   gsl_complex zt00, zt01, zt10, zt11;
-  GSL_SET_COMPLEX(&zt00, 1, 0); GSL_SET_COMPLEX(&zt01, 0, 1);
-  GSL_SET_COMPLEX(&zt10, 1, 0); GSL_SET_COMPLEX(&zt11, 1, 0);
+  GSL_SET_COMPLEX(&zt00, 1, 0); GSL_SET_COMPLEX(&zt01, 1, 1);
+  GSL_SET_COMPLEX(&zt10, 1, -1); GSL_SET_COMPLEX(&zt11, 1, 0);
 
   gsl_matrix_complex_set(mb,0,0,zt00); gsl_matrix_complex_set(mb,0,1,zt01);
   gsl_matrix_complex_set(mb,1,0,zt10); gsl_matrix_complex_set(mb,1,1,zt11);
