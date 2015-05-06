@@ -293,10 +293,15 @@ SU_vector::GetGSLMatrix() const {
       for (k = 0; k < dimx;k++)
         {
 	  temp=gsl_matrix_complex_get(A,j,k);
-	  gsl_matrix_set(matreal,j,k,GSL_REAL(temp));
-	  gsl_matrix_set(matreal,dimx+j,dimx+k,GSL_REAL(temp));
+	   gsl_matrix_set(matreal,j,k,GSL_REAL(temp));
+	   gsl_matrix_set(matreal,dimx+j,dimx+k,GSL_REAL(temp));
 	  gsl_matrix_set(matreal,j,dimx+k,GSL_IMAG(temp));
-	  gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
+	   gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
+	  //gsl_matrix_set(matreal,j,k,-GSL_IMAG(temp));
+	  //gsl_matrix_set(matreal,dimx+j,dimx+k,-GSL_IMAG(temp));
+	  //gsl_matrix_set(matreal,j,dimx+k,GSL_REAL(temp));
+	  //gsl_matrix_set(matreal,dimx+j,k,-GSL_REAL(temp));
+
         }
 
     gsl_linalg_exponential_ss(matreal,expmatreal,GSL_PREC_DOUBLE);
@@ -339,20 +344,20 @@ SU_vector::GetGSLMatrix() const {
   
 
   SU_vector SU_vector::UTransform(const SU_vector& v) const{
-    //auto mv=v.GetGSLMatrix().get();
-    //auto mu=(*this).GetGSLMatrix().get();
-    auto mu2=(*this).GetGSLMatrix().get();
+    auto mv=v.GetGSLMatrix();
+    auto mu=(*this).GetGSLMatrix();
+    //auto mu2=(*this).GetGSLMatrix();
 
-    std::cout << mu2->size1 << "  " << mu2->size2 << std::endl; 
+    //    std::cout << mu2->size1 << "  " << mu2->size2 << std::endl; 
     
-    //gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
-    // gsl_matrix_complex * em = gsl_matrix_complex_alloc (dim, dim);
+    gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
+    gsl_matrix_complex * em = gsl_matrix_complex_alloc (dim, dim);
     
-    // gsl_complex_matrix_exponential(em,mv,dim);    
-    // gsl_matrix_complex_change_basis_UCMU(em, mu);
+    gsl_complex_matrix_exponential(em,mv.get(),dim);    
+    gsl_matrix_complex_change_basis_UCMU(em, mu.get());
       
     
-    SU_vector out(mu2);
+    SU_vector out(mu.get());
     return out;
   }
 
