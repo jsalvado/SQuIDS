@@ -293,14 +293,14 @@ SU_vector::GetGSLMatrix() const {
       for (k = 0; k < dimx;k++)
         {
 	  temp=gsl_matrix_complex_get(A,j,k);
-	   gsl_matrix_set(matreal,j,k,GSL_REAL(temp));
-	   gsl_matrix_set(matreal,dimx+j,dimx+k,GSL_REAL(temp));
-	  gsl_matrix_set(matreal,j,dimx+k,GSL_IMAG(temp));
-	   gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
-	  //gsl_matrix_set(matreal,j,k,-GSL_IMAG(temp));
-	  //gsl_matrix_set(matreal,dimx+j,dimx+k,-GSL_IMAG(temp));
-	  //gsl_matrix_set(matreal,j,dimx+k,GSL_REAL(temp));
-	  //gsl_matrix_set(matreal,dimx+j,k,-GSL_REAL(temp));
+	   // gsl_matrix_set(matreal,j,k,GSL_REAL(temp));
+	   // gsl_matrix_set(matreal,dimx+j,dimx+k,GSL_REAL(temp));
+	   // gsl_matrix_set(matreal,j,dimx+k,GSL_IMAG(temp));
+	   // gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
+	  gsl_matrix_set(matreal,j,k,-GSL_IMAG(temp));
+	  gsl_matrix_set(matreal,dimx+j,dimx+k,-GSL_IMAG(temp));
+	  gsl_matrix_set(matreal,j,dimx+k,GSL_REAL(temp));
+	  gsl_matrix_set(matreal,dimx+j,k,-GSL_REAL(temp));
 
         }
 
