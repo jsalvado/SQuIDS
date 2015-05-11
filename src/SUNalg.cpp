@@ -130,8 +130,8 @@ isinit_d(false)
   double m_real[dim][dim]; double m_imag[dim][dim];
   for(unsigned int i=0; i<dim; i++){
     for(unsigned int j=0; j<dim; j++){
-      m_real[i][j] = gsl_matrix_complex_get(m,i,j).dat[0];
-      m_imag[i][j] = gsl_matrix_complex_get(m,i,j).dat[1];
+      m_real[i][j] = GSL_REAL(gsl_matrix_complex_get(m,i,j));
+      m_imag[i][j] = GSL_IMAG(gsl_matrix_complex_get(m,i,j));
     }
   }
   // the following rules are valid ONLY when the initial
@@ -275,91 +275,73 @@ SU_vector::GetGSLMatrix() const {
   if( !isinit and !isinit_d)
     throw std::runtime_error("SU_vector::GetGSLMatrix(): SU_vector not initialized.");
   gsl_matrix_complex * matrix = gsl_matrix_complex_alloc(dim,dim);
-  //  std::cout << matrix->size1 << "  " << matrix->size2 << std::endl;   
 #include "SUToMatrixSelect.txt"
-  //std::cout << matrix->size1 << "  " << matrix->size2 << std::endl; 
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
 
+void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, gsl_matrix_complex *A, int dimx){
+  int j,k=0;
+  gsl_complex temp;
+  gsl_matrix* matreal =gsl_matrix_alloc(2*dimx,2*dimx);
+  gsl_matrix* expmatreal =gsl_matrix_alloc(2*dimx,2*dimx);
+  //Converting the complex matrix into real one using A=[Areal, Aimag;-Aimag,Areal]
+  for (j = 0; j < dimx;j++)
+    for (k = 0; k < dimx;k++){
+      temp=gsl_matrix_complex_get(A,j,k);
+      gsl_matrix_set(matreal,j,k,-GSL_IMAG(temp));
+      gsl_matrix_set(matreal,dimx+j,dimx+k,-GSL_IMAG(temp));
+      gsl_matrix_set(matreal,j,dimx+k,GSL_REAL(temp));
+      gsl_matrix_set(matreal,dimx+j,k,-GSL_REAL(temp));
+    }
 
-  void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, gsl_matrix_complex *A, int dimx)
-  {
-    int j,k=0;
-    gsl_complex temp;
-    gsl_matrix *matreal =gsl_matrix_alloc(2*dimx,2*dimx);
-    gsl_matrix *expmatreal =gsl_matrix_alloc(2*dimx,2*dimx);
-    //Converting the complex matrix into real one using A=[Areal, Aimag;-Aimag,Areal]
-    for (j = 0; j < dimx;j++)
-      for (k = 0; k < dimx;k++)
-        {
-	  temp=gsl_matrix_complex_get(A,j,k);
-	   // gsl_matrix_set(matreal,j,k,GSL_REAL(temp));
-	   // gsl_matrix_set(matreal,dimx+j,dimx+k,GSL_REAL(temp));
-	   // gsl_matrix_set(matreal,j,dimx+k,GSL_IMAG(temp));
-	   // gsl_matrix_set(matreal,dimx+j,k,-GSL_IMAG(temp));
-	  gsl_matrix_set(matreal,j,k,-GSL_IMAG(temp));
-	  gsl_matrix_set(matreal,dimx+j,dimx+k,-GSL_IMAG(temp));
-	  gsl_matrix_set(matreal,j,dimx+k,GSL_REAL(temp));
-	  gsl_matrix_set(matreal,dimx+j,k,-GSL_REAL(temp));
+  gsl_linalg_exponential_ss(matreal,expmatreal,GSL_PREC_DOUBLE);
 
-        }
+  double realp;
+  double imagp;
+  for (j = 0; j < dimx;j++)
+    for (k = 0; k < dimx;k++){
+      realp=gsl_matrix_get(expmatreal,j,k);
+      imagp=gsl_matrix_get(expmatreal,j,dimx+k);
+      gsl_matrix_complex_set(eA,j,k,gsl_complex_rect(realp,imagp));
+    }
+  gsl_matrix_free(matreal);
+  gsl_matrix_free(expmatreal);
+}
 
-    gsl_linalg_exponential_ss(matreal,expmatreal,GSL_PREC_DOUBLE);
+void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
+  int numneu = U->size1;
+  gsl_matrix_complex* U1 = gsl_matrix_complex_alloc(numneu,numneu);
+  gsl_matrix_complex* U2 = gsl_matrix_complex_alloc(numneu,numneu);
+  gsl_matrix_complex_memcpy(U1,U);
+  gsl_matrix_complex_memcpy(U2,U);
 
-    double realp;
-    double imagp;
-    for (j = 0; j < dimx;j++)
-      for (k = 0; k < dimx;k++)
-        {
-	  realp=gsl_matrix_get(expmatreal,j,k);
-	  imagp=gsl_matrix_get(expmatreal,j,dimx+k);
-	  gsl_matrix_complex_set(eA,j,k,gsl_complex_rect(realp,imagp));
-        }
-    gsl_matrix_free(matreal);
-    gsl_matrix_free(expmatreal);
-  }
-
-  void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
-    int numneu = U->size1;
-    gsl_matrix_complex *U1 = gsl_matrix_complex_alloc(numneu,numneu);
-    gsl_matrix_complex *U2 = gsl_matrix_complex_alloc(numneu,numneu);
-    gsl_matrix_complex_memcpy(U1,U);
-    gsl_matrix_complex_memcpy(U2,U);
- 
-    gsl_matrix_complex *T1 = gsl_matrix_complex_alloc(numneu,numneu);
-    
-    // doing : U M U^dagger
-    
-    gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
-                   gsl_complex_rect(1.0,0.0),M,
-                   U1,gsl_complex_rect(0.0,0.0),T1);
-    gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
-                   gsl_complex_rect(1.0,0.0),U2,
-                   T1,gsl_complex_rect(0.0,0.0),M);
-    
-    gsl_matrix_complex_free(U1);
-    gsl_matrix_complex_free(U2);
-    gsl_matrix_complex_free(T1);
-  }
+  gsl_matrix_complex* T1 = gsl_matrix_complex_alloc(numneu,numneu);
   
+  // doing : U M U^dagger
+  gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
+                 gsl_complex_rect(1.0,0.0),M,
+                 U1,gsl_complex_rect(0.0,0.0),T1);
+  gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
+                 gsl_complex_rect(1.0,0.0),U2,
+                 T1,gsl_complex_rect(0.0,0.0),M);
+  
+  gsl_matrix_complex_free(U1);
+  gsl_matrix_complex_free(U2);
+  gsl_matrix_complex_free(T1);
+}
 
-  SU_vector SU_vector::UTransform(const SU_vector& v) const{
-    auto mv=v.GetGSLMatrix();
-    auto mu=(*this).GetGSLMatrix();
-    //auto mu2=(*this).GetGSLMatrix();
-
-    //    std::cout << mu2->size1 << "  " << mu2->size2 << std::endl; 
-    
-    gsl_matrix_complex * outmat = gsl_matrix_complex_alloc (size, size);
-    gsl_matrix_complex * em = gsl_matrix_complex_alloc (dim, dim);
-    
-    gsl_complex_matrix_exponential(em,mv.get(),dim);    
-    gsl_matrix_complex_change_basis_UCMU(em, mu.get());
-      
-    
-    SU_vector out(mu.get());
-    return out;
-  }
+SU_vector SU_vector::UTransform(const SU_vector& v) const{
+  auto mv=v.GetGSLMatrix();
+  auto mu=(*this).GetGSLMatrix();
+  
+  gsl_matrix_complex* outmat = gsl_matrix_complex_alloc (size, size);
+  gsl_matrix_complex* em = gsl_matrix_complex_alloc (dim, dim);
+  
+  gsl_complex_matrix_exponential(em,mv.get(),dim);    
+  gsl_matrix_complex_change_basis_UCMU(em, mu.get());
+  
+  return SU_vector(mu.get());
+}
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
   const SU_vector& suv=*this;
