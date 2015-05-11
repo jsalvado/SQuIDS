@@ -24,6 +24,9 @@
 #include "const.h"
 
 #include <cmath>
+#include <complex>
+#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_blas.h>
 
 #include "SU_inc/dimension.h"
 
@@ -209,6 +212,61 @@ double Const::GetPhase(unsigned int state1, unsigned int state2) const{
         throw std::runtime_error("Const::GetPhase: Upper state index must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
     
     return(gsl_matrix_get(dcp.get(),state1,state2));
+}
+
+std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> Const::GetTransformationMatrix() const{
+  size_t dim=1;
+  while(dim<SQUIDS_MAX_HILBERT_DIM && GetEnergyDifference(dim)!=0.0)
+    dim++;
+  
+  gsl_matrix_complex* U = gsl_matrix_complex_alloc(dim,dim);
+  gsl_matrix_complex* R = gsl_matrix_complex_alloc(dim,dim);
+  gsl_matrix_complex* dummy = gsl_matrix_complex_alloc(dim,dim);
+  gsl_matrix_complex_set_identity(U);
+  gsl_matrix_complex_set_identity(R);
+  gsl_matrix_complex_set_zero(dummy);
+  
+  const auto unit=gsl_complex_rect(1,0);
+  const auto zero=gsl_complex_rect(0,0);
+  auto to_gsl=[](const std::complex<double>& c)->gsl_complex{
+    return(gsl_complex_rect(c.real(),c.imag()));
+  };
+  
+  //construct each subspace rotation and accumulate the product
+  for(size_t j=1; j<dim; j++){
+    for(size_t i=0; i<j; i++){
+      //set up the subspace rotation
+      double theta=GetMixingAngle(i,j);
+      double delta=GetPhase(i,j);
+      double c=cos(theta);
+      auto cp=sin(theta)*std::exp(std::complex<double>(0,delta));
+      auto cpc=-std::conj(cp);
+      gsl_matrix_complex_set(R,i,i,to_gsl(c));
+      gsl_matrix_complex_set(R,i,j,to_gsl(cp));
+      gsl_matrix_complex_set(R,j,i,to_gsl(cpc));
+      gsl_matrix_complex_set(R,j,j,to_gsl(c));
+      //std::cout << "R_" << i << ',' << j << ": \n";
+      //gsl_matrix_complex_print(R);
+      
+      //multiply this rotation onto the product from the left
+      gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,unit,R,U,zero,dummy);
+      std::swap(U,dummy);
+      //std::cout << "U: \n";
+      //gsl_matrix_complex_print(U);
+      
+      //clean up the rotation matrix for next iteration
+      gsl_matrix_complex_set(R,i,i,unit);
+      gsl_matrix_complex_set(R,i,j,zero);
+      gsl_matrix_complex_set(R,j,i,zero);
+      gsl_matrix_complex_set(R,j,j,unit);
+    }
+  }
+  
+  //clean up temporary matrices
+  gsl_matrix_complex_free(R);
+  gsl_matrix_complex_free(dummy);
+
+  return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(U,gsl_matrix_complex_free);
 }
 
 } //namespace squids

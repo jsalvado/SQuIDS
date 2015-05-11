@@ -33,6 +33,7 @@
 #include <memory>
 #include <string>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_complex.h>
 #include <stdexcept>
 
 #include "version.h"
@@ -164,6 +165,9 @@ public :
   Const(Const&&)=default;
   ~Const();
   Const& operator=(Const&&)=default;
+  
+  ///\brief get the complete matrix representing the transformation between bases
+  std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetTransformationMatrix() const;
   
 private:
   // matrices
