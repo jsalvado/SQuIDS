@@ -239,20 +239,16 @@ std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> Const::GetTran
       double theta=GetMixingAngle(i,j);
       double delta=GetPhase(i,j);
       double c=cos(theta);
-      auto cp=sin(theta)*std::exp(std::complex<double>(0,delta));
+      auto cp=sin(theta)*std::exp(std::complex<double>(0,-delta));
       auto cpc=-std::conj(cp);
       gsl_matrix_complex_set(R,i,i,to_gsl(c));
       gsl_matrix_complex_set(R,i,j,to_gsl(cp));
       gsl_matrix_complex_set(R,j,i,to_gsl(cpc));
       gsl_matrix_complex_set(R,j,j,to_gsl(c));
-      //std::cout << "R_" << i << ',' << j << ": \n";
-      //gsl_matrix_complex_print(R);
       
       //multiply this rotation onto the product from the left
       gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,unit,R,U,zero,dummy);
       std::swap(U,dummy);
-      //std::cout << "U: \n";
-      //gsl_matrix_complex_print(U);
       
       //clean up the rotation matrix for next iteration
       gsl_matrix_complex_set(R,i,i,unit);

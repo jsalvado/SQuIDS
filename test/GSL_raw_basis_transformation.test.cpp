@@ -5,17 +5,6 @@
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_blas.h>
 
-void gsl_matrix_complex_print(gsl_matrix_complex* matrix){
-  for(unsigned int i = 0; i < matrix->size1; i++){
-    for(unsigned int j = 0; j < matrix->size2; j++){
-      double icomp=gsl_matrix_complex_get(matrix,i,j).dat[1];
-      std::cout << gsl_matrix_complex_get(matrix,i,j).dat[0] <<
-      (icomp>=0?"+":"") << icomp << "i ";
-    }
-    std::cout << std::endl;
-  }
-}
-
 int main(){
   using namespace squids;
 
@@ -28,8 +17,7 @@ int main(){
   };
   Const transform;
 
-  for(unsigned int dim=2; dim<=2; dim++){
-    std::cout << "dimension " << dim << std::endl;
+  for(unsigned int dim=2; dim<=SQUIDS_MAX_HILBERT_DIM; dim++){
     //make sure the transformation between bases is full of non-trivial angles
     for(unsigned int i=0; i<dim-1; i++){
       double angle=2.*pi*(i+1.)/(dim+1.);
@@ -39,8 +27,6 @@ int main(){
     }
     
     auto U=transform.GetTransformationMatrix();
-    std::cout << "Transformation matrix: \n";
-    gsl_matrix_complex_print(U.get());
     
     gsl_matrix_complex* temp = gsl_matrix_complex_alloc(dim,dim);
     gsl_matrix_complex* result = gsl_matrix_complex_alloc(dim,dim);
@@ -49,13 +35,9 @@ int main(){
     for(unsigned int g=0; g<(dim*dim); g++){
       SU_vector v=SU_vector::Generator(dim,g);
       auto vg=v.GetGSLMatrix();
-      std::cout << "generator: \n";
-      gsl_matrix_complex_print(vg.get());
       
       //U^dagger * vg -> temp
       gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,unit,U.get(),vg.get(),zero,temp);
-      //std::cout << "intermediate result: \n";
-      //gsl_matrix_complex_print(result);
       //temp * U -> result
       gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,unit,temp,U.get(),zero,result);
       
@@ -63,11 +45,7 @@ int main(){
       v.RotateToB1(transform);
       //fetch the reference result
       auto vgt=v.GetGSLMatrix();
-      
-      std::cout << "result: \n";
-      gsl_matrix_complex_print(result);
-      std::cout << "reference: \n";
-      gsl_matrix_complex_print(vgt.get());
+		
       for(size_t i=0; i<dim; i++){
         for(size_t j=0; j<dim; j++){
           auto diff=from_gsl(gsl_matrix_complex_get(result,i,j))-from_gsl(gsl_matrix_complex_get(vgt.get(),i,j));
@@ -82,6 +60,5 @@ int main(){
     }
     gsl_matrix_complex_free(temp);
     gsl_matrix_complex_free(result);
-    std::cout << "----\n\n";
   }
 }
