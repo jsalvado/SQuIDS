@@ -44,7 +44,7 @@ PRODUCT_DIR="products"
 
 # fetch any compilation flags set during library configuration
 if [ -f env_vars.sh ]; then
-	source ./env_vars.sh
+	. ./env_vars.sh
 fi
 
 COMPILE_COMMAND="$CXX $CFLAGS $CXXFLAGS -g -I./ -L../lib"
