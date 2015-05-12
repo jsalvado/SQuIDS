@@ -214,10 +214,9 @@ double Const::GetPhase(unsigned int state1, unsigned int state2) const{
     return(gsl_matrix_get(dcp.get(),state1,state2));
 }
 
-std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> Const::GetTransformationMatrix() const{
-  size_t dim=1;
-  while(dim<SQUIDS_MAX_HILBERT_DIM && GetEnergyDifference(dim)!=0.0)
-    dim++;
+std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> Const::GetTransformationMatrix(size_t dim) const{
+  if(dim>SQUIDS_MAX_HILBERT_DIM)
+    throw std::runtime_error("Const::GetTransformationMatrix: dimension must be less than " SQUIDS_MAX_HILBERT_DIM_STR);
   
   gsl_matrix_complex* U = gsl_matrix_complex_alloc(dim,dim);
   gsl_matrix_complex* R = gsl_matrix_complex_alloc(dim,dim);

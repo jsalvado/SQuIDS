@@ -26,7 +26,7 @@ int main(){
       transform.SetEnergyDifference(dim-1,1);
     }
     
-    auto U=transform.GetTransformationMatrix();
+    auto U=transform.GetTransformationMatrix(dim);
     
     gsl_matrix_complex* temp = gsl_matrix_complex_alloc(dim,dim);
     gsl_matrix_complex* result = gsl_matrix_complex_alloc(dim,dim);

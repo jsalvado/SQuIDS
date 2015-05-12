@@ -124,9 +124,9 @@ isinit_d(false)
     throw std::runtime_error("SU_vector::SU_vector(gsl_matrix_complex*): Matrix must be square");
   if(dim>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::SU_vector(gsl_matrix_complex*): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
-  
+
   std::fill(components,components+size,0.0);
-  
+
   double m_real[dim][dim]; double m_imag[dim][dim];
   for(unsigned int i=0; i<dim; i++){
     for(unsigned int j=0; j<dim; j++){
@@ -136,7 +136,7 @@ isinit_d(false)
   }
   // the following rules are valid ONLY when the initial
   // matrix is hermitian
-  
+
 #include "MatrixToSUSelect.txt"
 };
 
@@ -166,7 +166,7 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d)
     throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
-  
+
   double m_real[d][d]; double m_imag[d][d];
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
@@ -174,7 +174,7 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
       m_imag[i][j] = 0.0;
     }
   }
-  
+
   SU_vector v(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
@@ -183,7 +183,7 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
 SU_vector SU_vector::Identity(unsigned int d){
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Identity(unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
-  
+
   double m_real[d][d]; double m_imag[d][d];
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
@@ -191,7 +191,7 @@ SU_vector SU_vector::Identity(unsigned int d){
       m_imag[i][j] = 0.0;
     }
   }
-  
+
   SU_vector v(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
@@ -258,7 +258,7 @@ Operations
 -----------------------------------------------------------------------
 */
 
-void SU_vector::SetAllComponents(double x){  
+void SU_vector::SetAllComponents(double x){
   for(unsigned int i = 0; i < size; i++)
     components[i] = x;
 }
