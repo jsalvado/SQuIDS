@@ -175,7 +175,7 @@ Name: SQuIDS
 Description: Evolves quantum mechanical states
 URL: https://github.com/jsalvado/SQuIDS' >> lib/squids.pc
 echo "Version: $VERSION" >> lib/squids.pc
-echo 'Requires: gsl >= 1.14
+echo 'Requires: gsl >= 1.15
 Libs: -L${libdir} -lSQuIDS
 Cflags: -I${includedir}
 ' >> lib/squids.pc
@@ -279,9 +279,9 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 
 echo "
 export CXX=\"${CXX}\"
-export CFLAGS=\"${CFLAGS}\"
+export CFLAGS=\"${CFLAGS} ${GSL_CFLAGS}\"
 export CXXFLAGS=\"${CXXFLAGS}\"
-export LDFLAGS=\"${LDFLAGS}\"
+export LDFLAGS=\"${LDFLAGS} ${GSL_LDFLAGS}\"
 " > test/env_vars.sh
 
 echo "Done."
