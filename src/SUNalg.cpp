@@ -316,7 +316,7 @@ void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_comp
   gsl_matrix_complex_memcpy(U2,U);
 
   gsl_matrix_complex* T1 = gsl_matrix_complex_alloc(numneu,numneu);
-  
+
   // doing : U M U^dagger
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
                  gsl_complex_rect(1.0,0.0),M,
@@ -324,7 +324,7 @@ void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_comp
   gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
                  gsl_complex_rect(1.0,0.0),U2,
                  T1,gsl_complex_rect(0.0,0.0),M);
-  
+
   gsl_matrix_complex_free(U1);
   gsl_matrix_complex_free(U2);
   gsl_matrix_complex_free(T1);
@@ -333,14 +333,31 @@ void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_comp
 SU_vector SU_vector::UTransform(const SU_vector& v) const{
   auto mv=v.GetGSLMatrix();
   auto mu=(*this).GetGSLMatrix();
-  
+
   gsl_matrix_complex* outmat = gsl_matrix_complex_alloc (size, size);
   gsl_matrix_complex* em = gsl_matrix_complex_alloc (dim, dim);
-  
-  gsl_complex_matrix_exponential(em,mv.get(),dim);    
+
+  gsl_complex_matrix_exponential(em,mv.get(),dim);
   gsl_matrix_complex_change_basis_UCMU(em, mu.get());
-  
+
   return SU_vector(mu.get());
+}
+
+std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
+std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>>
+SU_vector::GetEigenSystem() const{
+  auto matrix=(*this).GetGSLMatrix();
+
+  gsl_eigen_hermv_workspace * ws = gsl_eigen_hermv_alloc(dim);
+  gsl_vector * eigenvalues = gsl_vector_alloc(dim);
+  gsl_matrix_complex * eigenvectors = gsl_matrix_complex_alloc(dim,dim);
+
+  gsl_eigen_hermv(matrix.get(),eigenvalues,eigenvectors,ws);
+  gsl_eigen_hermv_free(ws);
+
+  return std::make_pair(
+    std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>(eigenvalues,gsl_vector_free),
+    std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(eigenvectors,gsl_matrix_complex_free));
 }
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
@@ -349,9 +366,9 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
   unsigned int i=ii+1, j=jj+1; //convert to 1 based indices to interface with Mathematica generated code
 
   assert(i<j && "Components selected for rotation must be in ascending order");
-  
+
 #include "rotation_switcher.h"
-    
+
   return suv_rot;
 }
 

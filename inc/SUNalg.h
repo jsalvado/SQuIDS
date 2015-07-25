@@ -37,6 +37,7 @@
 #include <stdexcept>
 
 #include <gsl/gsl_complex.h>
+#include <gsl/gsl_eigen.h>
 
 #include "const.h"
 #include "SU_inc/dimension.h"
@@ -279,6 +280,12 @@ public:
   ///\brief Applies unitary transformation of the form
   /// Exp(-Op)vExp(Op) where Op is represented by v.
   SU_vector UTransform(const SU_vector& v) const;
+
+  ///\brief Returns the the eigen values and eigen vectors
+  /// unitary transformation that diagonalizes the matrix
+  /// represented by the SU_vector
+  std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
+  std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>> GetEigenSystem() const;
 
   ///\brief Returns the Eigen vector set that diagonalizes
   /// the given SU_vector
