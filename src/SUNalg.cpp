@@ -372,6 +372,14 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
   return suv_rot;
 }
 
+void SU_vector::WeightedRotation(const Const& paramV, const SU_vector& Yd, const Const& paramW){
+  SU_vector suv(dim);
+  suv=*this;  
+  suv.RotateToB0(paramW);
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)));
+  suv.RotateToB0(paramV);
+  *this=suv;
+}
 void SU_vector::RotateToB0(const Const& param){
   for(unsigned int j=1; j<dim; j++){
     for(unsigned int i=0; i<j; i++)

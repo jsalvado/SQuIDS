@@ -271,6 +271,13 @@ public:
   /// If the SU_vector is in the B1 basis, it transforms it to the B0 representation.
   void RotateToB0(const Const& params);
 
+  ///\brief It does the tranformation given by the concatenation of two rotations weighted with a diagonal matrics Yd
+  ///\brief V^{\dagger}Yd W (SU_vector) W^{dagger}Yd V
+  ///\param paramsV Mixings for the unitary tranformation V
+  ///\param paramsYd Diagonal matrix with the weights (yukawas like)
+  ///\param paramsW Mixings for the unitary tranformation W
+  void WeightedRotation(const Const& paramV, const SU_vector& Yd, const Const& paramW);  
+
   ///\brief Gets the dimension of the SU_vector
   unsigned int Dim() const {return dim;}
 
