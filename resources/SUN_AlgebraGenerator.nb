@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    131267,       3460]
-NotebookOptionsPosition[    126338,       3308]
-NotebookOutlinePosition[    126723,       3325]
-CellTagsIndexPosition[    126680,       3322]
+NotebookDataLength[    131372,       3462]
+NotebookOptionsPosition[    126436,       3310]
+NotebookOutlinePosition[    126821,       3327]
+CellTagsIndexPosition[    126778,       3324]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1022,37 +1022,38 @@ Cell[BoxData[
  RowBox[{
   RowBox[{"SUUnitaryRotateRules", "[", "dim_", "]"}], ":=", 
   RowBox[{"FullSimplify", "[", 
-   RowBox[{"Solve", "[", 
-    RowBox[{
+   RowBox[{"ComplexExpand", "[", 
+    RowBox[{"Solve", "[", 
      RowBox[{
       RowBox[{
-       RowBox[{"UUC", "[", "dim", "]"}], ".", 
+       RowBox[{
+        RowBox[{"UUC", "[", "dim", "]"}], ".", 
+        RowBox[{"Sum", "[", 
+         RowBox[{
+          RowBox[{
+           SubscriptBox["b", "i"], 
+           SubscriptBox[
+            RowBox[{"(", 
+             SuperscriptBox["\[Lambda]", "dim"], ")"}], "i"]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"i", ",", 
+            RowBox[{"dim", "^", "2"}]}], "}"}]}], "]"}], ".", 
+        RowBox[{"UU", "[", "dim", "]"}]}], "\[Equal]", 
        RowBox[{"Sum", "[", 
         RowBox[{
          RowBox[{
-          SubscriptBox["b", "i"], 
+          SubscriptBox["a", "cl"], 
           SubscriptBox[
-           RowBox[{"(", 
-            SuperscriptBox["\[Lambda]", "dim"], ")"}], "i"]}], ",", 
+           SuperscriptBox["\[Lambda]", "dim"], "cl"]}], ",", 
          RowBox[{"{", 
-          RowBox[{"i", ",", 
-           RowBox[{"dim", "^", "2"}]}], "}"}]}], "]"}], ".", 
-       RowBox[{"UU", "[", "dim", "]"}]}], "\[Equal]", 
-      RowBox[{"Sum", "[", 
+          RowBox[{"cl", ",", 
+           RowBox[{"dim", "^", "2"}]}], "}"}]}], "]"}]}], ",", 
+      RowBox[{"Table", "[", 
        RowBox[{
-        RowBox[{
-         SubscriptBox["a", "cl"], 
-         SubscriptBox[
-          SuperscriptBox["\[Lambda]", "dim"], "cl"]}], ",", 
+        SubscriptBox["a", "aa"], ",", 
         RowBox[{"{", 
-         RowBox[{"cl", ",", 
-          RowBox[{"dim", "^", "2"}]}], "}"}]}], "]"}]}], ",", 
-     RowBox[{"Table", "[", 
-      RowBox[{
-       SubscriptBox["a", "aa"], ",", 
-       RowBox[{"{", 
-        RowBox[{"aa", ",", 
-         RowBox[{"dim", "^", "2"}]}], "}"}]}], "]"}]}], "]"}], 
+         RowBox[{"aa", ",", 
+          RowBox[{"dim", "^", "2"}]}], "}"}]}], "]"}]}], "]"}], "]"}], 
    "]"}]}]], "Input",
  CellChangeTimes->{{3.5783259717046633`*^9, 3.578325973897449*^9}, {
    3.578326020789496*^9, 3.57832604198382*^9}, 3.578329575543273*^9, {
@@ -1063,7 +1064,8 @@ Cell[BoxData[
    3.5783431893387547`*^9, 3.578343213280752*^9}, {3.578343454406826*^9, 
    3.578343456575345*^9}, {3.578343722609961*^9, 3.578343724015791*^9}, {
    3.5783437957315197`*^9, 3.578343861939349*^9}, 3.5783441671745853`*^9, 
-   3.653927563891464*^9, 3.653927845836463*^9, 3.6539279420468817`*^9}]
+   3.653927563891464*^9, 3.653927845836463*^9, 3.6539279420468817`*^9, 
+   3.654016615854279*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1256,7 +1258,7 @@ Cell[BoxData[
    3.5783441671736917`*^9, {3.579872762348976*^9, 3.579872763466861*^9}, {
    3.5798948802305613`*^9, 3.579894882941111*^9}}]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3330,136 +3332,136 @@ Cell[697, 25, 690, 13, 253, "Text"],
 Cell[1390, 40, 2219, 33, 1594, "Input"],
 Cell[CellGroupData[{
 Cell[3634, 77, 163, 2, 76, "Subtitle"],
-Cell[3800, 81, 957, 23, 141, "Input"],
-Cell[4760, 106, 1569, 40, 178, "Input"],
-Cell[6332, 148, 3554, 105, 390, "Input"],
-Cell[9889, 255, 1084, 29, 136, "Input"]
+Cell[3800, 81, 957, 23, 211, "Input"],
+Cell[4760, 106, 1569, 40, 267, "Input"],
+Cell[6332, 148, 3554, 105, 585, "Input"],
+Cell[9889, 255, 1084, 29, 204, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
 Cell[11010, 289, 338, 4, 76, "Subtitle"],
 Cell[CellGroupData[{
-Cell[11373, 297, 187, 3, 66, "Subsubtitle",
+Cell[11373, 297, 187, 3, 44, "Subsubtitle",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[11563, 302, 1969, 57, 256, "Input",
+Cell[11563, 302, 1969, 57, 223, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13569, 364, 169, 2, 66, "Subsubtitle"],
-Cell[13741, 368, 2999, 89, 199, "Input"]
+Cell[13569, 364, 169, 2, 44, "Subsubtitle"],
+Cell[13741, 368, 2999, 89, 457, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16777, 462, 161, 2, 66, "Subsubtitle"],
-Cell[16941, 466, 158, 2, 69, "Text"],
-Cell[17102, 470, 624, 18, 114, "Input"],
-Cell[17729, 490, 234, 7, 69, "Text"],
-Cell[17966, 499, 2404, 64, 124, "Input"]
+Cell[16777, 462, 161, 2, 44, "Subsubtitle"],
+Cell[16941, 466, 158, 2, 46, "Text"],
+Cell[17102, 470, 624, 18, 102, "Input"],
+Cell[17729, 490, 234, 7, 46, "Text"],
+Cell[17966, 499, 2404, 64, 197, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[20407, 568, 265, 3, 66, "Subsubtitle"],
-Cell[20675, 573, 1155, 36, 163, "Input"],
-Cell[21833, 611, 1695, 55, 148, "Input"]
+Cell[20407, 568, 265, 3, 44, "Subsubtitle"],
+Cell[20675, 573, 1155, 36, 210, "Input"],
+Cell[21833, 611, 1695, 55, 234, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23565, 671, 153, 2, 66, "Subsubtitle"],
-Cell[23721, 675, 248, 3, 69, "Text"],
-Cell[23972, 680, 5230, 153, 288, "Input"],
-Cell[29205, 835, 287, 7, 69, "Text"],
-Cell[29495, 844, 2057, 51, 148, "Input"],
-Cell[31555, 897, 2095, 62, 148, "Input"]
+Cell[23565, 671, 153, 2, 44, "Subsubtitle"],
+Cell[23721, 675, 248, 3, 46, "Text"],
+Cell[23972, 680, 5230, 153, 541, "Input"],
+Cell[29205, 835, 287, 7, 46, "Text"],
+Cell[29495, 844, 2057, 51, 209, "Input"],
+Cell[31555, 897, 2095, 62, 307, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[33687, 964, 212, 3, 66, "Subsubtitle"],
-Cell[33902, 969, 313, 4, 69, "Text"],
-Cell[34218, 975, 1310, 34, 103, "Input"],
-Cell[35531, 1011, 287, 7, 69, "Text"],
-Cell[35821, 1020, 1864, 45, 76, "Input"]
+Cell[33687, 964, 212, 3, 44, "Subsubtitle"],
+Cell[33902, 969, 313, 4, 46, "Text"],
+Cell[34218, 975, 1310, 34, 219, "Input"],
+Cell[35531, 1011, 287, 7, 46, "Text"],
+Cell[35821, 1020, 1962, 47, 237, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[37722, 1070, 198, 2, 66, "Subsubtitle"],
-Cell[37923, 1074, 1739, 41, 103, "Input"],
-Cell[39665, 1117, 3497, 91, 258, "Input"],
-Cell[43165, 1210, 1921, 46, 123, "Input"]
+Cell[37820, 1072, 198, 2, 44, "Subsubtitle"],
+Cell[38021, 1076, 1739, 41, 194, "Input"],
+Cell[39763, 1119, 3497, 91, 505, "Input"],
+Cell[43263, 1212, 1921, 46, 202, "Input"]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 Cell[CellGroupData[{
-Cell[45135, 1262, 98, 1, 76, "Subtitle"],
+Cell[45233, 1264, 98, 1, 76, "Subtitle"],
 Cell[CellGroupData[{
-Cell[45258, 1267, 209, 3, 66, "Subsubtitle",
+Cell[45356, 1269, 209, 3, 99, "Subsubtitle",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[45470, 1272, 3665, 85, 480, "Input",
+Cell[45568, 1274, 3665, 85, 720, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[49172, 1362, 206, 3, 66, "Subsubtitle"],
-Cell[49381, 1367, 2533, 69, 480, "Input"]
+Cell[49270, 1364, 206, 3, 99, "Subsubtitle"],
+Cell[49479, 1369, 2533, 69, 720, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[51951, 1441, 226, 3, 66, "Subsubtitle"],
-Cell[52180, 1446, 382, 9, 103, "Input"],
-Cell[52565, 1457, 4688, 117, 628, "Input"]
+Cell[52049, 1443, 226, 3, 99, "Subsubtitle"],
+Cell[52278, 1448, 382, 9, 154, "Input"],
+Cell[52663, 1459, 4688, 117, 942, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[57290, 1579, 302, 4, 66, "Subsubtitle"],
-Cell[57595, 1585, 5516, 123, 684, "Input"]
+Cell[57388, 1581, 302, 4, 99, "Subsubtitle"],
+Cell[57693, 1587, 5516, 123, 1026, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[63148, 1713, 183, 2, 66, "Subsubtitle"],
-Cell[63334, 1717, 3110, 80, 12669, "Input"]
+Cell[63246, 1715, 183, 2, 99, "Subsubtitle"],
+Cell[63432, 1719, 3110, 80, 19003, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[66481, 1802, 154, 2, 66, "Subsubtitle"],
-Cell[66638, 1806, 3064, 76, 480, "Input"]
+Cell[66579, 1804, 154, 2, 99, "Subsubtitle"],
+Cell[66736, 1808, 3064, 76, 720, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[69739, 1887, 214, 3, 66, "Subsubtitle"],
-Cell[69956, 1892, 5201, 119, 1036, "Input"]
+Cell[69837, 1889, 214, 3, 99, "Subsubtitle"],
+Cell[70054, 1894, 5201, 119, 1554, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[75194, 2016, 171, 2, 66, "Subsubtitle"],
-Cell[75368, 2020, 175, 2, 69, "Text"],
-Cell[75546, 2024, 4510, 109, 466, "Input"],
-Cell[80059, 2135, 1879, 50, 342, "Input"],
-Cell[81941, 2187, 1976, 52, 342, "Input"]
+Cell[75292, 2018, 171, 2, 99, "Subsubtitle"],
+Cell[75466, 2022, 175, 2, 103, "Text"],
+Cell[75644, 2026, 4510, 109, 699, "Input"],
+Cell[80157, 2137, 1879, 50, 513, "Input"],
+Cell[82039, 2189, 1976, 52, 513, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[83954, 2244, 222, 3, 66, "Subsubtitle"],
-Cell[84179, 2249, 1658, 45, 216, "Input"]
+Cell[84052, 2246, 222, 3, 99, "Subsubtitle"],
+Cell[84277, 2251, 1658, 45, 324, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[85874, 2299, 273, 3, 66, "Subsubtitle"],
-Cell[86150, 2304, 1414, 39, 103, "Input"]
+Cell[85972, 2301, 273, 3, 99, "Subsubtitle"],
+Cell[86248, 2306, 1414, 39, 154, "Input"]
 }, Closed]]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[87613, 2349, 154, 2, 76, "Subtitle"],
-Cell[87770, 2353, 1320, 32, 244, "Input"],
-Cell[89093, 2387, 1121, 29, 244, "Input"],
-Cell[90217, 2418, 3219, 80, 469, "Input"],
-Cell[93439, 2500, 964, 23, 244, "Input"],
-Cell[94406, 2525, 907, 22, 219, "Input"],
-Cell[95316, 2549, 1058, 25, 219, "Input"],
-Cell[96377, 2576, 1250, 27, 244, "Input"],
-Cell[97630, 2605, 1019, 24, 219, "Input"],
-Cell[98652, 2631, 1081, 25, 219, "Input"],
-Cell[99736, 2658, 1334, 27, 244, "Input"],
-Cell[101073, 2687, 3836, 95, 794, "Input"],
-Cell[104912, 2784, 2930, 73, 669, "Input"],
-Cell[107845, 2859, 2440, 51, 594, "Input"],
-Cell[110288, 2912, 1980, 47, 544, "Input"],
-Cell[112271, 2961, 1985, 47, 569, "Input"],
-Cell[114259, 3010, 1988, 47, 544, "Input"],
-Cell[116250, 3059, 4158, 98, 1144, "Input"],
-Cell[120411, 3159, 1954, 40, 319, "Input"]
+Cell[87711, 2351, 154, 2, 76, "Subtitle"],
+Cell[87868, 2355, 1320, 32, 366, "Input"],
+Cell[89191, 2389, 1121, 29, 366, "Input"],
+Cell[90315, 2420, 3219, 80, 703, "Input"],
+Cell[93537, 2502, 964, 23, 366, "Input"],
+Cell[94504, 2527, 907, 22, 328, "Input"],
+Cell[95414, 2551, 1058, 25, 328, "Input"],
+Cell[96475, 2578, 1250, 27, 366, "Input"],
+Cell[97728, 2607, 1019, 24, 328, "Input"],
+Cell[98750, 2633, 1081, 25, 328, "Input"],
+Cell[99834, 2660, 1334, 27, 366, "Input"],
+Cell[101171, 2689, 3836, 95, 1191, "Input"],
+Cell[105010, 2786, 2930, 73, 1003, "Input"],
+Cell[107943, 2861, 2440, 51, 891, "Input"],
+Cell[110386, 2914, 1980, 47, 816, "Input"],
+Cell[112369, 2963, 1985, 47, 853, "Input"],
+Cell[114357, 3012, 1988, 47, 816, "Input"],
+Cell[116348, 3061, 4158, 98, 1716, "Input"],
+Cell[120509, 3161, 1954, 40, 478, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[122402, 3204, 286, 8, 121, "Subtitle"],
-Cell[122691, 3214, 2078, 58, 810, "Input"]
+Cell[122500, 3206, 286, 8, 121, "Subtitle"],
+Cell[122789, 3216, 2078, 58, 1215, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[124806, 3277, 246, 3, 76, "Subtitle"],
-Cell[125055, 3282, 206, 4, 69, "Text",
+Cell[124904, 3279, 246, 3, 76, "Subtitle"],
+Cell[125153, 3284, 206, 4, 103, "Text",
  CellGroupingRules->"NormalGrouping"],
-Cell[125264, 3288, 1046, 16, 103, "Input"]
+Cell[125362, 3290, 1046, 16, 154, "Input"]
 }, Closed]]
 }, Open  ]]
 }
