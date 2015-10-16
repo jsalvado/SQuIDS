@@ -15,7 +15,7 @@
  *   Authors:                                                                  *
  *      Carlos Arguelles (University of Wisconsin Madison)                     *
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
  *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
@@ -28,10 +28,38 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
 #include <iostream>
+#include <complex>
 #define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )
+#define SQ(x)  (( x ) * ( x ))
+
+#include <iomanip>
+
+/*
+-----------------------------------------------------------------------
+Auxiliary Functions
+-----------------------------------------------------------------------
+*/
+
+gsl_complex to_gsl(std::complex<double> c){
+  gsl_complex g;
+  GSL_SET_COMPLEX(&g,c.real(),c.imag());
+  return(g);
+}
+
+void gsl_matrix_complex_normalize( gsl_matrix_complex * m) {
+  for ( size_t i = 0; i < m->size1; i++ ){
+    double norm = 0;
+    for ( size_t j = 0; j < m->size2; j++ ){
+      norm += gsl_complex_abs2(gsl_matrix_complex_get(m,j,i));
+    }
+    norm = sqrt(norm);
+    for ( size_t j = 0; j < m->size2; j++ ){
+      gsl_matrix_complex_set(m,j,i,gsl_complex_div_real(gsl_matrix_complex_get(m,j,i),norm));
+    }
+  }
+}
 
 namespace squids{
-
 /*
 -----------------------------------------------------------------------
 SU_vector implementation
@@ -144,7 +172,7 @@ namespace{
   struct sq_array_2D{
     unsigned int d;
     double* data;
-    
+
     struct index_proxy{
       double* data;
       double operator[](unsigned int j) const{
@@ -155,10 +183,11 @@ namespace{
       return(index_proxy{data+d*i});
     }
   };
-  
+
 void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
 #include "MatrixToSUSelect.txt"
 }
+// close unnamed namespace
 }
 
 SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
@@ -202,7 +231,7 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d)
     throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
-  
+
   double m_real[d][d]; double m_imag[d][d];
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
@@ -213,7 +242,7 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
       m_imag[i][j] = 0.0;
     }
   }
-  
+
   SU_vector v(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
@@ -224,7 +253,7 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d)
     throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
-  
+
   double m_real[d][d]; double m_imag[d][d];
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
@@ -235,7 +264,7 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
       m_imag[i][j] = 0.0;
     }
   }
-  
+
   SU_vector v(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
@@ -346,18 +375,32 @@ SU_vector SU_vector::UTransform(const SU_vector& v) const{
 std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
 std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>>
 SU_vector::GetEigenSystem() const{
-  auto matrix=(*this).GetGSLMatrix();
-
-  gsl_eigen_hermv_workspace * ws = gsl_eigen_hermv_alloc(dim);
   gsl_vector * eigenvalues = gsl_vector_alloc(dim);
   gsl_matrix_complex * eigenvectors = gsl_matrix_complex_alloc(dim,dim);
-
-  gsl_eigen_hermv(matrix.get(),eigenvalues,eigenvectors,ws);
-  gsl_eigen_hermv_free(ws);
-
+  switch (dim) {
+    case 3:
+          {
+#include "EigenSystemSU3.txt"
+          }
+          break;
+    default:
+      auto matrix=(*this).GetGSLMatrix();
+      gsl_eigen_hermv_workspace * ws = gsl_eigen_hermv_alloc(dim);
+      gsl_eigen_hermv(matrix.get(),eigenvalues,eigenvectors,ws);
+      gsl_eigen_hermv_free(ws);
+  }
   return std::make_pair(
     std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>(eigenvalues,gsl_vector_free),
     std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(eigenvectors,gsl_matrix_complex_free));
+}
+
+SU_vector SU_vector::Rotate(const std::unique_ptr<gsL_matrix_complex,void(*)(gsL_matrix_complex*)> m) const{
+  const SU_vector& suv1=*this;
+  SU_vector suv_new(dim);
+  if ( m.size1 != dim or m->size2 != dim )
+    throw std::runtime_error("SU_vector::Rotate(gsl_matrix_complex): matrix dimensions and SU_vector dimensions do not match.")
+#include "unitary_rotation_switcher.h"
+  return suv_new;
 }
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
@@ -448,7 +491,7 @@ SU_vector& SU_vector::operator=(const SU_vector& other){
     components=new double[size];
     isinit=true;
   }
-  
+
   std::copy(other.components,other.components+size,components);
   return *this;
 }

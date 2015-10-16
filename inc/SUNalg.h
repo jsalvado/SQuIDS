@@ -11,11 +11,11 @@
  *                                                                             *
  *   You should have received a copy of the GNU General Public License         *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
- *                                                                             *   
+ *                                                                             *
  *   Authors:                                                                  *
- *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *      Carlos Arguelles (University of Wisconsin Madison)                     *
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
  *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
@@ -124,7 +124,7 @@ private:
   double *components;
   bool isinit; //this vector has been initialized and owns its storage
   bool isinit_d; //this vector has been initialized and does not own its storage
-  
+
   ///\brief Internal implementation of optimized assignment
   template<typename WrapperType, typename ProxyType>
   SU_vector& assignProxy(const ProxyType& proxy){
@@ -157,30 +157,30 @@ private:
     proxy.compute(detail::vector_wrapper<WrapperType>{dim,components});
     return(*this);
   }
-  
+
 public:
   //***************
-  // Constructors 
+  // Constructors
   //***************
-  
+
   ///\brief Default constructor
   ///
   /// Constructs an empty SU_vector with no size.
   SU_vector();
-  
+
   ///\brief Copy constructor
   ///
   /// The newly constructed SU_vector will allocate its own storage
   /// which it will manage automatically.
   SU_vector( const SU_vector& V);
-  
+
   ///\brief Move constructor
   ///
   /// If V owned its own storage it will be taken by the newly
   /// constructed SU_vector, and V will be left empty, as if default
   /// constructed.
   SU_vector( SU_vector&& V);
-  
+
   ///\brief Construct a vector with a particular dimension
   ///
   /// Creates a new SU_vector with the specified dimension and initializes it
@@ -203,7 +203,7 @@ public:
   ///\param storage The data buffer which the SU_vector will use
   ///\pre dim <= 6
   SU_vector(unsigned int dim, double* storage);
-  
+
   ///\brief construct a vector from the result of a vector arithmetic expression
   ///
   /// The newly constructed vector will take the data buffer from one of the
@@ -227,7 +227,7 @@ public:
   ///\pre m is hermitian
   ///\pre m->size1 <= 6
   SU_vector(const gsl_matrix_complex* m);
-  
+
   ///\brief Construct an SU_vector from existing data
   ///
   /// The newly constructed SU_vector will allocate its own storage, but it
@@ -245,15 +245,19 @@ public:
   //*************
   // Functions
   //*************
-  
+
   ///\brief Overwrite all components with a single value
   ///
   ///\param v The value with which to fill
   void SetAllComponents(double v);
-  
+
   ///\brief Get a copy of the SU_vector's components
   std::vector<double> GetComponents() const;
-  
+
+  ///\brief Returns a rotated SU_vector rotating by the matrix m.
+  ///\param rotation_matrix gsl_complex_matrix that generates the rotation
+  SU_vector Rotate(const std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> rotation_matrix) const;
+
   ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace
   ///\param i subspace index
   ///\param j subspace index
@@ -312,21 +316,21 @@ public:
   ///
   /// Equivalent to the trace of the matrix multiplication.
   double operator*(const SU_vector&) const;
-  
+
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
   detail::MultiplicationProxy operator*(const double) const &;
-  
+
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
   detail::MultiplicationProxy operator*(const double) &&;
-  
+
   ///\brief Assignment
   ///
   /// Assignment will fail if this vector uses external storage and the
   /// dimensions of the two vectors differ.
   SU_vector & operator =(const SU_vector&);
-  
+
   ///\brief Move assignement
   ///
   /// If this vector is empty or owns its own storage it will switch to
@@ -336,71 +340,71 @@ public:
   /// will copy other's data rather than shifting its storage. In this case
   /// if the dimensions of the two vectors differ the assignment will fail.
   SU_vector & operator =(SU_vector&& other);
-  
+
   ///\brief Incrementing assignment
   SU_vector & operator+=(const SU_vector&);
-  
+
   ///\brief Decrementing assignment
   SU_vector & operator-=(const SU_vector&);
-  
+
   ///\brief Multiplying assignment
   SU_vector & operator*=(double);
-  
+
   ///\brief Dividing assignment
   SU_vector & operator/=(double);
-  
+
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
   detail::AdditionProxy operator +(const SU_vector&) const &;
-  
+
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
   detail::AdditionProxy operator +(SU_vector&&) const &;
-  
+
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
   detail::AdditionProxy operator +(const SU_vector&) &&;
-  
+
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
   detail::AdditionProxy operator +(SU_vector&&) &&;
-  
+
   ///\brief Subtraction
   ///\returns An object convertible to an SU_vector
   detail::SubtractionProxy operator -(const SU_vector& other) const &;
-  
+
   ///\brief Subtraction
   ///\returns An object convertible to an SU_vector
   detail::SubtractionProxy operator -(const SU_vector& other) &&;
-  
+
   ///\brief Negation
   ///\returns An object convertible to an SU_vector
   detail::NegationProxy operator -() const &;
-  
+
   ///\brief Negation
   ///\returns An object convertible to an SU_vector
   detail::NegationProxy operator -() &&;
-  
+
   ///\brief Optimized assignment from the result of an arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator=(const ProxyType& proxy){
     return(assignProxy<detail::AssignWrapper>(proxy));
   }
-  
+
   ///\brief Optimized incrementing assignment from the result of an
   /// arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator+=(const ProxyType& proxy){
     return(assignProxy<detail::IncrementWrapper>(proxy));
   }
-  
+
   ///\brief Optimized decrementing assignment from the result of an
   /// arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
   SU_vector& operator-=(const ProxyType& proxy){
     return(assignProxy<detail::DecrementWrapper>(proxy));
   }
-  
+
   ///\brief Set the external storage used by this SU_vector
   void SetBackingStore(double* storage){
     if(isinit)
@@ -422,12 +426,12 @@ public:
   ///\param d The dimension of the operator
   ///\param i The dimension selected by the projection
   static SU_vector Projector(unsigned int d, unsigned int i);
-  
+
   ///\brief Construct an identity operator
   ///
   ///\param d The dimension of the operator
   static SU_vector Identity(unsigned int d);
-  
+
   ///\brief Constructs a projector to the upper subspace of dimension i
   ///
   ///\param d The dimension of the operator
@@ -435,7 +439,7 @@ public:
   ///
   /// \f$ NegProj = diag(1,...,1,0,...,0) \f$ where the last one is at the \f$i-1\f$ entry.
   static SU_vector PosProjector(unsigned int d, unsigned int i);
-  
+
   ///\brief Constructs a projector to the lower subspace of dimension i
   ///
   ///\param d The dimension of the operator
@@ -443,12 +447,12 @@ public:
   ///
   /// \f$ NegProj = diag(0,...,0,1,...,1) \f$ where the first one is at the \f$d-i\f$ entry.
   static SU_vector NegProjector(unsigned int d, unsigned int i);
-  
+
   ///\brief Creates a SU_vector corresponding to the \f$i\f$SU_N basis generator.
   //
   // Tts represented by \f$ v = (0,...,1,...,0)\f$ where 1 is in the \f$i\f$ component.
   static SU_vector Generator(unsigned int d, unsigned int i);
-  
+
   template<typename Op>
   friend struct detail::EvaluationProxy;
   friend struct detail::EvolutionProxy;
@@ -458,11 +462,11 @@ public:
   friend struct detail::MultiplicationProxy;
   friend struct detail::iCommutatorProxy;
   friend struct detail::ACommutatorProxy;
-  
+
   friend detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
   friend detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
   friend double SUTrace(const SU_vector&,const SU_vector&);
-  
+
   //overloaded output operator
   friend std::ostream& operator<<(std::ostream&, const SU_vector&);
 };
@@ -483,7 +487,7 @@ detail::MultiplicationProxy operator*(double x, const SU_vector& v);
 
 ///\brief Multiplication of an SU_vector by a scalar from the left.
 detail::MultiplicationProxy operator*(double x, SU_vector&& v);
-  
+
 } //namespace squids
 
 #include "detail/ProxyImpl.h"
