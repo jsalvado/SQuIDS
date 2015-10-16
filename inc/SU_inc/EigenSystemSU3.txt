@@ -1,0 +1,78 @@
+// auxiliary variables
+
+double norma = SQ(components[1]) + SQ(components[2]) + \
+SQ(components[3]) + SQ(components[4]) + \
+SQ(components[5]) + SQ(components[6]) + \
+SQ(components[7]) + SQ(components[8]);
+
+double x1 = 19683.*pow(components[2],2)*components[4] + \
+39366.*components[1]*components[2]*components[5] - \
+19683.*components[4]*pow(components[5],2) + \
+39366.*components[3]*components[5]*components[6] + \
+19683.*components[4]*pow(components[6],2) - \
+39366.*components[2]*components[3]*components[7] + \
+39366.*components[1]*components[6]*components[7] - \
+19683.*components[4]*pow(components[7],2) + \
+22727.97069691881*pow(components[1],2)*components[8] - \
+11363.9853484594*pow(components[2],2)*components[8] + \
+22727.97069691881*pow(components[3],2)*components[8] + \
+22727.97069691881*pow(components[4],2)*components[8] - \
+11363.9853484594*pow(components[5],2)*components[8] - \
+11363.9853484594*pow(components[6],2)*components[8] - \
+11363.9853484594*pow(components[7],2)*components[8] - \
+7575.990232306269*pow(components[8],3);
+
+double det = 5.7395628e7*pow(norma,3) - SQ(x1);
+double x2 = 0.02939631577718888*pow(sqrt(det) + x1,1./3.);
+
+double k1 = 486.*norma + cbrt(2.) * cbrt(det + x1*x1);
+double k2 = 85.71965680628277163659210*pow(det + x1*x1,1./6.);
+double phase = std::arg(std::complex<double>{x1,sqrt(det)})/3.;
+
+// autovalores
+gsl_vector_set(eigenvalues,0,2.*k1*cos(phase)/k2 + components[0]);
+gsl_vector_set(eigenvalues,1,-k1*(cos(phase)+ sqrt(3.) * sin(phase))/k2 + components[0]);
+gsl_vector_set(eigenvalues,2,k1*(-cos(phase)+ sqrt(3.) * sin(phase))/k2 + components[0]);
+
+// autovectores
+std::complex<double> a1 {components[2]*components[5] + components[6]*components[7],
+                         components[5]*components[6] - components[2]*components[7]};
+std::complex<double> a2 {components[1]*components[5] - components[3]*components[7],
+                         components[3]*components[5] + components[1]*components[7]};
+std::complex<double> a3 {components[1],components[3]};
+std::complex<double> a4 {components[5],components[7]};
+std::complex<double> a5 {components[2],components[6]};
+
+std::complex<double> c1 = 9.*cbrt(2.)*norma*pow(std::complex<double>{x1,sqrt(det)},-1./3.) + pow(std::complex<double>{x1,sqrt(det)},1./3.)/(27.*cbrt(2.));
+
+std::complex<double> d1 = cbrt(2.)*9.*std::complex<double>{1.,sqrt(3)}*norma*pow(std::complex<double>{x1,sqrt(det)},-1./3.)/2. + std::complex<double>{1.,-sqrt(3)}*pow(std::complex<double>{x1,sqrt(det)},1./3.)/(54.*cbrt(2.));
+
+std::complex<double> e1 = cbrt(2.)*9.*std::complex<double>{1.,-sqrt(3)}*norma*pow(std::complex<double>{x1,sqrt(det)},-1./3.)/2. + std::complex<double>{1.,sqrt(3)}*pow(std::complex<double>{x1,sqrt(det)},1./3.)/(54.*cbrt(2.));
+
+gsl_matrix_complex_set(eigenvectors,0,0,to_gsl(-(3*components[0] - \
+3.*(c1 + components[0]) - 2*sqrt(3)*components[8])/(3.*a5) + (a4*(a1 - \
+a3*(-c1 - (2*components[8])/sqrt(3))))/(a5*(-a2 + a5*(-c1 - \
+components[4] + components[8]/sqrt(3))))));
+gsl_matrix_complex_set(eigenvectors,1,0,to_gsl(-((a1 - a3*(-c1 - \
+(2*components[8])/sqrt(3)))/(-a2 + a5*(-c1 - components[4] + \
+components[8]/sqrt(3))))));
+gsl_matrix_complex_set(eigenvectors,2,0,to_gsl(1));
+gsl_matrix_complex_set(eigenvectors,0,1,to_gsl(-(3*components[0] - \
+3.*(-d1 + components[0]) - 2*sqrt(3)*components[8])/(3.*a5) + (a4*(a1 \
+- a3*(d1 - (2*components[8])/sqrt(3))))/(a5*(-a2 + a5*(d1 - \
+components[4] + components[8]/sqrt(3))))));
+gsl_matrix_complex_set(eigenvectors,1,1,to_gsl(-((a1 - a3*(d1 - \
+(2*components[8])/sqrt(3)))/(-a2 + a5*(d1 - components[4] + \
+components[8]/sqrt(3))))));
+gsl_matrix_complex_set(eigenvectors,2,1,to_gsl(1));
+gsl_matrix_complex_set(eigenvectors,0,2,to_gsl(-(3*components[0] - \
+3.*(-e1 + components[0]) - 2*sqrt(3)*components[8])/(3.*a5) + (a4*(a1 \
+- a3*(e1 - (2*components[8])/sqrt(3))))/(a5*(-a2 + a5*(e1 - \
+components[4] + components[8]/sqrt(3))))));
+gsl_matrix_complex_set(eigenvectors,1,2,to_gsl(-((a1 - a3*(e1 - \
+(2*components[8])/sqrt(3)))/(-a2 + a5*(e1 - components[4] + \
+components[8]/sqrt(3))))));
+gsl_matrix_complex_set(eigenvectors,2,2,to_gsl(1));
+
+gsl_matrix_complex_normalize(eigenvectors);
+
