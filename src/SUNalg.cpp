@@ -394,14 +394,15 @@ SU_vector::GetEigenSystem() const{
     std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(eigenvectors,gsl_matrix_complex_free));
 }
 
-SU_vector SU_vector::Rotate(const std::unique_ptr<gsL_matrix_complex,void(*)(gsL_matrix_complex*)> m) const{
+/*
+SU_vector SU_vector::Rotate(const gsl_matrix_complex& m) const{
   const SU_vector& suv1=*this;
   SU_vector suv_new(dim);
-  if ( m.size1 != dim or m->size2 != dim )
-    throw std::runtime_error("SU_vector::Rotate(gsl_matrix_complex): matrix dimensions and SU_vector dimensions do not match.")
+  if ( m.size1 != dim or m.size2 != dim )
+    throw std::runtime_error("SU_vector::Rotate(gsl_matrix_complex): matrix dimensions and SU_vector dimensions do not match.");
 #include "unitary_rotation_switcher.h"
   return suv_new;
-}
+}*/
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
   const SU_vector& suv=*this;
