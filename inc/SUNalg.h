@@ -228,6 +228,13 @@ public:
   ///\pre m->size1 <= 6
   SU_vector(const gsl_matrix_complex* m);
 
+  ///\brief Construct an SU_vector from a GSL matrix
+  ///
+  ///\param m The matrix whose data should be copied
+  ///\pre m is hermitian
+  ///\pre m->size1 <= 6
+  SU_vector(std::unique_ptr<gsl_matrix_complex, void (*)(gsl_matrix_complex *​​)> &&m):SU_vector(m.get()){};
+
   ///\brief Construct an SU_vector from existing data
   ///
   /// The newly constructed SU_vector will allocate its own storage, but it
@@ -256,7 +263,7 @@ public:
 
   ///\brief Returns a rotated SU_vector rotating by the matrix m.
   ///\param rotation_matrix gsl_complex_matrix that generates the rotation
-  //SU_vector Rotate(const gsl_matrix_complex* rotation_matrix) const;
+  SU_vector Rotate(const gsl_matrix_complex* rotation_matrix) const;
 
   ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace
   ///\param i subspace index
@@ -289,7 +296,7 @@ public:
   /// unitary transformation that diagonalizes the matrix
   /// represented by the SU_vector
   std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
-  std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>> GetEigenSystem() const;
+  std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>> GetEigenSystem(bool order = true) const;
 
   ///\brief Returns the Eigen vector set that diagonalizes
   /// the given SU_vector

@@ -337,7 +337,7 @@ void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, gsl_matrix_complex *
   gsl_matrix_free(expmatreal);
 }
 
-void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
+void gsl_matrix_complex_change_basis_UCMU(const gsl_matrix_complex* U, gsl_matrix_complex* M){
   int numneu = U->size1;
   gsl_matrix_complex* U1 = gsl_matrix_complex_alloc(numneu,numneu);
   gsl_matrix_complex* U2 = gsl_matrix_complex_alloc(numneu,numneu);
@@ -374,7 +374,7 @@ SU_vector SU_vector::UTransform(const SU_vector& v) const{
 
 std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
 std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>>
-SU_vector::GetEigenSystem() const{
+SU_vector::GetEigenSystem(bool order) const{
   gsl_vector * eigenvalues = gsl_vector_alloc(dim);
   gsl_matrix_complex * eigenvectors = gsl_matrix_complex_alloc(dim,dim);
   switch (dim) {
@@ -389,6 +389,9 @@ SU_vector::GetEigenSystem() const{
       gsl_eigen_hermv(matrix.get(),eigenvalues,eigenvectors,ws);
       gsl_eigen_hermv_free(ws);
   }
+  // sorting eigenvalues
+  if (order)
+    gsl_eigen_hermv_sort(eigenvalues,eigenvectors,GSL_EIGEN_SORT_VAL_ASC);
   return std::make_pair(
     std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>(eigenvalues,gsl_vector_free),
     std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(eigenvectors,gsl_matrix_complex_free));
@@ -404,6 +407,16 @@ SU_vector SU_vector::Rotate(const gsl_matrix_complex* m) const{
   return suv_new;
 }
 */
+
+SU_vector SU_vector::Rotate(const gsl_matrix_complex* U) const{
+  if ( U->size1 != dim or U->size2 != dim )
+    throw std::runtime_error("SU_vector::Rotate(gsl_matrix_complex): matrix dimensions and SU_vector dimensions do not match.");
+
+  const SU_vector& suv1=*this;
+  auto m = suv1.GetGSLMatrix();
+  gsl_matrix_complex_change_basis_UCMU(U,m.get());
+  return SU_vector(std::move(m));
+}
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
   const SU_vector& suv=*this;
