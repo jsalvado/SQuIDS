@@ -262,7 +262,7 @@ public:
   std::vector<double> GetComponents() const;
 
   ///\brief Returns a rotated SU_vector rotating by the matrix m.
-  ///\param rotation_matrix gsl_complex_matrix that generates the rotation
+  ///\param rotation_matrix gsl_complex_matrix which rotates to
   SU_vector Rotate(const gsl_matrix_complex* rotation_matrix) const;
 
   ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace

@@ -12,11 +12,11 @@
  *                                                                             *
  *   You should have received a copy of the GNU General Public License         *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
- *                                                                             *   
+ *                                                                             *
  *   Authors:                                                                  *
- *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *      Carlos Arguelles (University of Wisconsin Madison)                     *
  *         carguelles@icecube.wisc.edu                                         *
- *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *      Christopher Weaver (University of Wisconsin Madison)                   *
  *         chris.weaver@icecube.wisc.edu                                       *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
@@ -42,10 +42,10 @@ namespace squids{
 
 ///Contains physical and mathematical constants
 class Const{
-public : 
+public :
   // mathematical constants //
   double pi;
-  double piby2; 
+  double piby2;
   double sqrt2;
   double ln2;
   // astronomical constants //
@@ -69,7 +69,7 @@ public :
   // mass
   double kg;
   double gr;
-  // time 
+  // time
   double sec;
   double hour;
   double day;
@@ -130,21 +130,21 @@ public :
   ///              must be larger than state1
   ///\return the mixing angle between the two states
   double GetMixingAngle(unsigned int state1, unsigned int state2) const;
-  
+
   ///\brief set the energy splitting between two states of the system
   ///
   ///\param upperState the (zero-based) index of the upper state;
   ///                  the lower state is implicitly the ground state (0)
   ///\param diff the energy difference between the states
   void SetEnergyDifference(unsigned int upperState, double diff);
-  
+
   ///\brief get the energy splitting between two states of the system
   ///
   ///\param upperState the (zero-based) index of the upper state;
   ///                  the lower state is implicitly the ground state (0)
   ///\return the energy difference between the states
   double GetEnergyDifference(unsigned int upperState) const;
-  
+
   ///\brief set the complex phase between two states of the system
   ///
   ///\param state1 the (zero-based) index of the first state
@@ -152,7 +152,7 @@ public :
   ///              must be larger than state1
   ///\param phase the phase to use
   void SetPhase(unsigned int state1, unsigned int state2, double phase);
-  
+
   ///\brief get the complex phase between two states of the system
   ///
   ///\param state1 the (zero-based) index of the first state
@@ -165,10 +165,10 @@ public :
   Const(Const&&)=default;
   ~Const();
   Const& operator=(Const&&)=default;
-  
+
   ///\brief get the complete matrix representing the transformation between bases
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetTransformationMatrix(size_t) const;
-  
+
 private:
   // matrices
   // angles
@@ -178,7 +178,7 @@ private:
   // energy differences
   std::unique_ptr<gsl_matrix,void (*)(gsl_matrix*)> de;
 };
-  
+
 } //namespace squids
 
 #endif //ifdef SQUIDS_CONST_H
