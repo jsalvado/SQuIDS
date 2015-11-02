@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    117141,       3108]
-NotebookOptionsPosition[    112665,       2969]
-NotebookOutlinePosition[    113050,       2986]
-CellTagsIndexPosition[    113007,       2983]
+NotebookDataLength[    187357,       4878]
+NotebookOptionsPosition[    182134,       4717]
+NotebookOutlinePosition[    182501,       4733]
+CellTagsIndexPosition[    182458,       4730]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -77,7 +77,8 @@ Cell[CellGroupData[{
 
 Cell["Algebra Basis Construction", "Subtitle",
  CellChangeTimes->{{3.578330427901168*^9, 3.578330430446533*^9}, {
-  3.6216237540171347`*^9, 3.621623756015794*^9}}],
+  3.6216237540171347`*^9, 3.621623756015794*^9}, {3.654239540997109*^9, 
+  3.6542395468662987`*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -464,9 +465,9 @@ Cell["Simple Projectors", "Subsubtitle",
  CellChangeTimes->{{3.6216236982901917`*^9, 3.6216237009129877`*^9}, {
   3.6216288696041203`*^9, 3.621628870258486*^9}}],
 
-Cell["Define a matrix-projector", "Text",
+Cell["\[LineSeparator]Define a matrix-projector", "Text",
  CellChangeTimes->{{3.6216240436414557`*^9, 3.621624059823258*^9}, {
-  3.621624090465279*^9, 3.621624093086549*^9}}],
+   3.621624090465279*^9, 3.621624093086549*^9}, 3.6542402838148947`*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -489,13 +490,13 @@ Cell[BoxData[
    3.578344167171032*^9, {3.621625472297522*^9, 3.621625478262274*^9}}],
 
 Cell[TextData[{
- "Rules to construct a ",
+ "\[LineSeparator]Rules to construct a ",
  StyleBox["SU_vector",
   FontWeight->"Bold"],
  "-projector"
 }], "Text",
  CellChangeTimes->{{3.6216240436414557`*^9, 3.6216240874305553`*^9}, {
-  3.6216241727100887`*^9, 3.621624172819339*^9}}],
+   3.6216241727100887`*^9, 3.621624172819339*^9}, 3.654240286601844*^9}],
 
 Cell[BoxData[{
  RowBox[{
@@ -673,10 +674,12 @@ Cell["Simple Rotations", "Subsubtitle",
  CellChangeTimes->{{3.621623778776971*^9, 3.621623780103867*^9}, {
   3.621625591557184*^9, 3.62162559215556*^9}}],
 
-Cell["Construct simple rotation matrices", "Text",
+Cell["\<\
+\[LineSeparator]Construct simple rotation matrices\
+\>", "Text",
  CellChangeTimes->{{3.578330348070541*^9, 3.578330353457632*^9}, 
    3.5783441671715918`*^9, {3.6216241535334177`*^9, 3.6216241702032146`*^9}, {
-   3.6216256168132067`*^9, 3.6216256173471117`*^9}}],
+   3.6216256168132067`*^9, 3.6216256173471117`*^9}, 3.654240292995056*^9}],
 
 Cell[BoxData[{
  RowBox[{
@@ -844,47 +847,48 @@ Cell[TextData[{
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"RotationRules", "[", 
-   RowBox[{"ar_", ",", "br_", ",", "cl_", ",", "d_"}], "]"}], ":=", 
-  RowBox[{"FullSimplify", "[", 
-   RowBox[{
-    RowBox[{"Solve", "[", 
-     RowBox[{
+  RowBox[{
+   RowBox[{"RotationRules", "[", 
+    RowBox[{"ar_", ",", "br_", ",", "cl_", ",", "d_"}], "]"}], ":=", 
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{
+     RowBox[{"Solve", "[", 
       RowBox[{
        RowBox[{
         RowBox[{
+         RowBox[{
+          SubscriptBox[
+           RowBox[{"(", 
+            SuperscriptBox[
+             RowBox[{"U", "[", "\[Theta]", "]"}], "d"], ")"}], 
+           RowBox[{"ar", ",", "br"}]], "\[ConjugateTranspose]"}], ".", 
+         SubscriptBox[
+          SuperscriptBox["\[Lambda]", "d"], "cl"], ".", 
          SubscriptBox[
           RowBox[{"(", 
            SuperscriptBox[
             RowBox[{"U", "[", "\[Theta]", "]"}], "d"], ")"}], 
-          RowBox[{"ar", ",", "br"}]], "\[ConjugateTranspose]"}], ".", 
-        SubscriptBox[
-         SuperscriptBox["\[Lambda]", "d"], "cl"], ".", 
-        SubscriptBox[
-         RowBox[{"(", 
-          SuperscriptBox[
-           RowBox[{"U", "[", "\[Theta]", "]"}], "d"], ")"}], 
-         RowBox[{"ar", ",", "br"}]]}], "==", 
-       RowBox[{"Sum", "[", 
-        RowBox[{
+          RowBox[{"ar", ",", "br"}]]}], "==", 
+        RowBox[{"Sum", "[", 
          RowBox[{
-          SubscriptBox["a", "i"], 
-          SubscriptBox[
-           SuperscriptBox["\[Lambda]", "d"], "i"]}], ",", 
+          RowBox[{
+           SubscriptBox["a", "i"], 
+           SubscriptBox[
+            SuperscriptBox["\[Lambda]", "d"], "i"]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"i", ",", 
+            RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}]}], ",", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         SubscriptBox["a", "i"], ",", 
          RowBox[{"{", 
           RowBox[{"i", ",", 
-           RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}]}], ",", 
-      RowBox[{"Table", "[", 
-       RowBox[{
-        SubscriptBox["a", "i"], ",", 
-        RowBox[{"{", 
-         RowBox[{"i", ",", 
-          RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}]}], "]"}], ",", 
-    RowBox[{"Assumptions", "\[Rule]", 
-     RowBox[{"{", 
-      RowBox[{"Element", "[", 
-       RowBox[{"\[Theta]", ",", "Reals"}], "]"}], "}"}]}]}], "]"}]}]], "Input",\
-
+           RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}]}], "]"}], ",", 
+     RowBox[{"Assumptions", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"Element", "[", 
+        RowBox[{"\[Theta]", ",", "Reals"}], "]"}], "}"}]}]}], "]"}]}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]"}]], "Input",
  CellChangeTimes->{{3.5783259717046633`*^9, 3.578325973897449*^9}, {
    3.578326020789496*^9, 3.57832604198382*^9}, 3.578329575543273*^9, {
    3.5783296215898943`*^9, 3.5783296436945143`*^9}, {3.5783300462125893`*^9, 
@@ -893,7 +897,8 @@ Cell[BoxData[
    3.5783430541229973`*^9}, {3.578343126302223*^9, 3.578343131766809*^9}, {
    3.5783431893387547`*^9, 3.578343213280752*^9}, {3.578343454406826*^9, 
    3.578343456575345*^9}, {3.578343722609961*^9, 3.578343724015791*^9}, {
-   3.5783437957315197`*^9, 3.578343861939349*^9}, 3.5783441671745853`*^9}],
+   3.5783437957315197`*^9, 3.578343861939349*^9}, 3.5783441671745853`*^9, {
+   3.654239678944351*^9, 3.654239679313925*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -957,7 +962,1750 @@ Cell[BoxData[
           RowBox[{"i", ",", 
            RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}]}], "}"}]}]}], 
    "]"}]}]], "Input",
- CellChangeTimes->{{3.579021802248624*^9, 3.579021872574512*^9}}]
+ CellChangeTimes->{{3.579021802248624*^9, 3.579021872574512*^9}}],
+
+Cell[BoxData[{
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Sum", "[", 
+     RowBox[{
+      RowBox[{"Sum", "[", 
+       RowBox[{
+        RowBox[{
+         SubscriptBox[
+          RowBox[{"(", 
+           SuperscriptBox[
+            RowBox[{"UCP", "[", 
+             RowBox[{"\[Theta]1", ",", "\[Delta]1"}], "]"}], "3"], ")"}], 
+          RowBox[{"a", ",", "b1"}]], 
+         SubscriptBox[
+          RowBox[{"(", 
+           SuperscriptBox[
+            RowBox[{"UCP", "[", 
+             RowBox[{"\[Theta]2", ",", "\[Delta]2"}], "]"}], "3"], ")"}], 
+          RowBox[{"b1", ",", "b2"}]], 
+         SubscriptBox[
+          RowBox[{"(", 
+           SuperscriptBox[
+            RowBox[{"UCP", "[", 
+             RowBox[{"\[Theta]3", ",", "\[Delta]3"}], "]"}], "3"], ")"}], 
+          RowBox[{"b2", ",", "b"}]]}], ",", 
+        RowBox[{"{", 
+         RowBox[{"b1", ",", 
+          RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"b2", ",", 
+        RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+    "\[Equal]", 
+    SubscriptBox["M", 
+     RowBox[{"a", ",", "b"}]]}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+    "\[Theta]1", ",", "\[Delta]1", ",", "\[Theta]2", ",", "\[Delta]2", ",", 
+     "\[Theta]3", ",", "\[Delta]3"}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Sum", "[", 
+   RowBox[{
+    RowBox[{"Sum", "[", 
+     RowBox[{
+      RowBox[{
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"\[Theta]1", ",", "\[Delta]1"}], "]"}], "3"], ")"}], 
+        RowBox[{"a", ",", "b1"}]], 
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"\[Theta]2", ",", "\[Delta]2"}], "]"}], "3"], ")"}], 
+        RowBox[{"b1", ",", "b2"}]], 
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"\[Theta]3", ",", "\[Delta]3"}], "]"}], "3"], ")"}], 
+        RowBox[{"b2", ",", "b"}]]}], ",", 
+      RowBox[{"{", 
+       RowBox[{"b1", ",", 
+        RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"b2", ",", 
+      RowBox[{"d", "^", "2"}]}], "}"}]}], "]"}], "\[Equal]", 
+  SubscriptBox["M", 
+   RowBox[{"a", ",", "b"}]]}]}], "Input",
+ CellChangeTimes->{{3.654239809434614*^9, 3.654240143630341*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"M", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       SubscriptBox["m", 
+        RowBox[{"1", ",", "1"}]], ",", 
+       SubscriptBox["m", 
+        RowBox[{"1", ",", "2"}]], ",", 
+       SubscriptBox["m", 
+        RowBox[{"1", ",", "3"}]]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       SubscriptBox["m", 
+        RowBox[{"2", ",", "1"}]], ",", 
+       SubscriptBox["m", 
+        RowBox[{"2", ",", "2"}]], ",", 
+       SubscriptBox["m", 
+        RowBox[{"2", ",", "3"}]]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       SubscriptBox["m", 
+        RowBox[{"3", ",", "1"}]], ",", 
+       SubscriptBox["m", 
+        RowBox[{"3", ",", "2"}]], ",", 
+       SubscriptBox["m", 
+        RowBox[{"3", ",", "3"}]]}], "}"}]}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6542407471875677`*^9, 3.654240878462583*^9}, {
+  3.654243108299696*^9, 3.654243122979846*^9}, {3.6542482333053083`*^9, 
+  3.654248243349018*^9}, {3.654248804171219*^9, 3.654248810688699*^9}, {
+  3.654248894946094*^9, 3.6542489063096867`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"M", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<gsl_matrix_get(m,0,0)\>\"", ",", "\"\<gsl_matrix_get(m,0,1)\>\"", 
+       ",", "\"\<gsl_matrix_get(m,0,2)\>\""}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<gsl_matrix_get(m,1,0)\>\"", ",", "\"\<gsl_matrix_get(m,1,1)\>\"", 
+       ",", "\"\<gsl_matrix_get(m,1,2)\>\""}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<gsl_matrix_get(m,2,0)\>\"", ",", "\"\<gsl_matrix_get(m,2,1)\>\"", 
+       ",", "\"\<gsl_matrix_get(m,2,2)\>\""}], "}"}]}], "}"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.65424881607952*^9, 3.654248940601454*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     SubscriptBox[
+      RowBox[{"(", 
+       SuperscriptBox[
+        RowBox[{"UCP", "[", 
+         RowBox[{"\[Theta]12", ",", "0"}], "]"}], "3"], ")"}], 
+      RowBox[{"1", ",", "2"}]], ".", 
+     SubscriptBox[
+      RowBox[{"(", 
+       SuperscriptBox[
+        RowBox[{"UCP", "[", 
+         RowBox[{"\[Theta]13", ",", "\[Delta]13"}], "]"}], "3"], ")"}], 
+      RowBox[{"1", ",", "3"}]], ".", 
+     SubscriptBox[
+      RowBox[{"(", 
+       SuperscriptBox[
+        RowBox[{"UCP", "[", 
+         RowBox[{"\[Theta]23", ",", "0"}], "]"}], "3"], ")"}], 
+      RowBox[{"2", ",", "3"}]]}], "\[Equal]", "M"}], ";"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{"Table", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Flatten", "[", 
+      RowBox[{
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"\[Theta]12", ",", "0"}], "]"}], "3"], ")"}], 
+        RowBox[{"1", ",", "2"}]], ".", 
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"\[Theta]13", ",", "\[Delta]13"}], "]"}], "3"], ")"}], 
+        RowBox[{"1", ",", "3"}]], ".", 
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"\[Theta]23", ",", "0"}], "]"}], "3"], ")"}], 
+        RowBox[{"2", ",", "3"}]]}], "]"}], "[", 
+     RowBox[{"[", "i", "]"}], "]"}], "\[Equal]", 
+    RowBox[{
+     RowBox[{"Flatten", "[", "M", "]"}], "[", 
+     RowBox[{"[", "i", "]"}], "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"i", ",", "4"}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.6542412584941387`*^9, 3.65424125866459*^9}, {
+   3.654241492426797*^9, 3.654241568448557*^9}, 3.654241924169059*^9, {
+   3.654242145474615*^9, 3.654242154569984*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Cos", "[", "\[Theta]12", "]"}], " ", 
+     RowBox[{"Cos", "[", "\[Theta]13", "]"}]}], 
+    "\[Equal]", "\<\"gsl_matrix_get(m,0,0)\"\>"}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"Cos", "[", "\[Theta]23", "]"}], " ", 
+      RowBox[{"Sin", "[", "\[Theta]12", "]"}]}], "-", 
+     RowBox[{
+      RowBox[{"Cos", "[", "\[Theta]12", "]"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"Cos", "[", "\[Delta]13", "]"}], "-", 
+        RowBox[{"\[ImaginaryI]", " ", 
+         RowBox[{"Sin", "[", "\[Delta]13", "]"}]}]}], ")"}], " ", 
+      RowBox[{"Sin", "[", "\[Theta]13", "]"}], " ", 
+      RowBox[{"Sin", "[", "\[Theta]23", "]"}]}]}], 
+    "\[Equal]", "\<\"gsl_matrix_get(m,0,1)\"\>"}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"Cos", "[", "\[Theta]12", "]"}], " ", 
+      RowBox[{"Cos", "[", "\[Theta]23", "]"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"Cos", "[", "\[Delta]13", "]"}], "-", 
+        RowBox[{"\[ImaginaryI]", " ", 
+         RowBox[{"Sin", "[", "\[Delta]13", "]"}]}]}], ")"}], " ", 
+      RowBox[{"Sin", "[", "\[Theta]13", "]"}]}], "+", 
+     RowBox[{
+      RowBox[{"Sin", "[", "\[Theta]12", "]"}], " ", 
+      RowBox[{"Sin", "[", "\[Theta]23", "]"}]}]}], 
+    "\[Equal]", "\<\"gsl_matrix_get(m,0,2)\"\>"}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", 
+      RowBox[{"Cos", "[", "\[Theta]13", "]"}]}], " ", 
+     RowBox[{"Sin", "[", "\[Theta]12", "]"}]}], 
+    "\[Equal]", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.65424094014464*^9, 3.654241259145689*^9, 3.654241499769866*^9, 
+   3.654241570136941*^9, 3.654241782081592*^9, {3.6542419098910646`*^9, 
+   3.654241924665613*^9}, {3.654242146050123*^9, 3.654242154870008*^9}, 
+   3.654248246643284*^9, 3.654248964758308*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ReplaceAll", "[", 
+  RowBox[{
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{"Solve", "[", 
+     RowBox[{"%166", ",", 
+      RowBox[{"{", 
+       RowBox[{
+       "\[Delta]13", ",", "\[Theta]12", ",", "\[Theta]13", ",", 
+        "\[Theta]23"}], "}"}]}], "]"}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"\"\<gsl_matrix_get(m,0,0)\>\"", "^", "2"}], "\[Rule]", 
+      "\"\<gsl_complex_pow_real (gsl_matrix_get(m,0,0),2.0)\>\""}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"\"\<gsl_matrix_get(m,0,1)\>\"", "^", "2"}], "\[Rule]", 
+      "\"\<gsl_complex_pow_real (gsl_matrix_get(m,0,1),2.0)\>\""}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"\"\<gsl_matrix_get(m,1,1)\>\"", "^", "2"}], "\[Rule]", 
+      "\"\<gsl_complex_pow_real (gsl_matrix_get(m,1,1),2.0)\>\""}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"\"\<gsl_matrix_get(m,0,2)\>\"", "^", "2"}], "\[Rule]", 
+      "\"\<gsl_complex_pow_real (gsl_matrix_get(m,0,2),2.0)\>\""}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"\"\<gsl_matrix_get(m,1,0)\>\"", "^", "2"}], "\[Rule]", 
+      "\"\<gsl_complex_pow_real (gsl_matrix_get(m,1,0),2.0)\>\""}]}], "}"}]}],
+   "]"}]], "Input",
+ CellChangeTimes->{
+  3.6542420952275553`*^9, {3.6542421935175257`*^9, 3.654242194613576*^9}, {
+   3.6542422277716084`*^9, 3.654242236227859*^9}, {3.654248013517353*^9, 
+   3.654248073672826*^9}, {3.654248166497167*^9, 3.654248168892713*^9}, {
+   3.654248286129643*^9, 3.654248286978518*^9}, {3.654248318325478*^9, 
+   3.6542483346963654`*^9}, {3.654248405541749*^9, 3.654248471607888*^9}, {
+   3.654248502717537*^9, 3.654248505331593*^9}, {3.6542485471386137`*^9, 
+   3.6542485544070272`*^9}, {3.654248593615725*^9, 3.6542486586748047`*^9}, {
+   3.654248739259885*^9, 3.654248740042198*^9}, {3.654248969484151*^9, 
+   3.654249117789605*^9}},
+ NumberMarks->False],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+              " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SqrtBox[
+               RowBox[{"1", "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+              
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+               ")"}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"\[Sqrt]", 
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                SuperscriptBox[
+                 RowBox[{"(", 
+                  RowBox[{
+                   SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                   
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  ")"}], "2"], " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"-", 
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  "+", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            FractionBox[
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+              RowBox[{
+              "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+             SqrtBox[
+              RowBox[{
+               SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+               SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]]}], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], ",", 
+           
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{"1", "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}]}], 
+          "]"}], "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,2)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "-", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+              " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SqrtBox[
+               RowBox[{"1", "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+              
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+               ")"}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"\[Sqrt]", 
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                SuperscriptBox[
+                 RowBox[{"(", 
+                  RowBox[{
+                   SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                   
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  ")"}], "2"], " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"-", 
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  "+", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           FractionBox[
+            RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+             RowBox[{
+             "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           SqrtBox[
+            RowBox[{
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], ",", 
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{"1", "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}]}], 
+          "]"}], "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "\<\"gsl_matrix_get(m,0,2)\"\>"}], 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "+", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+              " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SqrtBox[
+               RowBox[{"1", "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+              
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+               ")"}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"\[Sqrt]", 
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                SuperscriptBox[
+                 RowBox[{"(", 
+                  RowBox[{
+                   SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                   
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  ")"}], "2"], " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"-", 
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  "+", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            FractionBox[
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+              RowBox[{
+              "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+             SqrtBox[
+              RowBox[{
+               SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+               SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]]}], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], ",", 
+           
+           SqrtBox[
+            RowBox[{"1", "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], "]"}],
+          "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,2)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "+", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+              " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SqrtBox[
+               RowBox[{"1", "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+              
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+               ")"}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"\[Sqrt]", 
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                SuperscriptBox[
+                 RowBox[{"(", 
+                  RowBox[{
+                   SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                   
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  ")"}], "2"], " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"-", 
+                   SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                  "+", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           FractionBox[
+            RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+             RowBox[{
+             "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           SqrtBox[
+            RowBox[{
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], ",", 
+           SqrtBox[
+            RowBox[{"1", "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], "]"}],
+          "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "\<\"gsl_matrix_get(m,0,2)\"\>"}], 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "-", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            RowBox[{
+             RowBox[{"(", 
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+               SqrtBox[
+                RowBox[{"1", "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], ")"}], "/", 
+             RowBox[{"(", 
+              RowBox[{"\[Sqrt]", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                 SuperscriptBox[
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   ")"}], "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   "+", 
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            FractionBox[
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+              RowBox[{
+              "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+             SqrtBox[
+              RowBox[{
+               SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+               SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]]}], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], ",", 
+           
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{"1", "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}]}], 
+          "]"}], "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,2)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "+", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            RowBox[{
+             RowBox[{"(", 
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+               SqrtBox[
+                RowBox[{"1", "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], ")"}], "/", 
+             RowBox[{"(", 
+              RowBox[{"\[Sqrt]", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                 SuperscriptBox[
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   ")"}], "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   "+", 
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           FractionBox[
+            RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+             RowBox[{
+             "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           SqrtBox[
+            RowBox[{
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], ",", 
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{"1", "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}]}], 
+          "]"}], "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "\<\"gsl_matrix_get(m,0,2)\"\>"}], 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "-", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            RowBox[{
+             RowBox[{"(", 
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+               SqrtBox[
+                RowBox[{"1", "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], ")"}], "/", 
+             RowBox[{"(", 
+              RowBox[{"\[Sqrt]", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                 SuperscriptBox[
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   ")"}], "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   "+", 
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            FractionBox[
+             RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+              RowBox[{
+              "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+             SqrtBox[
+              RowBox[{
+               SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+               SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]]}], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           RowBox[{"-", 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], ",", 
+           
+           SqrtBox[
+            RowBox[{"1", "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], "]"}],
+          "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,2)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "-", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[Delta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "1", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{"-", 
+            RowBox[{
+             RowBox[{"(", 
+              
+              RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", 
+               " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+               SqrtBox[
+                RowBox[{"1", "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], ")"}], "/", 
+             RowBox[{"(", 
+              RowBox[{"\[Sqrt]", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                 SuperscriptBox[
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   ")"}], "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                   "+", 
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}], ")"}]}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "1", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]12", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "2", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           FractionBox[
+            RowBox[{"\<\"gsl_matrix_get(m,0,0)\"\>", "-", 
+             RowBox[{
+             "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,1,0)\"\>"}]}], 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+              SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]], 
+           "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "2", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]13", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArcTan", "[", 
+          RowBox[{
+           SqrtBox[
+            RowBox[{
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]], ",", 
+           SqrtBox[
+            RowBox[{"1", "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "-", 
+             SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}]]}], "]"}],
+          "+", 
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "3", "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "3", "]"}], "\[Element]", "Integers"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"\[Theta]23", "\[Rule]", 
+      RowBox[{"ConditionalExpression", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"2", " ", "\[Pi]", " ", 
+          RowBox[{"C", "[", "4", "]"}]}], "-", 
+         RowBox[{"\[ImaginaryI]", " ", 
+          RowBox[{"Log", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "\<\"gsl_matrix_get(m,0,2)\"\>"}], 
+               " ", "\<\"gsl_matrix_get(m,1,0)\"\>", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}]}], "+", 
+              RowBox[{"\[ImaginaryI]", " ", 
+               RowBox[{"\[Sqrt]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}], "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,1)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,2)\"\>", "2"]}], 
+                    ")"}], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                    SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                    ")"}]}]}], ")"}]}], ")"}]}]}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"\<\"gsl_matrix_get(m,0,1)\"\>", "-", 
+                RowBox[{
+                "\[ImaginaryI]", " ", "\<\"gsl_matrix_get(m,0,2)\"\>"}]}], 
+               ")"}], " ", "\<\"gsl_matrix_get(m,0,2)\"\>", " ", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{
+                 SuperscriptBox["\<\"gsl_matrix_get(m,0,0)\"\>", "2"], "+", 
+                 SuperscriptBox["\<\"gsl_matrix_get(m,1,0)\"\>", "2"]}], 
+                ")"}], 
+               RowBox[{"3", "/", "2"}]]}], ")"}]}], "]"}]}]}], ",", 
+        RowBox[{
+         RowBox[{"C", "[", "4", "]"}], "\[Element]", "Integers"}]}], 
+       "]"}]}]}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.65424803879596*^9, {3.654248069608306*^9, 3.654248075323745*^9}, 
+   3.654248170297242*^9, {3.654248279546587*^9, 3.654248303749765*^9}, 
+   3.654248433446759*^9, 3.654248473479539*^9, 3.654248506630411*^9, 
+   3.654248555689777*^9, 3.654248596784422*^9, {3.654248645770382*^9, 
+   3.6542486605771847`*^9}, 3.6542487413648987`*^9, 3.6542489853271103`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Table", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Flatten", "[", 
+      RowBox[{
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"c\[Theta]12", ",", "s\[Theta]12", ",", "0", ",", "0"}], 
+           "]"}], "3"], ")"}], 
+        RowBox[{"1", ",", "2"}]], ".", 
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{
+           "c\[Theta]13", ",", "s\[Theta]13", ",", "c\[Delta]13", ",", 
+            "s\[Delta]13"}], "]"}], "3"], ")"}], 
+        RowBox[{"1", ",", "3"}]], ".", 
+       SubscriptBox[
+        RowBox[{"(", 
+         SuperscriptBox[
+          RowBox[{"UCP", "[", 
+           RowBox[{"c\[Theta]23", ",", "s\[Theta]23", ",", "0", ",", "0"}], 
+           "]"}], "3"], ")"}], 
+        RowBox[{"2", ",", "3"}]]}], "]"}], "[", 
+     RowBox[{"[", "i", "]"}], "]"}], "\[Equal]", 
+    RowBox[{
+     RowBox[{"Flatten", "[", "M", "]"}], "[", 
+     RowBox[{"[", "i", "]"}], "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"i", ",", "9"}], "}"}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"c\[Theta]12", " ", "c\[Theta]13"}], "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"1", ",", "1"}]]}], ",", 
+   RowBox[{"0", "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"1", ",", "2"}]]}], ",", 
+   RowBox[{
+    RowBox[{"c\[Theta]12", " ", "c\[Theta]23", " ", 
+     RowBox[{"(", 
+      RowBox[{"c\[Delta]13", "-", 
+       RowBox[{"\[ImaginaryI]", " ", "s\[Delta]13"}]}], ")"}], " ", 
+     "s\[Theta]13"}], "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"1", ",", "3"}]]}], ",", 
+   RowBox[{"0", "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"2", ",", "1"}]]}], ",", 
+   RowBox[{
+    RowBox[{"c\[Theta]12", " ", "c\[Theta]23"}], "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"2", ",", "2"}]]}], ",", 
+   RowBox[{"0", "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"2", ",", "3"}]]}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", 
+      RowBox[{"(", 
+       RowBox[{"c\[Delta]13", "+", 
+        RowBox[{"\[ImaginaryI]", " ", "s\[Delta]13"}]}], ")"}]}], " ", 
+     "s\[Theta]13"}], "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"3", ",", "1"}]]}], ",", 
+   RowBox[{"0", "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"3", ",", "2"}]]}], ",", 
+   RowBox[{
+    RowBox[{"c\[Theta]13", " ", "c\[Theta]23"}], "\[Equal]", 
+    SubscriptBox["m", 
+     RowBox[{"3", ",", "3"}]]}]}], "}"}]], "Output",
+ CellChangeTimes->{3.6542417601663857`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"Flatten", "[", 
+        RowBox[{
+         SubscriptBox[
+          RowBox[{"(", 
+           SuperscriptBox[
+            RowBox[{"UCP", "[", 
+             RowBox[{"c\[Theta]12", ",", "s\[Theta]12", ",", "0", ",", "0"}], 
+             "]"}], "3"], ")"}], 
+          RowBox[{"1", ",", "2"}]], ".", 
+         SubscriptBox[
+          RowBox[{"(", 
+           SuperscriptBox[
+            RowBox[{"UCP", "[", 
+             RowBox[{
+             "c\[Theta]13", ",", "s\[Theta]13", ",", "c\[Delta]13", ",", 
+              "s\[Delta]13"}], "]"}], "3"], ")"}], 
+          RowBox[{"1", ",", "3"}]], ".", 
+         SubscriptBox[
+          RowBox[{"(", 
+           SuperscriptBox[
+            RowBox[{"UCP", "[", 
+             RowBox[{"c\[Theta]23", ",", "s\[Theta]23", ",", "0", ",", "0"}], 
+             "]"}], "3"], ")"}], 
+          RowBox[{"2", ",", "3"}]]}], "]"}], "[", 
+       RowBox[{"[", "i", "]"}], "]"}], "\[Equal]", 
+      RowBox[{
+       RowBox[{"Flatten", "[", "M", "]"}], "[", 
+       RowBox[{"[", "i", "]"}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "9"}], "}"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+    "c\[Theta]12", ",", "s\[Theta]12", ",", "c\[Theta]13", ",", "s\[Theta]13",
+      ",", "c\[Delta]13", ",", "s\[Delta]13", ",", "c\[Theta]23", ",", 
+     "s\[Theta]23"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.654240421371603*^9, 3.654240424611286*^9}, {
+  3.654240528981923*^9, 3.6542406121987677`*^9}, {3.654240651094029*^9, 
+  3.654240651275012*^9}, {3.654240882005678*^9, 3.654240930631092*^9}, {
+  3.654241236259593*^9, 3.654241248317428*^9}, {3.6542415819182177`*^9, 
+  3.65424158730184*^9}, {3.654241643151552*^9, 3.65424174536836*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", "}"}]], "Output",
+ CellChangeTimes->{
+  3.654240425821865*^9, {3.654240530639847*^9, 3.654240561178334*^9}, 
+   3.65424061370646*^9, 3.654240932342341*^9, 3.654241248766122*^9, 
+   3.654241482705183*^9, 3.654241588071409*^9, 3.654241746692334*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"(", 
+  SuperscriptBox[
+   RowBox[{"UCP", "[", 
+    RowBox[{"2", ",", "\[Delta]1"}], "]"}], "d"], ")"}]], "Input",
+ CellChangeTimes->{{3.654240208901421*^9, 3.654240257410266*^9}, {
+  3.6542403515000353`*^9, 3.654240355331361*^9}, {3.654240398186602*^9, 
+  3.6542404048355722`*^9}}],
+
+Cell[BoxData[
+ SuperscriptBox[
+  RowBox[{"UCP", "[", 
+   RowBox[{"2", ",", "\[Delta]1"}], "]"}], "d"]], "Output",
+ CellChangeTimes->{{3.654240124089711*^9, 3.654240144400608*^9}, 
+   3.654240196439068*^9, {3.654240227383974*^9, 3.654240257826748*^9}, 
+   3.654240318616804*^9, {3.6542403529111423`*^9, 3.6542403557830753`*^9}}]
+}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1150,7 +2898,7 @@ Cell[BoxData[
    3.5783441671736917`*^9, {3.579872762348976*^9, 3.579872763466861*^9}, {
    3.5798948802305613`*^9, 3.579894882941111*^9}}]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2108,7 +3856,7 @@ Cell[BoxData[
    3.578416416808408*^9, 3.578416428373507*^9}, 3.5784183411830177`*^9, 
    3.6245031792479677`*^9}]
 }, Closed]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2967,11 +4715,10 @@ Cell[BoxData[{
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{718, 855},
+WindowSize->{1884, 1059},
 WindowMargins->{{Automatic, 0}, {Automatic, 0}},
 Magnification:>1.5 Inherited,
-FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (December 4, \
-2014)",
+FrontEndVersion->"9.0 for Linux x86 (64-bit) (November 20, 2012)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -2986,128 +4733,151 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[579, 22, 115, 1, 220, "Title"],
-Cell[697, 25, 690, 13, 253, "Text"],
-Cell[1390, 40, 2219, 33, 1594, "Input"],
+Cell[579, 22, 115, 1, 138, "Title"],
+Cell[697, 25, 690, 13, 194, "Text"],
+Cell[1390, 40, 2219, 33, 684, "Input"],
 Cell[CellGroupData[{
-Cell[3634, 77, 163, 2, 76, "Subtitle"],
-Cell[3800, 81, 957, 23, 211, "Input"],
-Cell[4760, 106, 1569, 40, 267, "Input"],
-Cell[6332, 148, 3554, 105, 585, "Input"],
-Cell[9889, 255, 1084, 29, 204, "Input"]
+Cell[3634, 77, 214, 3, 76, "Subtitle"],
+Cell[3851, 82, 957, 23, 316, "Input"],
+Cell[4811, 107, 1569, 40, 400, "Input"],
+Cell[6383, 149, 3554, 105, 877, "Input"],
+Cell[9940, 256, 1084, 29, 306, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[11010, 289, 338, 4, 76, "Subtitle"],
+Cell[11061, 290, 338, 4, 76, "Subtitle"],
 Cell[CellGroupData[{
-Cell[11373, 297, 187, 3, 99, "Subsubtitle",
+Cell[11424, 298, 187, 3, 44, "Subsubtitle",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[11563, 302, 1969, 57, 384, "Input",
+Cell[11614, 303, 1969, 57, 180, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13569, 364, 169, 2, 99, "Subsubtitle"],
-Cell[13741, 368, 2999, 89, 586, "Input"]
+Cell[13620, 365, 169, 2, 44, "Subsubtitle"],
+Cell[13792, 369, 2999, 89, 214, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16777, 462, 161, 2, 99, "Subsubtitle"],
-Cell[16941, 466, 158, 2, 103, "Text"],
-Cell[17102, 470, 624, 18, 171, "Input"],
-Cell[17729, 490, 234, 7, 103, "Text"],
-Cell[17966, 499, 2404, 64, 186, "Input"]
+Cell[16828, 463, 161, 2, 44, "Subsubtitle"],
+Cell[16992, 467, 199, 2, 76, "Text"],
+Cell[17194, 471, 624, 18, 77, "Input"],
+Cell[17821, 491, 273, 7, 76, "Text"],
+Cell[18097, 500, 2404, 64, 90, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[20407, 568, 265, 3, 99, "Subsubtitle"],
-Cell[20675, 573, 1155, 36, 244, "Input"],
-Cell[21833, 611, 1695, 55, 222, "Input"]
+Cell[20538, 569, 265, 3, 44, "Subsubtitle"],
+Cell[20806, 574, 1155, 36, 109, "Input"],
+Cell[21964, 612, 1695, 55, 94, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23565, 671, 153, 2, 99, "Subsubtitle"],
-Cell[23721, 675, 248, 3, 103, "Text"],
-Cell[23972, 680, 5230, 153, 711, "Input"],
-Cell[29205, 835, 287, 7, 103, "Text"],
-Cell[29495, 844, 2057, 51, 280, "Input"],
-Cell[31555, 897, 2095, 62, 280, "Input"]
+Cell[23696, 672, 153, 2, 44, "Subsubtitle"],
+Cell[23852, 676, 294, 5, 76, "Text"],
+Cell[24149, 683, 5230, 153, 289, "Input"],
+Cell[29382, 838, 287, 7, 46, "Text"],
+Cell[29672, 847, 2207, 53, 149, "Input"],
+Cell[31882, 902, 2095, 62, 119, "Input"],
+Cell[33980, 966, 2393, 72, 129, "Input"],
+Cell[36376, 1040, 1089, 32, 47, InheritFromParent],
+Cell[37468, 1074, 685, 18, 104, "Input"],
+Cell[CellGroupData[{
+Cell[38178, 1096, 1900, 56, 152, "Input"],
+Cell[40081, 1154, 1869, 48, 158, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[33687, 964, 198, 2, 99, "Subsubtitle"],
-Cell[33888, 968, 1739, 41, 324, "Input"],
-Cell[35630, 1011, 3497, 91, 387, "Input"],
-Cell[39130, 1104, 1921, 46, 238, "Input"]
+Cell[41987, 1207, 1924, 42, 191, "Input"],
+Cell[43914, 1251, 53797, 1292, 5439, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[97748, 2548, 1131, 34, 90, "Input"],
+Cell[98882, 2584, 1423, 44, 102, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[100342, 2633, 1815, 46, 90, "Input"],
+Cell[102160, 2681, 275, 5, 70, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[102472, 2691, 305, 7, 52, "Input"],
+Cell[102780, 2700, 327, 6, 72, "Output"]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 Cell[CellGroupData[{
-Cell[41100, 1156, 98, 1, 76, "Subtitle"],
+Cell[103156, 2712, 198, 2, 44, "Subsubtitle"],
+Cell[103357, 2716, 1739, 41, 104, "Input"],
+Cell[105099, 2759, 3497, 91, 184, "Input"],
+Cell[108599, 2852, 1921, 46, 81, "Input"]
+}, Open  ]]
+}, Open  ]],
 Cell[CellGroupData[{
-Cell[41223, 1161, 209, 3, 99, "Subsubtitle",
+Cell[110569, 2904, 98, 1, 76, "Subtitle"],
+Cell[CellGroupData[{
+Cell[110692, 2909, 209, 3, 44, "Subsubtitle",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[41435, 1166, 3665, 85, 438, "Input",
+Cell[110904, 2914, 3665, 85, 163, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[45137, 1256, 206, 3, 99, "Subsubtitle"],
-Cell[45346, 1261, 2533, 69, 438, "Input"]
+Cell[114606, 3004, 206, 3, 44, "Subsubtitle"],
+Cell[114815, 3009, 2533, 69, 163, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[47916, 1335, 226, 3, 99, "Subsubtitle"],
-Cell[48145, 1340, 382, 9, 154, "Input"],
-Cell[48530, 1351, 4688, 117, 717, "Input"]
+Cell[117385, 3083, 226, 3, 44, "Subsubtitle"],
+Cell[117614, 3088, 382, 9, 75, "Input"],
+Cell[117999, 3099, 4688, 117, 249, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[53255, 1473, 302, 4, 99, "Subsubtitle"],
-Cell[53560, 1479, 5516, 123, 747, "Input"]
+Cell[122724, 3221, 302, 4, 44, "Subsubtitle"],
+Cell[123029, 3227, 5516, 123, 308, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[59113, 1607, 183, 2, 99, "Subsubtitle"],
-Cell[59299, 1611, 3110, 80, 3754, "Input"]
+Cell[128582, 3355, 183, 2, 44, "Subsubtitle"],
+Cell[128768, 3359, 3110, 80, 5631, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[62446, 1696, 154, 2, 99, "Subsubtitle"],
-Cell[62603, 1700, 3064, 76, 495, "Input"]
+Cell[131915, 3444, 154, 2, 44, "Subsubtitle"],
+Cell[132072, 3448, 3064, 76, 192, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[65704, 1781, 171, 2, 99, "Subsubtitle"],
-Cell[65878, 1785, 175, 2, 103, "Text"],
-Cell[66056, 1789, 4510, 109, 442, "Input"],
-Cell[70569, 1900, 1879, 50, 240, "Input"],
-Cell[72451, 1952, 1976, 52, 240, "Input"]
+Cell[135173, 3529, 171, 2, 44, "Subsubtitle"],
+Cell[135347, 3533, 175, 2, 46, "Text"],
+Cell[135525, 3537, 4510, 109, 146, "Input"],
+Cell[140038, 3648, 1879, 50, 115, "Input"],
+Cell[141920, 3700, 1976, 52, 115, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[74464, 2009, 222, 3, 99, "Subsubtitle"],
-Cell[74689, 2014, 1658, 45, 211, "Input"]
+Cell[143933, 3757, 222, 3, 44, "Subsubtitle"],
+Cell[144158, 3762, 1658, 45, 75, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[76384, 2064, 273, 3, 99, "Subsubtitle"],
-Cell[76660, 2069, 1414, 39, 711, "Input"]
+Cell[145853, 3812, 273, 3, 44, "Subsubtitle"],
+Cell[146129, 3817, 1414, 39, 1066, "Input"]
 }, Closed]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[147592, 3862, 154, 2, 76, "Subtitle"],
+Cell[147749, 3866, 1320, 32, 267, "Input"],
+Cell[149072, 3900, 1121, 29, 267, "Input"],
+Cell[150196, 3931, 3219, 80, 379, "Input"],
+Cell[153418, 4013, 964, 23, 324, "Input"],
+Cell[154385, 4038, 1058, 25, 324, "Input"],
+Cell[155446, 4065, 1250, 27, 324, "Input"],
+Cell[156699, 4094, 1019, 24, 324, "Input"],
+Cell[157721, 4120, 1081, 25, 324, "Input"],
+Cell[158805, 4147, 1165, 24, 492, "Input"],
+Cell[159973, 4173, 3836, 95, 829, "Input"],
+Cell[163812, 4270, 2440, 51, 549, "Input"],
+Cell[166255, 4323, 1980, 47, 661, "Input"],
+Cell[168238, 4372, 1985, 47, 661, "Input"],
+Cell[170226, 4421, 1988, 47, 661, "Input"],
+Cell[172217, 4470, 4158, 98, 1336, "Input"],
+Cell[176378, 4570, 1783, 38, 604, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[78123, 2114, 154, 2, 76, "Subtitle"],
-Cell[78280, 2118, 1320, 32, 178, "Input"],
-Cell[79603, 2152, 1121, 29, 178, "Input"],
-Cell[80727, 2183, 3219, 80, 253, "Input"],
-Cell[83949, 2265, 964, 23, 216, "Input"],
-Cell[84916, 2290, 1058, 25, 216, "Input"],
-Cell[85977, 2317, 1250, 27, 216, "Input"],
-Cell[87230, 2346, 1019, 24, 216, "Input"],
-Cell[88252, 2372, 1081, 25, 216, "Input"],
-Cell[89336, 2399, 1165, 24, 328, "Input"],
-Cell[90504, 2425, 3836, 95, 553, "Input"],
-Cell[94343, 2522, 2440, 51, 366, "Input"],
-Cell[96786, 2575, 1980, 47, 441, "Input"],
-Cell[98769, 2624, 1985, 47, 441, "Input"],
-Cell[100757, 2673, 1988, 47, 441, "Input"],
-Cell[102748, 2722, 4158, 98, 891, "Input"],
-Cell[106909, 2822, 1783, 38, 403, "Input"]
+Cell[178198, 4613, 286, 8, 76, "Subtitle"],
+Cell[178487, 4623, 2078, 58, 360, "Input"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[108729, 2865, 286, 8, 121, "Subtitle"],
-Cell[109018, 2875, 2078, 58, 240, "Input"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[111133, 2938, 246, 3, 76, "Subtitle"],
-Cell[111382, 2943, 206, 4, 76, "Text",
+Cell[180602, 4686, 246, 3, 76, "Subtitle"],
+Cell[180851, 4691, 206, 4, 46, "Text",
  CellGroupingRules->"NormalGrouping"],
-Cell[111591, 2949, 1046, 16, 69, "Input"]
+Cell[181060, 4697, 1046, 16, 75, "Input"]
 }, Open  ]]
 }, Open  ]]
 }

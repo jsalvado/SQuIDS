@@ -13,6 +13,6 @@ vacuum.o: vacuum.cpp vacuum.h
 main.o: main.cpp vacuum.h
 	$(CXX) -c $(CXXFLAGS) $(CFLAGS) main.cpp 
 $(EXE): main.o vacuum.o
-	$(CXX) $(CXXFLAGS) $(CFLAGS) main.o vacuum.o $(LDFLAGS)  -o $(EXE)
+	$(CXX) $(CXXFLAGS) $(CFLAGS) main.o vacuum.o  $(LDFLAGS) -lgsl -lgslcblas  -o $(EXE)
 clean:
 	rm -f *.o *.fo *.dat $(EXE)

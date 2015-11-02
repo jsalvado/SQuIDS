@@ -24,6 +24,7 @@
 #include "const.h"
 
 #include <cmath>
+#include <iostream>
 #include <complex>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_blas.h>
@@ -263,5 +264,57 @@ std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> Const::GetTran
 
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(U,gsl_matrix_complex_free);
 }
+
+  // void Const::SetTransformationMatrix(const gsl_matrix_complex* m, unsigned int d ){
+  //   if(d!=3){
+  //     throw std::runtime_error( "Const::SetTransformationMatrix( const gsl_matrix_complex* m, unsigned int d ): Only dim 3 is implemented for now.");    
+  //   }
+  //   gsl_complex A,B,C,D,mI;
+
+  //   gsl_complex x=gsl_complex_add(gsl_complex_pow_real (gsl_matrix_complex_get(m,0,0),2.0),gsl_complex_pow_real (gsl_matrix_complex_get(m,1,0),2.0));
+
+  //   mI=gsl_complex_rect(0.0,-1.0);
+  //   A=gsl_complex_mul(mI, 
+  // 		    gsl_complex_log(gsl_complex_mul(gsl_complex_pow_real(gsl_complex_add(gsl_complex_rect(1.0,0.0), 
+  // 											 gsl_complex_add(gsl_complex_mul(gsl_complex_rect(-1.0,0.0), 
+  // 													 gsl_complex_pow_real (gsl_matrix_complex_get(m,0,0),2.0)), 
+  // 													 gsl_complex_mul(gsl_complex_rect(-1.0,0.0), 
+  // 															 gsl_complex_pow_real (gsl_matrix_complex_get(m,1,0),2.0)))), 
+  // 									 -0.5), gsl_matrix_complex_get(m,2,0))));
+      
+  //    B= gsl_complex_mul(mI, 
+  // 			gsl_complex_log(gsl_complex_mul(gsl_complex_rect(-1.0,0.0),
+  // 							gsl_complex_mul(gsl_complex_pow_real(gsl_complex_add(gsl_complex_pow_real (gsl_matrix_complex_get(m,0,0),2.0), 
+  // 													     gsl_complex_pow_real (gsl_matrix_complex_get(m,1,0),2.0)), 
+  // 											     -0.5), 
+  // 						      gsl_complex_add(gsl_matrix_complex_get(m,0,0), 
+  // 								      gsl_complex_mul(mI, gsl_matrix_complex_get(m,1,0)))))));
+      
+  //    C=gsl_complex_rect(std::atan2(GSL_REAL(
+  // 			   gsl_complex_mul(gsl_complex_rect(-1.0,0.0), 
+  // 					   gsl_complex_pow_real(gsl_complex_add(gsl_complex_pow_real (gsl_matrix_complex_get(m,0,0),2.0), 
+  // 										gsl_complex_pow_real (gsl_matrix_complex_get(m,1,0),2.0)),0.5))), 
+  // 				   GSL_REAL(gsl_complex_mul(gsl_complex_rect(-1.0,0.0), 
+  // 					   gsl_complex_pow_real(gsl_complex_add(gsl_complex_rect(1.0,0.0), 
+  // 										gsl_complex_add(gsl_complex_mul(gsl_complex_rect(-1.0,0.0), 
+  // 														gsl_complex_pow_real (gsl_matrix_complex_get(m,0,0),2.0)), 
+  // 												gsl_complex_mul(gsl_complex_rect(-1.0,0.0), gsl_complex_pow_real (gsl_matrix_complex_get(m,1,0),2.0)))), 
+  // 								0.5)))),0.0);
+
+
+  //     D=gsl_complex_mul(mI, 
+  // 			gsl_complex_log(gsl_complex_mul(gsl_complex_rect(-1.0,0.0), 
+  // 							gsl_complex_mul(gsl_complex_pow_real(gsl_complex_add(gsl_complex_pow_real (gsl_matrix_complex_get(m,0,0),2.0), 
+  // 											   gsl_complex_pow_real (gsl_matrix_complex_get(m,1,0),2.0)), 
+  // 									   -0.5), 
+  // 						      gsl_complex_add(gsl_matrix_complex_get(m,0,0), 
+  // 								      gsl_complex_mul(mI, gsl_matrix_complex_get(m,1,0)))))));
+
+  //     std::cout << GSL_REAL(A) << "  " << GSL_IMAG(A) << std::endl;
+  //     std::cout << GSL_REAL(B) << "  " << GSL_IMAG(B) << std::endl;
+  //     std::cout << GSL_REAL(C) << "  " << GSL_IMAG(C) << std::endl;
+  //     std::cout << GSL_REAL(D) << "  " << GSL_IMAG(D) << std::endl;
+
+  // }
 
 } //namespace squids

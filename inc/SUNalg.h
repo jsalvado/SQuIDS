@@ -277,7 +277,9 @@ public:
   ///\param paramsYd Diagonal matrix with the weights (yukawas like)
   ///\param paramsW Mixings for the unitary tranformation W
   void WeightedRotation(const Const& paramV, const SU_vector& Yd, const Const& paramW);  
-
+  void WeightedRotationDagger(const Const& paramV, const SU_vector& Yd, const Const& paramW);  
+  void WeightedRotation(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W);
+  void WeightedRotationDagger(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W);
   ///\brief Gets the dimension of the SU_vector
   unsigned int Dim() const {return dim;}
 
@@ -288,6 +290,10 @@ public:
   /// Exp(-Op)vExp(Op) where Op is represented by v.
   SU_vector UTransform(const SU_vector& v) const;
 
+  ///\brief Applies unitary transformation given by the complex matrix em
+  /// em*v*em^\dagger where Op is represented by v.
+  SU_vector UTransform(gsl_matrix_complex* em) const;
+  SU_vector UDaggerTransform(gsl_matrix_complex* em) const;
   ///\brief Returns the the eigen values and eigen vectors
   /// unitary transformation that diagonalizes the matrix
   /// represented by the SU_vector

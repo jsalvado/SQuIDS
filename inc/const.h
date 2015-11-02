@@ -168,6 +168,7 @@ public :
   
   ///\brief get the complete matrix representing the transformation between bases
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetTransformationMatrix(size_t) const;
+  //  void SetTransformationMatrix(const gsl_matrix_complex* m, unsigned int d );
   
 private:
   // matrices

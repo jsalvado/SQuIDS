@@ -318,9 +318,32 @@ void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_comp
   gsl_matrix_complex* T1 = gsl_matrix_complex_alloc(numneu,numneu);
 
   // doing : U M U^dagger
+  gsl_blas_zgemm(CblasNoTrans,CblasConjTrans,
+                 gsl_complex_rect(1.0,0.0),M,
+		 U1,gsl_complex_rect(0.0,0.0),T1);
+  gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
+                 gsl_complex_rect(1.0,0.0),U2,
+                 T1,gsl_complex_rect(0.0,0.0),M);
+
+  gsl_matrix_complex_free(U1);
+  gsl_matrix_complex_free(U2);
+  gsl_matrix_complex_free(T1);
+}
+
+void gsl_matrix_complex_change_basis_IUCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
+  int numneu = U->size1;
+  gsl_matrix_complex* U1 = gsl_matrix_complex_alloc(numneu,numneu);
+  gsl_matrix_complex* U2 = gsl_matrix_complex_alloc(numneu,numneu);
+  gsl_matrix_complex_memcpy(U1,U);
+  gsl_matrix_complex_memcpy(U2,U);
+
+  gsl_matrix_complex* T1 = gsl_matrix_complex_alloc(numneu,numneu);
+
+  // doing : U^dagger M U
+
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
                  gsl_complex_rect(1.0,0.0),M,
-                 U1,gsl_complex_rect(0.0,0.0),T1);
+		 U1,gsl_complex_rect(0.0,0.0),T1);
   gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
                  gsl_complex_rect(1.0,0.0),U2,
                  T1,gsl_complex_rect(0.0,0.0),M);
@@ -329,6 +352,7 @@ void gsl_matrix_complex_change_basis_UCMU(gsl_matrix_complex* U, gsl_matrix_comp
   gsl_matrix_complex_free(U2);
   gsl_matrix_complex_free(T1);
 }
+
 
 SU_vector SU_vector::UTransform(const SU_vector& v) const{
   auto mv=v.GetGSLMatrix();
@@ -342,6 +366,19 @@ SU_vector SU_vector::UTransform(const SU_vector& v) const{
 
   return SU_vector(mu.get());
 }
+
+SU_vector SU_vector::UTransform(gsl_matrix_complex* em) const{
+  auto mu=(*this).GetGSLMatrix();
+  gsl_matrix_complex_change_basis_UCMU(em, mu.get());
+  return SU_vector(mu.get());
+}
+
+SU_vector SU_vector::UDaggerTransform(gsl_matrix_complex* em) const{
+  auto mu=(*this).GetGSLMatrix();
+  gsl_matrix_complex_change_basis_IUCMU(em, mu.get());
+  return SU_vector(mu.get());
+}
+
 
 std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
 std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>>
@@ -375,11 +412,44 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
 void SU_vector::WeightedRotation(const Const& paramV, const SU_vector& Yd, const Const& paramW){
   SU_vector suv(dim);
   suv=*this;  
-  suv.RotateToB0(paramW);
-  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)));
   suv.RotateToB0(paramV);
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
+  suv.RotateToB1(paramW);  //I have some doubts
   *this=suv;
 }
+
+void SU_vector::WeightedRotationDagger(const Const& paramV, const SU_vector& Yd, const Const& paramW){
+  SU_vector suv(dim);
+  suv=*this;  
+  suv.RotateToB1(paramV);
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
+  suv.RotateToB0(paramW);  //I have some doubts
+  *this=suv;
+}
+
+
+void SU_vector::WeightedRotation(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W){
+  SU_vector suv(dim);
+  suv=*this;  
+  suv=suv.UTransform(V);
+  //std::cout << suv << std::endl;
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
+  //std::cout << suv << std::endl;
+  suv=suv.UDaggerTransform(W);
+  //std::cout << suv << std::endl;
+  *this=suv;
+}
+
+void SU_vector::WeightedRotationDagger(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W){
+  SU_vector suv(dim);
+  suv=*this;  
+  suv=suv.UDaggerTransform(V);
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
+  suv=suv.UTransform(W);
+  *this=suv;
+}
+
+
 void SU_vector::RotateToB0(const Const& param){
   for(unsigned int j=1; j<dim; j++){
     for(unsigned int i=0; i<j; i++)

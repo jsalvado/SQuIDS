@@ -52,6 +52,12 @@ void vacuum::init(unsigned int nbins, unsigned int nflavor, double Eini, double 
   params.SetMixingAngle(0,2,8.55*params.degree);  //theta 1,3
   params.SetMixingAngle(1,2,42.3*params.degree);  //theta 2,3
 
+  gsl_matrix_complex* U=params.GetTransformationMatrix(3).get();  
+  params.SetTransformationMatrix(U,3);
+  std::cout << params.GetMixingAngle(0,1) << std::endl;
+  std::cout << params.GetMixingAngle(1,2) << std::endl;
+  std::cout << params.GetMixingAngle(0,2) << std::endl;
+
   //Construction of the projectors for the mass and flavor bases
   b0_proj.reset(new SU_vector[nsun]);
   b1_proj.reset(new SU_vector[nsun]);
