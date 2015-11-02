@@ -233,7 +233,7 @@ public:
   ///\param m The matrix whose data should be copied
   ///\pre m is hermitian
   ///\pre m->size1 <= 6
-  SU_vector(std::unique_ptr<gsl_matrix_complex, void (*)(gsl_matrix_complex *​​)> &&m):SU_vector(m.get()){};
+  SU_vector(std::unique_ptr<gsl_matrix_complex, void (*)(gsl_matrix_complex *)> &&m):SU_vector(m.get()){};
 
   ///\brief Construct an SU_vector from existing data
   ///
