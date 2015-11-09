@@ -20,20 +20,37 @@
  ******************************************************************************/
 
 {
+	double savrg=suv2.GetAvrgScale();
+	bool avrg=suv2.Avrg();
 	double s,c;
 	(suv_new) . components[0]+=suv2.components[0];
 	(suv_new) . components[4]+=suv2.components[4];
 	(suv_new) . components[8]+=suv2.components[8];
-	s=sin(2.*t*suv1.components[4]);
-	c=cos(2.*t*suv1.components[4]);
+	if(avrg && fabs(t*suv1.components[4]) > savrg){
+	  s=0.0;
+          c=0.0;
+	}else{
+	  s=sin(2.*t*suv1.components[4]);
+	  c=cos(2.*t*suv1.components[4]);
+	}
 	(suv_new) . components[1]+=c*suv2.components[1] + s*suv2.components[3];
 	(suv_new) . components[3]+=-(s*suv2.components[1]) + c*suv2.components[3];
-	s=sin(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
-	c=cos(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
+	if(avrg && fabs(t*(suv1.components[4]+sqrt(3)*suv1.components[8])) > savrg){
+	  s=0.0;
+          c=0.0;
+	}else{
+	  s=sin(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
+	  c=cos(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
+	}	
 	(suv_new) . components[2]+=c*suv2.components[2] + s*suv2.components[6];
 	(suv_new) . components[6]+=-(s*suv2.components[2]) + c*suv2.components[6];
-	s=sin(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
-	c=cos(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
+	if(avrg && fabs(t*(suv1.components[4]-sqrt(3)*suv1.components[8])) > savrg){
+	  c=0;
+	  s=0;
+	}else{	
+	  s=sin(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
+	  c=cos(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
+	}
 	(suv_new) . components[5]+=c*suv2.components[5] - s*suv2.components[7];
 	(suv_new) . components[7]+=s*suv2.components[5] + c*suv2.components[7];
 }

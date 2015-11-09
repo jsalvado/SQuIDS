@@ -124,7 +124,9 @@ private:
   double *components;
   bool isinit; //this vector has been initialized and owns its storage
   bool isinit_d; //this vector has been initialized and does not own its storage
-  
+  bool avrg=false;
+  double avrg_scale=1e5;
+
   ///\brief Internal implementation of optimized assignment
   template<typename WrapperType, typename ProxyType>
   SU_vector& assignProxy(const ProxyType& proxy){
@@ -254,6 +256,12 @@ public:
   ///\brief Get a copy of the SU_vector's components
   std::vector<double> GetComponents() const;
   
+
+  double GetAvrgScale() const{return avrg_scale;}
+  bool Avrg() const {return avrg;}
+  void SetAvrgScale(double d){avrg_scale=d;avrg=true;}
+  void SetAvrg(bool s){avrg=s;}
+
   ///\brief Returns a rotated SU_vector with a rotation in the ij-subspace
   ///\param i subspace index
   ///\param j subspace index
