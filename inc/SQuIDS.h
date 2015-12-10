@@ -312,6 +312,8 @@ class SQuIDS {
   void Set_GammaScalarTerms(bool opt);
   ///\brief Activate other scalar interactions
   void Set_OtherScalarTerms(bool opt);
+  ///\brief If set to false will disable all numerics
+  void Set_AnyNumerics(bool opt);
   ///\brief Set the minimum runge-kutta step
   void Set_h_min(double opt);
   ///\brief Set the maximum runge-kutta step

@@ -316,6 +316,10 @@ void SQuIDS::Set_OtherScalarTerms(bool opt){
   AnyNumerics=(CoherentRhoTerms||NonCoherentRhoTerms||OtherRhoTerms||GammaScalarTerms||OtherScalarTerms);
 }
 
+void SQuIDS::Set_AnyNumerics(bool opt){
+  AnyNumerics=opt;
+}
+
 void SQuIDS::Set_h_min(double opt){
   h_min=opt;
   if(h<h_min){
@@ -364,7 +368,7 @@ void SQuIDS::Derive(double at){
         dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,i,t));
       else
         dstate[ei].rho[i].SetAllComponents(0.);
-      
+
       // Non coherent interaction
       if(NonCoherentRhoTerms)
         dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),state[ei].rho[i]);
