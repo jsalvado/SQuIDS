@@ -308,7 +308,7 @@ SU_vector::GetGSLMatrix() const {
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
 
-void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, gsl_matrix_complex *A, int dimx){
+void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, const gsl_matrix_complex *A, unsigned int dimx){
   int j,k=0;
   gsl_complex temp;
   gsl_matrix* matreal =gsl_matrix_alloc(2*dimx,2*dimx);

@@ -495,6 +495,8 @@ detail::MultiplicationProxy operator*(double x, const SU_vector& v);
 ///\brief Multiplication of an SU_vector by a scalar from the left.
 detail::MultiplicationProxy operator*(double x, SU_vector&& v);
 
+///\brief Gets the exponential of a GSL complex matrix
+void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, const gsl_matrix_complex *A, unsigned int dimx);
 } //namespace squids
 
 #include "detail/ProxyImpl.h"
