@@ -42,6 +42,7 @@
 #include "const.h"
 #include "SU_inc/dimension.h"
 #include "detail/ProxyFwd.h"
+#include "detail/MatrixExp.h"
 
 namespace squids{
 
@@ -500,5 +501,6 @@ void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, const gsl_matrix_com
 } //namespace squids
 
 #include "detail/ProxyImpl.h"
+
 
 #endif

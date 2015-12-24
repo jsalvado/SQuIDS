@@ -242,6 +242,9 @@ $(LIBDIR)/SQuIDS.o: $(SRCDIR)/SQuIDS.cpp $(INCDIR)/SQuIDS.h $(INCDIR)/SUNalg.h $
 $(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
 	@echo Compiling SUNalg.cpp to SUNalg.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@
+$(LIBDIR)/MatrixExp.o: $(SRCDIR)/MatrixExp.cpp $(INCDIR)/SUNalg.h  Makefile
+	@echo Compiling MatrixExp.cpp to MatrixExp.o
+	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/MatrixExp.cpp -o $@
 
 .PHONY: clean install doxygen docs test check
 clean:
