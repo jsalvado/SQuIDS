@@ -263,6 +263,7 @@ void norm_1d_inf(gsl_vector * H,  const gsl_matrix_complex * Z){
 }
 
 void gsl_matrix_elementary_set(gsl_matrix *X, std::vector<unsigned int>& ind){
+  assert(X->size2 <= ind.size());
   for(unsigned int j=0; j<X->size2; j++){
     gsl_vector_view cx = gsl_matrix_column(X,j);
     gsl_vector_set_zero(&cx.vector);
@@ -271,6 +272,7 @@ void gsl_matrix_elementary_set(gsl_matrix *X, std::vector<unsigned int>& ind){
 }
 
 void gsl_matrix_elementary_set(gsl_matrix_complex *X, std::vector<unsigned int>& ind){
+  assert(X->size2 <= ind.size());
   for(unsigned int j=0; j<X->size2; j++){
     gsl_vector_complex_view cx = gsl_matrix_complex_column(X,j);
     gsl_vector_complex_set_zero(&cx.vector);
@@ -363,6 +365,7 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
   double est; unsigned int best_j;
   //std::cout << "start loop of death" << std::endl;
   while (true){
+    //std::cout << "k " << k << std::endl;
     //std::cout << "being iteration" << std::endl;
     //gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1.0,A,X,0.0,Y);
     //std::cout << "A" << std::endl;
@@ -442,9 +445,10 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
     for(unsigned int ii = 0; ii < n; ii++)
       pares[ii] = std::pair<double,unsigned int>{gsl_vector_get(h,ii),ind[ii]};
     std::sort(pares.begin(),pares.end());
+    std::reverse(pares.begin(),pares.end());
     for(unsigned int ii = 0; ii < n; ii++){
-      gsl_vector_set(h,ii,pares[n-ii].first);
-      ind[ii] = pares[n-ii].second;
+      gsl_vector_set(h,ii,pares[ii].first);
+      ind[ii] = pares[ii].second;
     }
 
     /*
@@ -462,26 +466,27 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
       //(5)
       std::vector<unsigned int> unused_enties;
       std::vector<unsigned int> used_enties;
-      for(auto ii : ind){
+      for(unsigned int ii : ind){
         bool ii_is_in_indhist = false;
-        for(unsigned int jj : ind_hist)
+        for(unsigned int jj : ind_hist){
           if(ii==jj)
             ii_is_in_indhist = true;
+        }
         if (ii_is_in_indhist)
           used_enties.push_back(ii);
         else
           unused_enties.push_back(ii);
       }
+      //std::cout << "unused entries size" << std::endl;
+      //std::cout << unused_enties.size() << std::endl;
 
       ind.clear();
-     // std::cout << "unused enties" << std::endl;
       for(auto ii : unused_enties){
         ind.push_back(ii);
-       // std::cout << ii << " " << std::endl;
       }
-      for(auto ii : used_enties)
+      for(auto ii : used_enties){
         ind.push_back(ii);
-      //ind = unused_enties + used_enties;
+      }
     }
 
     /*
@@ -492,6 +497,9 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
     */
 
     gsl_matrix_elementary_set(X,ind);
+    for(unsigned int ii=0; ii < t; ii++){
+      ind_hist.push_back(ind[ii]);
+    }
     k++;
     //std::cout << "X" << std::endl;
     //gsl_matrix_complex_print(X);

@@ -366,7 +366,8 @@ SU_vector SU_vector::UTransform(const SU_vector& v) const{
   gsl_matrix_complex* outmat = gsl_matrix_complex_alloc (size, size);
   gsl_matrix_complex* em = gsl_matrix_complex_alloc (dim, dim);
 
-  gsl_complex_matrix_exponential(em,mv.get(),dim);
+  //gsl_complex_matrix_exponential(em,mv.get(),dim);
+  math_detail::matrix_exponential(em,mv.get());
   gsl_matrix_complex_change_basis_UCMU(em, mu.get());
 
   return SU_vector(mu.get());
