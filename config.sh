@@ -220,7 +220,7 @@ NAME:=SQuIDS
 STAT_PRODUCT:=$(LIBDIR)/lib$(NAME).a
 DYN_PRODUCT:=$(LIBDIR)/lib$(NAME)$(DYN_SUFFIX)
 
-OBJECTS:= $(LIBDIR)/const.o $(LIBDIR)/SUNalg.o $(LIBDIR)/SQuIDS.o
+OBJECTS:= $(LIBDIR)/const.o $(LIBDIR)/SUNalg.o $(LIBDIR)/SQuIDS.o $(LIBDIR)/MatrixExp.o
 
 # Compilation rules
 all: $(STAT_PRODUCT) $(DYN_PRODUCT)
