@@ -291,7 +291,7 @@ public:
 
   ///\brief Applies unitary transformation of the form
   /// Exp(-Op)vExp(Op) where Op is represented by v.
-  SU_vector UTransform(const SU_vector& v) const;
+  SU_vector UTransform(const SU_vector& v, gsl_complex scale = GSL_COMPLEX_ONE) const;
 
   ///\brief Returns the the eigen values and eigen vectors
   /// unitary transformation that diagonalizes the matrix

@@ -359,15 +359,16 @@ void gsl_matrix_complex_change_basis_UCMU(const gsl_matrix_complex* U, gsl_matri
   gsl_matrix_complex_free(T1);
 }
 
-SU_vector SU_vector::UTransform(const SU_vector& v) const{
+SU_vector SU_vector::UTransform(const SU_vector& v, gsl_complex scale) const{
   auto mv=v.GetGSLMatrix();
   auto mu=(*this).GetGSLMatrix();
+  //rescale the matrix
+  gsl_matrix_complex_scale(mv.get(),scale);
 
-  gsl_matrix_complex* outmat = gsl_matrix_complex_alloc (size, size);
+  //declare and calculate matrix exponential
   gsl_matrix_complex* em = gsl_matrix_complex_alloc (dim, dim);
-
-  //gsl_complex_matrix_exponential(em,mv.get(),dim);
   math_detail::matrix_exponential(em,mv.get());
+  // sandwich
   gsl_matrix_complex_change_basis_UCMU(em, mu.get());
 
   return SU_vector(mu.get());
