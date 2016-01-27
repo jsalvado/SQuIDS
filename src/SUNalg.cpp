@@ -24,9 +24,9 @@
 #include "SUNalg.h"
 
 #include <ostream>
-#include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_eigen.h>
 #include <iostream>
 #include <complex>
 #define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )

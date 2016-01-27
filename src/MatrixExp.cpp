@@ -3,6 +3,13 @@
 #include <iostream>
 #include <algorithm>
 
+#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_permutation.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_blas.h>
+
 namespace squids{
 
 namespace math_detail{
@@ -73,6 +80,8 @@ double exact_1_norm(const gsl_matrix_complex *M){
   }
   return norm;
 }
+	
+double one_normest_core(const gsl_matrix_complex *A, unsigned int t = 2, unsigned int itmax = 5);
 
 double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
   assert(M->size1 == M->size2);
@@ -303,7 +312,7 @@ double one_normest_product(const gsl_matrix_complex *A,const gsl_matrix_complex 
 double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned int itmax){
   assert(A->size1 == A->size2);
   if ( itmax < 2 )
-    throw std::runtime_error("At least two iteractions are needed.");
+    throw std::runtime_error("At least two iterations are needed.");
   if (t < 1 )
     throw std::runtime_error("At least one column is needed.");
   if (t >= A->size1)
