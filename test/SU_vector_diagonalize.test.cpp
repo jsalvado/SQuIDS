@@ -4,6 +4,7 @@
 #include <SQuIDs/SUNalg.h>
 #include <chrono>
 #include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_eigen.h>
 
 
 int main(){
