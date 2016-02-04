@@ -518,8 +518,8 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
 
   gsl_rng_free(r);
   gsl_vector_free(h);
-  //gsl_matrix_free(S);
-  //gsl_matrix_free(S_old);
+  gsl_vector_free(mags);
+  gsl_vector_complex_free(w);
   gsl_matrix_complex_free(S);
   gsl_matrix_complex_free(S_old);
   gsl_matrix_complex_free(X);
@@ -547,6 +547,7 @@ int ell(const gsl_matrix_complex * A,unsigned int m){
  }
 
  double est = one_normest_matrix_power(absA,p);
+ gsl_matrix_complex_free(absA);
 
  if (not est)
    return 0;
