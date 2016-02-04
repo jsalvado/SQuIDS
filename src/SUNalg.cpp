@@ -370,6 +370,7 @@ SU_vector SU_vector::UTransform(const SU_vector& v, gsl_complex scale) const{
   math_detail::matrix_exponential(em,mv.get());
   // sandwich
   gsl_matrix_complex_change_basis_UCMU(em, mu.get());
+  gsl_matrix_complex_free(em);
 
   return SU_vector(mu.get());
 }
