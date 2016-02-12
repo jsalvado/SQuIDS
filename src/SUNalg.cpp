@@ -40,6 +40,7 @@ Auxiliary Functions
 -----------------------------------------------------------------------
 */
 
+namespace{
 gsl_complex to_gsl(std::complex<double> c){
   gsl_complex g;
   GSL_SET_COMPLEX(&g,c.real(),c.imag());
@@ -57,6 +58,7 @@ void gsl_matrix_complex_normalize( gsl_matrix_complex * m) {
       gsl_matrix_complex_set(m,j,i,gsl_complex_div_real(gsl_matrix_complex_get(m,j,i),norm));
     }
   }
+}
 }
 
 namespace squids{
@@ -187,8 +189,7 @@ namespace{
 void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
 #include "MatrixToSUSelect.txt"
 }
-// close unnamed namespace
-}
+} // close unnamed namespace
 
 SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
   if(d>SQUIDS_MAX_HILBERT_DIM)
@@ -481,20 +482,6 @@ double SU_vector::operator*(const SU_vector &other) const{
   return SUTrace(*this,other);
 }
 
-detail::MultiplicationProxy SU_vector::operator*(double x) const &{
-  return(detail::MultiplicationProxy{*this,x});
-}
-detail::MultiplicationProxy SU_vector::operator*(double x) &&{
-  return(detail::MultiplicationProxy{*this,x,detail::Arg1Movable});
-}
-
-detail::MultiplicationProxy operator*(double x, const SU_vector& v){
-  return(detail::MultiplicationProxy{v,x});
-}
-detail::MultiplicationProxy operator*(double x, SU_vector&& v){
-  return(detail::MultiplicationProxy{v,x,detail::Arg1Movable});
-}
-
 SU_vector& SU_vector::operator=(const SU_vector& other){
   if(this==&other)
     return(*this);
@@ -575,71 +562,11 @@ SU_vector& SU_vector::operator /=(double x){
   return *this;
 }
 
-detail::AdditionProxy SU_vector::operator+(const SU_vector& other) const &{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
-  return(detail::AdditionProxy{*this,other});
-}
-
-detail::AdditionProxy SU_vector::operator+(SU_vector&& other) const &{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
-  //exploit commutativity and put the movable object first
-  return(detail::AdditionProxy{other,*this,detail::Arg1Movable});
-}
-
-detail::AdditionProxy SU_vector::operator+(const SU_vector& other) &&{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
-  return(detail::AdditionProxy{*this,other,detail::Arg1Movable});
-}
-
-detail::AdditionProxy SU_vector::operator+(SU_vector&& other) &&{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector addition");
-  return(detail::AdditionProxy{*this,other,detail::Arg1Movable|detail::Arg2Movable});
-}
-
-detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) const &{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
-  return(detail::SubtractionProxy{*this,other});
-}
-
-detail::SubtractionProxy SU_vector::operator-(const SU_vector& other) &&{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
-  return(detail::SubtractionProxy{*this,other,detail::Arg1Movable});
-}
-
-detail::NegationProxy SU_vector::operator-() const &{
-  return(detail::NegationProxy{*this});
-}
-
-detail::NegationProxy SU_vector::operator-() &&{
-  return(detail::NegationProxy{*this,detail::Arg1Movable});
-}
-
-detail::EvolutionProxy SU_vector::Evolve(const SU_vector& suv1,double t) const{
-  return(detail::EvolutionProxy{suv1,*this,t});
-}
-
 std::ostream& operator<<(std::ostream& os, const SU_vector& V){
   for(unsigned int i=0; i< V.size-1; i++)
     os << V.components[i] << "  ";
   os << V.components[V.size-1];
   return os;
-}
-
-detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
-  if(suv1.dim!=suv2.dim)
-    throw std::runtime_error("Commutator error, non-matching dimensions ");
-  return(detail::iCommutatorProxy{suv1,suv2});
-}
-detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
-  if(suv1.dim!=suv2.dim)
-    throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
-  return(detail::ACommutatorProxy{suv1,suv2});
 }
 
 } //namespace squids

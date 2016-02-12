@@ -311,14 +311,16 @@ public:
   ///\param time The time over which to do the evolution
   ///\pre op must be diagonal
   ///\returns An object convertible to an SU_vector
-  detail::EvolutionProxy Evolve(const SU_vector& op, double time) const;
+  detail::EvolutionProxy Evolve(const SU_vector& op, double time) const{
+    return(detail::EvolutionProxy{op,*this,time});
+  }
 
 
   //**********
   //operators
   //**********
   ///\brief Equality comparison
-  bool operator ==(const SU_vector&) const;
+  bool operator==(const SU_vector&) const;
 
   ///\brief Scalar product of two SU_vectors.
   ///
@@ -327,17 +329,21 @@ public:
 
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
-  detail::MultiplicationProxy operator*(const double) const &;
+  detail::MultiplicationProxy operator*(const double x) const &{
+    return(detail::MultiplicationProxy{*this,x});
+  }
 
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
-  detail::MultiplicationProxy operator*(const double) &&;
+  detail::MultiplicationProxy operator*(const double x) &&{
+    return(detail::MultiplicationProxy{*this,x,detail::Arg1Movable});
+  }
 
   ///\brief Assignment
   ///
   /// Assignment will fail if this vector uses external storage and the
   /// dimensions of the two vectors differ.
-  SU_vector & operator =(const SU_vector&);
+  SU_vector & operator=(const SU_vector&);
 
   ///\brief Move assignement
   ///
@@ -363,35 +369,64 @@ public:
 
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
-  detail::AdditionProxy operator +(const SU_vector&) const &;
+  detail::AdditionProxy operator+(const SU_vector& other) const &{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+    return(detail::AdditionProxy{*this,other});
+  }
 
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
-  detail::AdditionProxy operator +(SU_vector&&) const &;
+  detail::AdditionProxy operator+(SU_vector&& other) const &{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+    //exploit commutativity and put the movable object first
+    return(detail::AdditionProxy{other,*this,detail::Arg1Movable});
+  }
 
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
-  detail::AdditionProxy operator +(const SU_vector&) &&;
+  detail::AdditionProxy operator+(const SU_vector& other) &&{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+    return(detail::AdditionProxy{*this,other,detail::Arg1Movable});
+  }
 
   ///\brief Addition
   ///\returns An object convertible to an SU_vector
-  detail::AdditionProxy operator +(SU_vector&&) &&;
+  detail::AdditionProxy operator+(SU_vector&& other) &&{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector addition");
+    return(detail::AdditionProxy{*this,other,detail::Arg1Movable|detail::Arg2Movable});
+  }
 
   ///\brief Subtraction
   ///\returns An object convertible to an SU_vector
-  detail::SubtractionProxy operator -(const SU_vector& other) const &;
+  detail::SubtractionProxy operator-(const SU_vector& other) const &{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
+    return(detail::SubtractionProxy{*this,other});
+  }
 
   ///\brief Subtraction
   ///\returns An object convertible to an SU_vector
-  detail::SubtractionProxy operator -(const SU_vector& other) &&;
+  detail::SubtractionProxy operator -(const SU_vector& other) &&{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector subtraction");
+    return(detail::SubtractionProxy{*this,other,detail::Arg1Movable});
+  }
 
   ///\brief Negation
   ///\returns An object convertible to an SU_vector
-  detail::NegationProxy operator -() const &;
+  detail::NegationProxy operator-() const &{
+    return(detail::NegationProxy{*this});
+  }
 
   ///\brief Negation
   ///\returns An object convertible to an SU_vector
-  detail::NegationProxy operator -() &&;
+  detail::NegationProxy operator-() &&{
+    return(detail::NegationProxy{*this,detail::Arg1Movable});
+  }
 
   ///\brief Optimized assignment from the result of an arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
@@ -471,7 +506,9 @@ public:
   friend struct detail::iCommutatorProxy;
   friend struct detail::ACommutatorProxy;
 
+  template<typename>
   friend detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
+  template<typename>
   friend detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
   friend double SUTrace(const SU_vector&,const SU_vector&);
 
@@ -485,22 +522,37 @@ public:
 double SUTrace(const SU_vector&,const SU_vector&);
 
 ///\brief Commutator of two SU_vectors
-detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
+template<typename=void>
+detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
+  if(suv1.dim!=suv2.dim)
+    throw std::runtime_error("Commutator error, non-matching dimensions ");
+  return(detail::iCommutatorProxy{suv1,suv2});
+}
 
 ///\brief Anticommutator of two SU_vectors
-detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
+template<typename=void>
+detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
+  if(suv1.dim!=suv2.dim)
+    throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
+  return(detail::ACommutatorProxy{suv1,suv2});
+}
 
 ///\brief Multiplication of an SU_vector by a scalar from the left.
-detail::MultiplicationProxy operator*(double x, const SU_vector& v);
+template<typename=void>
+detail::MultiplicationProxy operator*(double x, const SU_vector& v){
+  return(detail::MultiplicationProxy{v,x});
+}
 
 ///\brief Multiplication of an SU_vector by a scalar from the left.
-detail::MultiplicationProxy operator*(double x, SU_vector&& v);
+template<typename=void>
+detail::MultiplicationProxy operator*(double x, SU_vector&& v){
+  return(detail::MultiplicationProxy{v,x,detail::Arg1Movable});
+}
 
 ///\brief Gets the exponential of a GSL complex matrix
 void gsl_complex_matrix_exponential(gsl_matrix_complex *eA, const gsl_matrix_complex *A, unsigned int dimx);
 } //namespace squids
 
 #include "detail/ProxyImpl.h"
-
 
 #endif
