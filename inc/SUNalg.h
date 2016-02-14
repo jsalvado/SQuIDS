@@ -129,10 +129,14 @@ private:
   ///\brief Internal implementation of optimized assignment
   template<typename WrapperType, typename ProxyType>
   SU_vector& assignProxy(const ProxyType& proxy){
-    if(components==proxy.suv1.components || components==proxy.suv2.components) //beware of aliasing
+    using traits=detail::operation_traits<ProxyType>;
+    
+    if(!traits::elementwise && !traits::no_alias_target &&
+       (components==proxy.suv1.components ||
+        (traits::vector_arity==2 && components==proxy.suv2.components))) //beware of aliasing
       return(WrapperType::apply(*this,static_cast<SU_vector>(proxy))); //evaluate via a temporary
     //check whether sizes match
-    if(this->size!=proxy.suv1.size){
+    if(!traits::equal_target_size && this->size!=proxy.suv1.size){
       if(isinit_d) //can't resize
         throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
       if(!WrapperType::allowTargetResize)

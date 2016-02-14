@@ -5,6 +5,53 @@
 #define REQUIRE_EVALUATION_PROXY_TPARAM typename= REQUIRE_EVALUATION_PROXY_CORE
 #define REQUIRE_EVALUATION_PROXY_FPARAM REQUIRE_EVALUATION_PROXY_CORE ::type* =nullptr
 
+//Try to figue out how to spell hints to the optimizer
+#ifdef __clang__
+  #if __has_builtin(__builtin_assume)
+    #define SQUIDS_COMPILER_ASSUME(axiom) __builtin_assume(axiom)
+  #else
+    #if __has_builtin(__builtin_unreachable)
+      #define SQUIDS_COMPILER_ASSUME(axiom) if(not (axiom)) __builtin_unreachable()
+    #else
+      #define SQUIDS_COMPILER_ASSUME(axiom) do{}while(0) //not available
+    #endif
+  #endif
+  #if __has_builtin(__builtin_assume_aligned)
+    #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) \
+      ptr=(decltype(ptr))__builtin_assume_aligned(ptr,alignment)
+  #else
+    #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) do{}while(0) //not available
+  #endif
+#endif
+#if defined(__GNUC__) && !defined(__clang__)
+  //All GCC versions otherwise able to compile the code should support this
+  #define SQUIDS_COMPILER_ASSUME(axiom) if(not (axiom)) __builtin_unreachable()
+  #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) \
+    ptr=(decltype(ptr))__builtin_assume_aligned(ptr,alignment)
+#endif
+#ifdef __INTEL_COMPILER
+  //Documentation seems to be lacking on when this became supported or how to tell
+  #define SQUIDS_COMPILER_ASSUME(axiom) __assume(axiom)
+  #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) __assume_aligned(ptr,alignment)
+#endif
+#ifdef _MSC_VER
+  //If any version is able to compile the library, it should already have this
+  #define SQUIDS_COMPILER_ASSUME(axiom) __assume(axiom)
+  #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) \
+    __assume((uintptr_t(ptr) & ((alignment) - 1)) == 0)
+#endif
+//final fallback
+#ifndef SQUIDS_COMPILER_ASSUME
+  #define SQUIDS_COMPILER_ASSUME(axiom) do{}while(0) //not available
+  #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) do{}while(0) //not available
+#endif
+
+#ifndef SQUIDS_USE_VECTOR_EXTENSIONS
+  #if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
+    #define SQUIDS_USE_VECTOR_EXTENSIONS 1
+  #endif
+#endif
+
 namespace squids{
   
 class SU_vector;
@@ -12,6 +59,20 @@ class SU_vector;
 ///This namespace contains implementation details
 ///which most users should not need to use directly
 namespace detail{
+    
+#if SQUIDS_USE_VECTOR_EXTENSIONS
+  //We will try to use SIMD vectors of 4 doubles.
+  //This is both the best size for us (8 is not always applicable), and if size
+  //4 vectors are not available the compiler should legalize them to size 2 or
+  //scalars.
+  #if defined(__GNUC__) || defined(__clang__)
+    typedef double double_vector4 __attribute__((__vector_size__(32)));
+  #endif
+  #if defined(__INTEL_COMPILER)
+    typedef double double_vector4 __attribute__((vector vectorlength(4)));
+  #endif
+#endif //SQUIDS_USE_VECTOR_EXTENSIONS
+  
   ///All of the SU_vector operations in ../SU_inc/ are generated in terms
   ///of incmrement operations (+=), but we would like to be able to fuse
   ///them with plain assignments, increments, and decrements. Rather that
@@ -27,6 +88,11 @@ namespace detail{
       *v=nv;
       return(*v);
     }
+#if SQUIDS_USE_VECTOR_EXTENSIONS
+    void apply4(double_vector4 rhs){
+      *(double_vector4*)v=rhs;
+    }
+#endif //SQUIDS_USE_VECTOR_EXTENSIONS
     operator double() const{ return(*v); }
     template<typename T>
     static T& apply(T& target,const T& source){
@@ -41,6 +107,11 @@ namespace detail{
       *v+=nv;
       return(*v);
     }
+#if SQUIDS_USE_VECTOR_EXTENSIONS
+    void apply4(double_vector4 rhs){
+      *(double_vector4*)v=*(double_vector4*)v + rhs;
+    }
+#endif //SQUIDS_USE_VECTOR_EXTENSIONS
     operator double() const{ return(*v); }
     template<typename T>
     static T& apply(T& target,const T& source){
@@ -55,6 +126,11 @@ namespace detail{
       *v-=nv;
       return(*v);
     }
+#if SQUIDS_USE_VECTOR_EXTENSIONS
+    void apply4(double_vector4 rhs){
+      *(double_vector4*)v=*(double_vector4*)v - rhs;
+    }
+#endif //SQUIDS_USE_VECTOR_EXTENSIONS
     operator double() const{ return(*v); }
     template<typename T>
     static T& apply(T& target,const T& source){
@@ -68,9 +144,8 @@ namespace detail{
   struct vector_wrapper{
     const unsigned int& dim;
     struct component_wrapper{
-    private:
       double* components;
-    public:
+      
       component_wrapper(double* components):components(components){}
       Wrapper operator[](unsigned int i){
         return(Wrapper{components+i});
@@ -78,6 +153,9 @@ namespace detail{
     } components;
     vector_wrapper(const unsigned int& dim, double* components):
     dim(dim),components{components}{}
+#if SQUIDS_USE_VECTOR_EXTENSIONS
+    void apply4(double_vector4 rhs){ Wrapper{components.components}.apply4(rhs); };
+#endif //SQUIDS_USE_VECTOR_EXTENSIONS
   };
   
   ///Constant used to indicate that the first argument of a proxy was an
@@ -95,6 +173,18 @@ namespace detail{
     ///calculation of the result elements may be reordered, or the inputs may
     ///be overwritten
     constexpr static bool elementwise=false;
+    ///The number of SU_vector operands.
+    ///If 1, suv2 is expected to be ignored
+    constexpr static unsigned int vector_arity=2;
+    ///The operands of this operation are guaranteed not to alias the location
+    ///where the results will be stored
+    constexpr static bool no_alias_target=false;
+    ///The operands of this operation are guaranteed not to have the same size
+    ///as the location where the results will be stored
+    constexpr static bool equal_target_size=false;
+    ///Both the operands of this operation the location where the results will
+    ///be stored are guaranteed to have optimally aligned storage.
+    constexpr static bool aligned_storgae=false;
   };
   
   ///The base class for objects representing arithmetic operations on SU_vectors.
@@ -109,7 +199,7 @@ namespace detail{
     int flags;
     
     ///perform the stored operation, storing the results in target
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const{
       static_cast<const Op*>(this)->compute(target);
     }
@@ -161,7 +251,7 @@ namespace detail{
     EvolutionProxy(const SU_vector& suv1,const SU_vector& suv2,double t):
     EvaluationProxy<EvolutionProxy>{suv1,suv2,0},t(t){}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const;
   };
   
@@ -171,8 +261,17 @@ namespace detail{
     AdditionProxy(const SU_vector& suv1,const SU_vector& suv2,int flags=0):
     EvaluationProxy<AdditionProxy>{suv1,suv2,flags}{}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const;
+  };
+  
+  template<>
+  struct operation_traits<AdditionProxy>{
+    constexpr static bool elementwise=true;
+    constexpr static unsigned int vector_arity=2;
+    constexpr static bool no_alias_target=false;
+    constexpr static bool equal_target_size=false;
+    constexpr static bool aligned_storgae=false;
   };
   
   ///The result of subtracting two SU_vectors
@@ -181,8 +280,17 @@ namespace detail{
     SubtractionProxy(const SU_vector& suv1,const SU_vector& suv2,int flags=0):
     EvaluationProxy<SubtractionProxy>{suv1,suv2,flags}{}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const;
+  };
+  
+  template<>
+  struct operation_traits<SubtractionProxy>{
+    constexpr static bool elementwise=true;
+    constexpr static unsigned int vector_arity=2;
+    constexpr static bool no_alias_target=false;
+    constexpr static bool equal_target_size=false;
+    constexpr static bool aligned_storgae=false;
   };
   
   ///The result of negating an SU_vector
@@ -191,8 +299,17 @@ namespace detail{
     NegationProxy(const SU_vector& suv, int flags=0):
     EvaluationProxy<NegationProxy>{suv,suv,flags}{}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const;
+  };
+  
+  template<>
+  struct operation_traits<NegationProxy>{
+    constexpr static bool elementwise=true;
+    constexpr static unsigned int vector_arity=1;
+    constexpr static bool no_alias_target=false;
+    constexpr static bool equal_target_size=false;
+    constexpr static bool aligned_storgae=false;
   };
   
   ///The result of multiplying an SU_vector by a scalar
@@ -203,8 +320,17 @@ namespace detail{
     MultiplicationProxy(const SU_vector& suv1,double a,int flags=0):
     EvaluationProxy<MultiplicationProxy>{suv1,suv1,flags},a(a){}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const;
+  };
+  
+  template<>
+  struct operation_traits<MultiplicationProxy>{
+    constexpr static bool elementwise=true;
+    constexpr static unsigned int vector_arity=1;
+    constexpr static bool no_alias_target=false;
+    constexpr static bool equal_target_size=false;
+    constexpr static bool aligned_storgae=false;
   };
   
   ///The result of i times the commutator of two SU_vectors
@@ -213,7 +339,7 @@ namespace detail{
     iCommutatorProxy(const SU_vector& suv1,const SU_vector& suv2):
     EvaluationProxy<iCommutatorProxy>{suv1,suv2,0}{}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW suv_new) const;
   };
   
@@ -223,8 +349,39 @@ namespace detail{
     ACommutatorProxy(const SU_vector& suv1,const SU_vector& suv2):
     EvaluationProxy<ACommutatorProxy>{suv1,suv2,0}{}
     
-    template<typename VW>
+    template<typename VW, bool Aligned=false>
     void compute(VW target) const;
+  };
+  
+  constexpr static unsigned int NoAlias=1;
+  constexpr static unsigned int EqualSizes=2;
+  constexpr static unsigned int AlignedStorage=4;
+  
+  template<unsigned int Flags, typename WrappedType>
+  struct GuaranteeWrapper : public WrappedType{
+    constexpr static unsigned int Guarantees=Flags;
+    
+    GuaranteeWrapper(WrappedType op):WrappedType(op){}
+    
+    template<typename VW>
+    void compute(VW target) const{
+      WrappedType::template compute<VW,bool(Guarantees&AlignedStorage)>(target);
+    }
+  };
+  
+  template<unsigned int Flags, typename WrappedType>
+  GuaranteeWrapper<Flags,WrappedType> guarantee(WrappedType w){
+    return(GuaranteeWrapper<Flags,WrappedType>{w});
+  }
+  
+  template<unsigned int Flags, typename WrappedType>
+  struct operation_traits<GuaranteeWrapper<Flags,WrappedType>>{
+    using base_traits=operation_traits<WrappedType>;
+    constexpr static bool elementwise=base_traits::elementwise;
+    constexpr static unsigned int vector_arity=base_traits::vector_arity;
+    constexpr static bool no_alias_target=Flags&NoAlias;
+    constexpr static bool equal_target_size=Flags&EqualSizes;
+    constexpr static bool aligned_storgae=Flags&AlignedStorage;
   };
 }
   

@@ -84,7 +84,7 @@ void make_dest_external(unsigned int dim, Callable test){
 	std::cout << "Destination memory has not moved: " << (dest[0]==buffer[0]) << '\n';
 }
 
-//aliasing requires allocation!
+//aliasing no longer requires allocation for elementwise operations
 void test_fused_assign_add_aliased_vectors(unsigned int dim){
 	const double d1=5.28, d2=8.06, d3=1.83, sum1=d1+d2, sum2=d2+d3;
 	SU_vector v1(dim), v2(dim), v3(dim);
@@ -92,7 +92,7 @@ void test_fused_assign_add_aliased_vectors(unsigned int dim){
 	v1.SetAllComponents(d1);
 	v2.SetAllComponents(d2);
 	v3.SetAllComponents(d3);
-	try{
+	try{ //first operand aliases target
 		alloc_counting::reset_allocation_counters();
 		v1=v1+v2;
 		auto allocated=alloc_counting::mem_allocated;
@@ -101,7 +101,7 @@ void test_fused_assign_add_aliased_vectors(unsigned int dim){
 	} catch(std::runtime_error& err){
 		std::cout << "Exception: " << err.what() << '\n';
 	}
-	try{
+	try{ //second operand aliases target
 		alloc_counting::reset_allocation_counters();
 		v3=v2+v3;
 		auto allocated=alloc_counting::mem_allocated;
