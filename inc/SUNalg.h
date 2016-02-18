@@ -510,9 +510,7 @@ public:
   friend struct detail::iCommutatorProxy;
   friend struct detail::ACommutatorProxy;
 
-  template<typename>
   friend detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
-  template<typename>
   friend detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
   friend double SUTrace(const SU_vector&,const SU_vector&);
 
@@ -526,20 +524,10 @@ public:
 double SUTrace(const SU_vector&,const SU_vector&);
 
 ///\brief Commutator of two SU_vectors
-template<typename=void>
-detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
-  if(suv1.dim!=suv2.dim)
-    throw std::runtime_error("Commutator error, non-matching dimensions ");
-  return(detail::iCommutatorProxy{suv1,suv2});
-}
+detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2);
 
 ///\brief Anticommutator of two SU_vectors
-template<typename=void>
-detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
-  if(suv1.dim!=suv2.dim)
-    throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
-  return(detail::ACommutatorProxy{suv1,suv2});
-}
+detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2);
 
 ///\brief Multiplication of an SU_vector by a scalar from the left.
 template<typename=void>

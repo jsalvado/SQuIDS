@@ -568,5 +568,17 @@ std::ostream& operator<<(std::ostream& os, const SU_vector& V){
   os << V.components[V.size-1];
   return os;
 }
+	
+detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
+	if(suv1.dim!=suv2.dim)
+		throw std::runtime_error("Commutator error, non-matching dimensions ");
+	return(detail::iCommutatorProxy{suv1,suv2});
+}
+
+detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
+	if(suv1.dim!=suv2.dim)
+		throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
+	return(detail::ACommutatorProxy{suv1,suv2});
+}
 
 } //namespace squids
