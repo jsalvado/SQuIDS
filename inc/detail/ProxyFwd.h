@@ -353,10 +353,22 @@ namespace detail{
     void compute(VW target) const;
   };
   
+  /// Used to indicate that no SU_vector operand on the RHS of an assignment is
+  /// the same as or shares storage with the LHS.
   constexpr static unsigned int NoAlias=1;
+  /// Used to indicate that the SU_vector on the LHS of an assignment is known to
+  /// already have the correct dimensions to match whatever is on the RHS.
   constexpr static unsigned int EqualSizes=2;
+  /// Used to indicate that all SU_vector operands participating in an operation
+  /// have ideally aligned storage. For this purpose storage is considered
+  /// ideally aligned if either: the SU_vector has dimension 1, the SU_vector
+  /// has an even number of components, and its first component is 32 byte
+  /// aligned, or the SU_vector has an odd number of compoennts, larger than
+  /// one, and the second component (index 1) is 32 byte aligned.
   constexpr static unsigned int AlignedStorage=4;
   
+  /// Used to apply guarantees about operands or the destination storage of an
+  /// EvaluationProxy.
   template<unsigned int Flags, typename WrappedType>
   struct GuaranteeWrapper : public WrappedType{
     constexpr static unsigned int Guarantees=Flags;
@@ -369,6 +381,20 @@ namespace detail{
     }
   };
   
+  ///\brief Convenience function for applying guarantees about operands or the
+  /// destination storage to an EvaluationProxy.
+  ///
+  /// Typical use:
+  ///
+  ///     target = guarantee</*bitwise disjunction of guarantee flags*/>
+  ///                       (Op(operand_1, operand_2));
+  ///
+  /// where target, operand_1, and operand_2 are SU_vectors, and Op is an
+  /// operation (possibly an operator) returning and EvaluationProxy.
+  ///
+  /// Valid guarantee flags are NoAlias, EqualSizes, and AlignedStorage.
+  /// Incorrect application of guarantees (guarantee which do not actually hold)
+  /// must be considered to cause undefined behavior.
   template<unsigned int Flags, typename WrappedType>
   GuaranteeWrapper<Flags,WrappedType> guarantee(WrappedType w){
     return(GuaranteeWrapper<Flags,WrappedType>{w});
