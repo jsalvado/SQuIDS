@@ -20,5 +20,6 @@
  *      Christopher Weaver (University of Wisconsin Madison)                   * 
  *         cweaver@icecube.wisc.edu                                            *
  ******************************************************************************/
-SX[0]=sin(2*t*suv1.components[3]);
-CX[0]=cos(2*t*suv1.components[3]);
+term=2*t*suv1.components[3];
+SX[0]=sin(term);
+CX[0]=cos(term);

@@ -20,9 +20,12 @@
  *      Christopher Weaver (University of Wisconsin Madison)                   * 
  *         cweaver@icecube.wisc.edu                                            *
  ******************************************************************************/
-SX[0]=sin(2*t*suv1.components[4]);
-SX[1]=sin(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
-SX[2]=sin(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
-CX[0]=cos(2*t*suv1.components[4]);
-CX[1]=cos(t*(suv1.components[4] + sqrt(3)*suv1.components[8]));
-CX[2]=cos(t*(suv1.components[4] - sqrt(3)*suv1.components[8]));
+term=2*t*suv1.components[4];
+SX[0]=sin(term);
+CX[0]=cos(term);
+term=t*(suv1.components[4] + sqrt(3)*suv1.components[8]);
+SX[1]=sin(term);
+CX[1]=cos(term);
+term=t*(suv1.components[4] - sqrt(3)*suv1.components[8]);
+SX[2]=sin(term);
+CX[2]=cos(term);
