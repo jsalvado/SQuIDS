@@ -20,12 +20,12 @@
  *      Christopher Weaver (University of Wisconsin Madison)                   * 
  *         cweaver@icecube.wisc.edu                                            *
  ******************************************************************************/
-suv3.components[0]=suv2.components[0];
-suv3.components[1]=CX[0]*suv2.components[1] + suv2.components[3]*SX[0];
-suv3.components[2]=CX[1]*suv2.components[2] + suv2.components[6]*SX[1];
-suv3.components[3]=CX[0]*suv2.components[3] - suv2.components[1]*SX[0];
-suv3.components[4]=suv2.components[4];
-suv3.components[5]=CX[2]*suv2.components[5] - suv2.components[7]*SX[2];
-suv3.components[6]=CX[1]*suv2.components[6] - suv2.components[2]*SX[1];
-suv3.components[7]=CX[2]*suv2.components[7] + suv2.components[5]*SX[2];
-suv3.components[8]=suv2.components[8];
+suv3.components[0]+=suv2.components[0];
+suv3.components[1]+=CX[0]*suv2.components[1] + suv2.components[3]*SX[0];
+suv3.components[2]+=CX[1]*suv2.components[2] + suv2.components[6]*SX[1];
+suv3.components[3]+=CX[0]*suv2.components[3] - suv2.components[1]*SX[0];
+suv3.components[4]+=suv2.components[4];
+suv3.components[5]+=CX[2]*suv2.components[5] - suv2.components[7]*SX[2];
+suv3.components[6]+=CX[1]*suv2.components[6] - suv2.components[2]*SX[1];
+suv3.components[7]+=CX[2]*suv2.components[7] + suv2.components[5]*SX[2];
+suv3.components[8]+=suv2.components[8];
