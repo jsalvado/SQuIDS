@@ -255,6 +255,27 @@ namespace detail{
     void compute(VW target) const;
   };
   
+  ///The result of a time evolution operation
+  struct FastEvolutionProxy : public EvaluationProxy<FastEvolutionProxy>{
+    const double* coefficients;
+    
+    ///evolve suv1 according to the operator suv2 over time period t
+    FastEvolutionProxy(const SU_vector& suv1,const double* c):
+    EvaluationProxy<FastEvolutionProxy>{suv1,suv1,0},coefficients(c){}
+    
+    template<typename VW, bool Aligned=false>
+    void compute(VW target) const;
+  };
+  
+  template<>
+  struct operation_traits<FastEvolutionProxy>{
+    constexpr static bool elementwise=false;
+    constexpr static unsigned int vector_arity=1;
+    constexpr static bool no_alias_target=false;
+    constexpr static bool equal_target_size=false;
+    constexpr static bool aligned_storgae=false;
+  };
+  
   ///The result of adding two SU_vectors
   struct AdditionProxy : public EvaluationProxy<AdditionProxy>{
     ///The sum of suv1 and suv2

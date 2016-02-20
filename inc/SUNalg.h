@@ -318,6 +318,41 @@ public:
   detail::EvolutionProxy Evolve(const SU_vector& op, double time) const{
     return(detail::EvolutionProxy{op,*this,time});
   }
+  
+  ///\brief Get the buffer size required by PrepareEvolve
+  size_t GetEvolveBufferSize() const{
+    return(dim*(dim-1));
+  }
+  
+  ///\brief Precompute operator dependent elements of an evolution
+  ///
+  /// Much of the Calculation needed by Evolve depends only on the evaolution
+  /// operator and the time. If several SU_vectors will be evolved over the same
+  /// time by the same operator, this work can be shared by precomputing these
+  /// parts of the calculation into a buffer, which can then be passed several
+  /// times to Evolve.
+  /// Note that PrepareEvolve should be called on the evolution operator, and
+  /// then Evolve should be called on the state(s) being evolved.
+  ///\param buffer The buffer where the intermediate results will be stored.
+  ///              Must be at least as large as the result of GetEvolveBufferSize
+  ///\param t The time over which the evolution will be performed.
+  void PrepareEvolve(double* buffer, double t) const{
+    auto& suv1=*this;
+    size_t offset=GetEvolveBufferSize()/2;
+    double* CX=buffer;
+    double* SX=buffer+offset;
+    double term;
+#include "SU_inc/PreEvolutionSelect.txt"
+  }
+  
+  ///\brief Compute the time evolution of the SU_vector
+  ///
+  ///\param buffer A buffer which has been filled by a previous call to
+  ///              PrepareEvolve on the evaolution operator.
+  ///\returns An object convertible to an SU_vector
+  detail::FastEvolutionProxy Evolve(const double* buffer) const{
+    return(detail::FastEvolutionProxy{*this,buffer});
+  }
 
 
   //**********
@@ -503,6 +538,7 @@ public:
   template<typename Op>
   friend struct detail::EvaluationProxy;
   friend struct detail::EvolutionProxy;
+  friend struct detail::FastEvolutionProxy;
   friend struct detail::AdditionProxy;
   friend struct detail::SubtractionProxy;
   friend struct detail::NegationProxy;

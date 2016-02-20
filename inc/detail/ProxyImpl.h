@@ -33,6 +33,15 @@ namespace detail{
   }
   
   template<typename VW, bool Aligned>
+  void FastEvolutionProxy::compute(VW target) const{
+    auto& suv3=target; //alias for the name expected by generated code
+    size_t offset=suv1.GetEvolveBufferSize()/2;
+    const double* CX=coefficients;
+    const double* SX=coefficients+offset;
+#include "../SU_inc/FastEvolutionSelect.txt"
+  }
+  
+  template<typename VW, bool Aligned>
   void AdditionProxy::compute(VW target) const{
     for(unsigned int i=0; i<target.dim*target.dim; i++)
       target.components[i] += suv1.components[i] + suv2.components[i];
