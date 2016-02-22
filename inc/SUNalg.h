@@ -43,6 +43,7 @@
 #include "SU_inc/dimension.h"
 #include "detail/ProxyFwd.h"
 #include "detail/MatrixExp.h"
+#include "detail/Cache.h"
 
 namespace squids{
 
@@ -118,11 +119,19 @@ namespace squids{
 ///
 ///     v1 = (s1*s2)*v2;
 ///
+/// Concerning alignment: Some SU_vector operations are more efficient when the
+/// destination and operands' underlying storage has a particular alignment.
+/// Specifically, for best performance even dimensioned SU_vectors should be 32
+/// byte aligned, while odd dimensioned SU_vectors should have the second
+/// component 32 byte aligned. SU_vector::make_aligned will automatically create
+/// SU_vectors satisfying these criteria, as will the other static factory
+/// functions.
 class SU_vector{
 private:
   unsigned int dim;
   unsigned int size; //dim^2
-  double *components;
+  double* components;
+  unsigned char ptr_offset; //offset between components and the beginning of the allocation which must be released
   bool isinit; //this vector has been initialized and owns its storage
   bool isinit_d; //this vector has been initialized and does not own its storage
 
@@ -143,11 +152,12 @@ private:
         throw std::runtime_error("Non-matching dimensions in SU_vector assignment");
       //can resize
       if(isinit)
-        delete[] components;
+        delete[] (components-ptr_offset);
       dim=proxy.suv1.dim;
       size=proxy.suv1.size;
       if(proxy.mayStealArg1()){ //if the operation is component-wise and suv1 is an rvalue
         components=proxy.suv1.components; //take suv1's backing storage
+        ptr_offset=proxy.suv1.ptr_offset;
         isinit=proxy.suv1.isinit;
         isinit_d=proxy.suv1.isinit_d;
         if(isinit)
@@ -155,6 +165,7 @@ private:
       }
       else{
         components=new double[size];
+        ptr_offset=0;
         isinit=true;
       }
     }
@@ -162,6 +173,15 @@ private:
     proxy.compute(detail::vector_wrapper<WrapperType>{dim,components});
     return(*this);
   }
+  
+  struct mem_cache_entry{
+    double* storage;
+    unsigned char offset;
+    mem_cache_entry():storage(nullptr){}
+    mem_cache_entry(double* p, uint8_t o):storage(p),offset(o){}
+  };
+  ///A cache of previously used backing storage blocks
+  static detail::cache<mem_cache_entry,32> storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
 
 public:
   //***************
@@ -218,6 +238,7 @@ public:
   dim(proxy.suv1.dim),
   size(proxy.suv1.size),
   components(proxy.mayStealArg1() ? proxy.suv1.components : new double[size]),
+  ptr_offset(proxy.mayStealArg1() ? proxy.suv1.ptr_offset : 0),
   isinit(proxy.mayStealArg1() ? proxy.suv1.isinit : true),
   isinit_d(proxy.mayStealArg1() ? proxy.suv1.isinit_d : false)
   {
@@ -248,10 +269,19 @@ public:
   ///\pre data has a square size (4, 9, 16, 25, or 36)
   SU_vector(const std::vector<double>& data);
 
+  ///\brief Constructs a vector with a particular dimension, with optimal
+  ///       alignment.
+  static SU_vector make_aligned(unsigned int dim, bool zero_fill=true);
+  
   // destructor
   ~SU_vector(){
-    if(isinit)
-      delete[] components;
+    if(isinit){
+      bool cached=false;
+      if(((intptr_t)components)%32 == 0) //only try to save aligned storage
+        cached=storage_cache[dim].insert(mem_cache_entry{components,ptr_offset});
+      if(!cached)
+        delete[] (components-ptr_offset);
+    }
   }
 
   //*************
@@ -503,18 +533,21 @@ public:
   ///\pre i < dimension^2
   const double& operator[](unsigned int i) const {assert(i < size); return components[i];}
 
-  ///\brief Construct a projection operator
+  ///\brief Construct a projection operator.
+  /// The resulting vector will have optimal alignement.
   ///
   ///\param d The dimension of the operator
   ///\param i The dimension selected by the projection
   static SU_vector Projector(unsigned int d, unsigned int i);
 
-  ///\brief Construct an identity operator
+  ///\brief Construct an identity operator.
+  /// The resulting vector will have optimal alignement.
   ///
   ///\param d The dimension of the operator
   static SU_vector Identity(unsigned int d);
 
-  ///\brief Constructs a projector to the upper subspace of dimension i
+  ///\brief Constructs a projector to the upper subspace of dimension i.
+  /// The resulting vector will have optimal alignement.
   ///
   ///\param d The dimension of the operator
   ///\param i The subspace dimension
@@ -522,7 +555,8 @@ public:
   /// \f$ NegProj = diag(1,...,1,0,...,0) \f$ where the last one is at the \f$i-1\f$ entry.
   static SU_vector PosProjector(unsigned int d, unsigned int i);
 
-  ///\brief Constructs a projector to the lower subspace of dimension i
+  ///\brief Constructs a projector to the lower subspace of dimension i.
+  /// The resulting vector will have optimal alignement.
   ///
   ///\param d The dimension of the operator
   ///\param i The subspace dimension
@@ -531,6 +565,7 @@ public:
   static SU_vector NegProjector(unsigned int d, unsigned int i);
 
   ///\brief Creates a SU_vector corresponding to the \f$i\f$SU_N basis generator.
+  /// The resulting vector will have optimal alignement.
   //
   // Tts represented by \f$ v = (0,...,1,...,0)\f$ where 1 is in the \f$i\f$ component.
   static SU_vector Generator(unsigned int d, unsigned int i);

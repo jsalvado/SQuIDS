@@ -68,6 +68,7 @@ SU_vector implementation
 -----------------------------------------------------------------------
 */
 
+detail::cache<SU_vector::mem_cache_entry,32> SU_vector::storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
 
 /*
 -----------------------------------------------------------------------
@@ -87,6 +88,7 @@ SU_vector::SU_vector(const SU_vector& V):
 dim(V.dim),
 size(V.size),
 components(new double[size]),
+ptr_offset(0),
 isinit(true),
 isinit_d(false){
   std::copy(V.components,V.components+size,components);
@@ -96,6 +98,7 @@ SU_vector::SU_vector(SU_vector&& V):
 dim(V.dim),
 size(V.size),
 components(V.components),
+ptr_offset(V.ptr_offset),
 isinit(V.isinit),
 isinit_d(V.isinit_d){
   if(V.isinit){
@@ -121,6 +124,7 @@ SU_vector::SU_vector(unsigned int d):
 dim(d),
 size(dim*dim),
 components(new double[size]),
+ptr_offset(0),
 isinit(true),
 isinit_d(false)
 {
@@ -133,6 +137,7 @@ SU_vector::SU_vector(const std::vector<double>& comp):
 dim(sqrt(comp.size())),
 size(comp.size()),
 components(new double[size]),
+ptr_offset(0),
 isinit(true),
 isinit_d(false)
 {
@@ -147,6 +152,7 @@ SU_vector::SU_vector(const gsl_matrix_complex* m):
 dim(m->size1),
 size(dim*dim),
 components(new double[size]),
+ptr_offset(0),
 isinit(true),
 isinit_d(false)
 {
@@ -169,6 +175,40 @@ isinit_d(false)
 
 #include "MatrixToSUSelect.txt"
 };
+  
+SU_vector SU_vector::make_aligned(unsigned int dim, bool zero_fill){
+  size_t size=dim*dim;
+  size_t before=size%2;
+  size_t maxHeadroom=(32/sizeof(double))-1+before;
+  double* storage;
+  size_t offset;
+  //std::pair<double*,unsigned char> cache_result=storage_cache[dim].get();
+  mem_cache_entry cache_result=storage_cache[dim].get();
+  //std::cout << "got ptr " << cache_result.first << " from cache" << std::endl;
+  if(cache_result.storage){
+    storage=cache_result.storage;
+    offset=cache_result.offset;
+  }
+  else{
+    storage=new double[size+maxHeadroom];
+    offset=(intptr_t)(storage+before)%32;
+    if(offset){
+      offset=(32-offset)/sizeof(double);
+      storage+=offset;
+    }
+  }
+  
+  SU_vector v;
+  v.dim=dim;
+  v.size=size;
+  v.components=storage;
+  v.ptr_offset=offset;
+  v.isinit=true;
+  v.isinit_d=false;
+  if(zero_fill)
+    std::fill(v.components,v.components+v.size,0.0);
+  return(v);
+}
 
 namespace{
   struct sq_array_2D{
@@ -205,7 +245,7 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
     }
   }
 
-  SU_vector v(d);
+  SU_vector v=make_aligned(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
 }
@@ -222,7 +262,7 @@ SU_vector SU_vector::Identity(unsigned int d){
     }
   }
 
-  SU_vector v(d);
+  SU_vector v=make_aligned(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
 }
@@ -244,7 +284,7 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
     }
   }
 
-  SU_vector v(d);
+  SU_vector v=make_aligned(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
 }
@@ -266,7 +306,7 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
     }
   }
 
-  SU_vector v(d);
+  SU_vector v=make_aligned(d);
   ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
   return(v);
 }
@@ -276,7 +316,7 @@ SU_vector SU_vector::Generator(unsigned int d, unsigned int ii){
     throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d*d)
     throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
-  SU_vector v(d);
+  SU_vector v=make_aligned(d);
   v.components[ii] = 1.0;
   return(v);
 }
@@ -490,10 +530,11 @@ SU_vector& SU_vector::operator=(const SU_vector& other){
       throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
     //can resize
     if(isinit)
-      delete[] components;
+      delete[] (components-ptr_offset);
     dim=other.dim;
     size=other.size;
     components=new double[size];
+    ptr_offset=0;
     isinit=true;
   }
 
@@ -508,6 +549,7 @@ SU_vector& SU_vector::operator=(SU_vector&& other){
     std::swap(dim,other.dim);
     std::swap(size,other.size);
     std::swap(components,other.components);
+    std::swap(ptr_offset,other.ptr_offset);
     std::swap(isinit,other.isinit);
     std::swap(isinit_d,other.isinit_d);
   }
@@ -522,6 +564,7 @@ SU_vector& SU_vector::operator=(SU_vector&& other){
     dim = other.dim;
     size = other.size;
     components = other.components;
+    ptr_offset = other.ptr_offset;
     isinit = other.isinit;
     isinit_d = other.isinit_d;
     if(other.isinit){ //other must relinquish ownership
