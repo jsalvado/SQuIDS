@@ -182,9 +182,7 @@ SU_vector SU_vector::make_aligned(unsigned int dim, bool zero_fill){
   size_t maxHeadroom=(32/sizeof(double))-1+before;
   double* storage;
   size_t offset;
-  //std::pair<double*,unsigned char> cache_result=storage_cache[dim].get();
   mem_cache_entry cache_result=storage_cache[dim].get();
-  //std::cout << "got ptr " << cache_result.first << " from cache" << std::endl;
   if(cache_result.storage){
     storage=cache_result.storage;
     offset=cache_result.offset;
@@ -464,7 +462,7 @@ SU_vector SU_vector::Rotate(const gsl_matrix_complex* U) const{
 
 SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double del) const{
   const SU_vector& suv=*this;
-  SU_vector suv_rot(dim);
+  SU_vector suv_rot=make_aligned(dim);
   unsigned int i=ii+1, j=jj+1; //convert to 1 based indices to interface with Mathematica generated code
 
   assert(i<j && "Components selected for rotation must be in ascending order");
@@ -530,7 +528,7 @@ SU_vector& SU_vector::operator=(const SU_vector& other){
       throw std::runtime_error("Non-matching dimensions in assignment to SU_vector with external storage");
     //can resize
     if(isinit)
-      delete[] (components-ptr_offset);
+      deallocate_mem();
     dim=other.dim;
     size=other.size;
     components=new double[size];

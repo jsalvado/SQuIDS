@@ -152,7 +152,7 @@ private:
         throw std::runtime_error("Non-matching dimensions in SU_vector assignment");
       //can resize
       if(isinit)
-        delete[] (components-ptr_offset);
+        deallocate_mem();
       dim=proxy.suv1.dim;
       size=proxy.suv1.size;
       if(proxy.mayStealArg1()){ //if the operation is component-wise and suv1 is an rvalue
@@ -182,6 +182,16 @@ private:
   };
   ///A cache of previously used backing storage blocks
   static detail::cache<mem_cache_entry,32> storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
+  
+  ///A helper function which tries to put a memory block into the cache rather
+  ///that deleting it. 
+  void deallocate_mem(){
+    bool cached=false;
+    if(((intptr_t)components+dim%2)%32 == 0) //only try to save aligned storage
+      cached=storage_cache[dim].insert(mem_cache_entry{components,ptr_offset});
+    if(!cached)
+      delete[] (components-ptr_offset);
+  }
 
 public:
   //***************
@@ -275,13 +285,8 @@ public:
   
   // destructor
   ~SU_vector(){
-    if(isinit){
-      bool cached=false;
-      if(((intptr_t)components)%32 == 0) //only try to save aligned storage
-        cached=storage_cache[dim].insert(mem_cache_entry{components,ptr_offset});
-      if(!cached)
-        delete[] (components-ptr_offset);
-    }
+    if(isinit)
+      deallocate_mem();
   }
 
   //*************
@@ -520,7 +525,7 @@ public:
   ///\brief Set the external storage used by this SU_vector
   void SetBackingStore(double* storage){
     if(isinit)
-      delete[] components;
+      deallocate_mem();
     components = storage;
     isinit=false;
     isinit_d=true;
