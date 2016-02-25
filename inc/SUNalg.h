@@ -328,9 +328,38 @@ public:
   ///\brief Gets the number of components in the vector
   unsigned int Size() const { return size; }
 
+  ///\brief It does the tranformation given by the concatenation of two rotations weighted with a diagonal matrics Yd
+  ///\brief V^{\dagger}Yd W (SU_vector) W^{dagger}Yd V
+  ///\param paramsV Mixings for the unitary tranformation V
+  ///\param paramsYd Diagonal matrix with the weights (yukawas like)
+  ///\param paramsW Mixings for the unitary tranformation W
+  void WeightedRotation(const Const& paramV, const SU_vector& Yd, const Const& paramW);  
+  void WeightedRotation(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W);
+
+  void Transpose(void);
+
+  ///\brief It does the transformation equivalent to transpose the SU_vector in the matrix representation
+  void Tr(void);
+
+
+  ///\brief Applies unitary transformation given by the complex matrix em
+  /// em*v*em^\dagger where Op is represented by v.
+  SU_vector UTransform(gsl_matrix_complex* em) const;
+  ///\brief Applies unitary transformation given by the complex matrix em
+  /// em^\dagger*v*em where Op is represented by v.
+  SU_vector UDaggerTransform(gsl_matrix_complex* em) const;
+
+  ///\brief It returns as a SU_vector the complex part of the corresponding complex matrix represantation
+  SU_vector Imag(void) const;
+  ///\brief It returns as a SU_vectorthe real part of the corresponding complex matrix represantation
+  SU_vector Real(void) const;
+
+
   ///\brief Applies unitary transformation of the form
   /// Exp(-scale*Op)*(this)*Exp(scale*Op) where Op is represented by v.
   SU_vector UTransform(const SU_vector& v, gsl_complex scale = GSL_COMPLEX_ONE) const;
+
+
 
   ///\brief Returns the the eigen values and eigen vectors
   /// unitary transformation that diagonalizes the matrix

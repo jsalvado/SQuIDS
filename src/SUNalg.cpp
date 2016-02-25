@@ -398,6 +398,30 @@ void gsl_matrix_complex_change_basis_UCMU(const gsl_matrix_complex* U, gsl_matri
   gsl_matrix_complex_free(T1);
 }
 
+void gsl_matrix_complex_change_basis_IUCMU(gsl_matrix_complex* U, gsl_matrix_complex* M){
+  int numneu = U->size1;
+  gsl_matrix_complex* U1 = gsl_matrix_complex_alloc(numneu,numneu);
+  gsl_matrix_complex* U2 = gsl_matrix_complex_alloc(numneu,numneu);
+  gsl_matrix_complex_memcpy(U1,U);
+  gsl_matrix_complex_memcpy(U2,U);
+
+  gsl_matrix_complex* T1 = gsl_matrix_complex_alloc(numneu,numneu);
+
+  // doing : U^dagger M U
+
+  gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
+                 gsl_complex_rect(1.0,0.0),M,
+		 U1,gsl_complex_rect(0.0,0.0),T1);
+  gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
+                 gsl_complex_rect(1.0,0.0),U2,
+                 T1,gsl_complex_rect(0.0,0.0),M);
+
+  gsl_matrix_complex_free(U1);
+  gsl_matrix_complex_free(U2);
+  gsl_matrix_complex_free(T1);
+}
+
+
 SU_vector SU_vector::UTransform(const SU_vector& v, gsl_complex scale) const{
   auto mv=v.GetGSLMatrix();
   auto mu=(*this).GetGSLMatrix();
@@ -413,6 +437,19 @@ SU_vector SU_vector::UTransform(const SU_vector& v, gsl_complex scale) const{
 
   return SU_vector(mu.get());
 }
+
+SU_vector SU_vector::UTransform(gsl_matrix_complex* em) const{
+  auto mu=(*this).GetGSLMatrix();
+  gsl_matrix_complex_change_basis_UCMU(em, mu.get());
+  return SU_vector(mu.get());
+}
+
+SU_vector SU_vector::UDaggerTransform(gsl_matrix_complex* em) const{
+  auto mu=(*this).GetGSLMatrix();
+  gsl_matrix_complex_change_basis_IUCMU(em, mu.get());
+  return SU_vector(mu.get());
+}
+
 
 std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
 std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>>
@@ -449,6 +486,54 @@ SU_vector SU_vector::Rotate(const gsl_matrix_complex* m) const{
   return suv_new;
 }
 */
+
+SU_vector SU_vector::Imag(void) const{
+  SU_vector suv(dim);
+  for(int i=0;i<dim-1;i++){
+    for(int j=0;j<i+1;j++){
+      suv[dim+i*dim+j]=components[dim+i*dim+j];
+    }
+  }  
+  return suv;
+}
+
+SU_vector SU_vector::Real(void) const{
+  SU_vector suv(dim);
+  for(int i=0;i<dim*dim;i++){
+    suv[i]=components[i];
+  }
+  for(int i=0;i<dim-1;i++){
+    for(int j=0;j<i+1;j++){
+      suv[dim+i*dim+j]=0;
+    }
+  }  
+  return suv;
+}
+
+
+void SU_vector::WeightedRotation(const Const& paramV, const SU_vector& Yd, const Const& paramW){
+  SU_vector suv(dim);
+  suv=*this;  
+  suv.RotateToB0(paramV);
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
+  suv.RotateToB1(paramW);  //I have some doubts
+  *this=suv;
+}
+
+
+void SU_vector::WeightedRotation(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W){
+  SU_vector suv(dim);
+  suv=*this;  
+  suv=suv.UTransform(V);
+  //std::cout << suv << std::endl;
+  suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
+  //std::cout << suv << std::endl;
+  suv=suv.UDaggerTransform(W);
+  //std::cout << suv << std::endl;
+  *this=suv;
+}
+
+
 
 SU_vector SU_vector::Rotate(const gsl_matrix_complex* U) const{
   if ( U->size1 != dim or U->size2 != dim )
@@ -496,6 +581,17 @@ double SUTrace(const SU_vector& suv1,const SU_vector& suv2){
   id_trace = (suv1.components[0])*(suv2.components[0])*double(suv1.dim);
   return id_trace+2.0*gen_trace;
 }
+
+
+void SU_vector::Transpose(void){
+  for(int i=0;i<dim-1;i++){
+    for(int j=0;j<i+1;j++){
+      components[dim+i*dim+j]=(-components[dim+i*dim+j]);
+    }
+  }  
+}
+
+
 
 bool SU_vector::operator==(const SU_vector& other) const{
   if(dim != other.dim) //vectors of different sizes cannot be equal
