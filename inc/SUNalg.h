@@ -408,6 +408,27 @@ public:
     double term;
 #include "SU_inc/PreEvolutionSelect.txt"
   }
+
+  ///\brief Precompute operator dependent elements of an evolution
+  ///
+  /// Much of the Calculation needed by Evolve depends only on the evaolution
+  /// operator and the time. If several SU_vectors will be evolved over the same
+  /// time by the same operator, this work can be shared by precomputing these
+  /// parts of the calculation into a buffer, which can then be passed several
+  /// times to Evolve.
+  /// Note that PrepareEvolve should be called on the evolution operator, and
+  /// then Evolve should be called on the state(s) being evolved.
+  ///\param buffer The buffer where the intermediate results will be stored.
+  ///              Must be at least as large as the result of GetEvolveBufferSize
+  ///\param t The time over which the evolution will be performed.
+  void PrepareEvolve(double* buffer, double t, double scale, bool* avr) const{
+    auto& suv1=*this;
+    size_t offset=GetEvolveBufferSize()/2;
+    double* CX=buffer;
+    double* SX=buffer+offset;
+    double term;
+#include "SU_inc/PreEvolutionSelectAvg.txt"
+  }
   
   ///\brief Compute the time evolution of the SU_vector
   ///

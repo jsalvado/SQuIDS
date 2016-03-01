@@ -409,10 +409,10 @@ void gsl_matrix_complex_change_basis_IUCMU(gsl_matrix_complex* U, gsl_matrix_com
 
   // doing : U^dagger M U
 
-  gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
+  gsl_blas_zgemm(CblasNoTrans,CblasConjTrans,
                  gsl_complex_rect(1.0,0.0),M,
 		 U1,gsl_complex_rect(0.0,0.0),T1);
-  gsl_blas_zgemm(CblasConjTrans,CblasNoTrans,
+  gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,
                  gsl_complex_rect(1.0,0.0),U2,
                  T1,gsl_complex_rect(0.0,0.0),M);
 
@@ -524,12 +524,45 @@ void SU_vector::WeightedRotation(const Const& paramV, const SU_vector& Yd, const
 void SU_vector::WeightedRotation(gsl_matrix_complex* V, const SU_vector& Yd, gsl_matrix_complex* W){
   SU_vector suv(dim);
   suv=*this;  
-  suv=suv.UTransform(V);
-  //std::cout << suv << std::endl;
+  suv=suv.UDaggerTransform(V);
+
+  // std::cout << "test  afterUTRANS****************************************" << std::endl;
+  // for(int i=0;i<dim;i++){
+  //   for(int j=0;j<dim;j++){
+  //     std::cout << i <<"  " << j << "   " << GSL_REAL(gsl_matrix_complex_get(suv.GetGSLMatrix().get(),i,j)) << " + I" << 
+  // 	GSL_IMAG(gsl_matrix_complex_get(suv.GetGSLMatrix().get(),i,j)) << std::endl;
+  //   }
+  // }
+  // std::cout << "test ****************************************" << std::endl;
+
+
   suv=(ACommutator(Yd,ACommutator(Yd,suv))+iCommutator(Yd,iCommutator(Yd,suv)))*0.25;
-  //std::cout << suv << std::endl;
-  suv=suv.UDaggerTransform(W);
-  //std::cout << suv << std::endl;
+
+  // std::cout << "test  afterUTRANS****************************************" << std::endl;
+  // for(int i=0;i<dim;i++){
+  //   for(int j=0;j<dim;j++){
+  //     std::cout << i <<"  " << j << "   " << GSL_REAL(gsl_matrix_complex_get(suv.GetGSLMatrix().get(),i,j)) << " + I" << 
+  // 	GSL_IMAG(gsl_matrix_complex_get(suv.GetGSLMatrix().get(),i,j)) << std::endl;
+  //   }
+  // }
+  // std::cout << "test ****************************************" << std::endl;
+
+
+  suv=suv.UTransform(W);
+
+  // std::cout << "test  afterUTRANS****************************************" << std::endl;
+  // for(int i=0;i<dim;i++){
+  //   for(int j=0;j<dim;j++){
+  //     std::cout << i <<"  " << j << "   " << GSL_REAL(gsl_matrix_complex_get(suv.GetGSLMatrix().get(),i,j)) << " + I" << 
+  // 	GSL_IMAG(gsl_matrix_complex_get(suv.GetGSLMatrix().get(),i,j)) << std::endl;
+  //   }
+  // }
+  // std::cout << "test ****************************************" << std::endl;
+  // std::cout << "test ****************************************" << std::endl;
+  // std::cout << "test ****************************************" << std::endl;
+  // std::cout << "test ****************************************" << std::endl;
+
+
   *this=suv;
 }
 

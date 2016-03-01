@@ -1,0 +1,55 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         cweaver@icecube.wisc.edu                                            *
+ ******************************************************************************/
+term=2*t*suv1.components[4];
+if(fabs(term)>fabs(scale)){
+SX[0]=0;
+CX[0]=0;
+avr[0]=true;
+}else{
+avr[0]=false;
+SX[0]=sin(term);
+CX[0]=cos(term);
+}
+//printf("0: term: %4.2E   scale:  %4.2E  time: %4.2E \n",term,scale,t);
+term=t*(suv1.components[4] + sqrt(3)*suv1.components[8]);
+if(fabs(term)>fabs(scale)){
+SX[1]=0;
+CX[1]=0;
+avr[1]=true;
+}else{
+avr[1]=false;
+SX[1]=sin(term);
+CX[1]=cos(term);
+}
+//printf("1: term: %4.2E   scale:  %4.2E  time: %4.2E \n",term,scale,t);
+term=t*(suv1.components[4] - sqrt(3)*suv1.components[8]);
+if(fabs(term)>fabs(scale)){
+SX[2]=0;
+CX[2]=0;
+avr[2]=true;
+}else{
+avr[2]=false;
+SX[2]=sin(term);
+CX[2]=cos(term);
+}
+//printf("2: term: %4.2E   scale:  %4.2E  time: %4.2E \n",term,scale,t);

@@ -1,0 +1,187 @@
+ /******************************************************************************
+ *    This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation, either version 3 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+ *                                                                             *   
+ *   Authors:                                                                  *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
+ *         carguelles@icecube.wisc.edu                                         *
+ *      Jordi Salvado (University of Wisconsin Madison)                        *
+ *         jsalvado@icecube.wisc.edu                                           *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
+ *         cweaver@icecube.wisc.edu                                            *
+ ******************************************************************************/
+
+term=2*t*suv1.components[7];
+if(fabs(term)>fabs(scale)){
+avr[0]=true;	
+SX[0]=0.0;
+CX[0]=0.0;
+}else{
+SX[0]=sin(term);
+CX[0]=cos(term);
+avr[0]=false;
+}
+
+term=t*(suv1.components[7] + sqrt(3)*suv1.components[14]);
+if(fabs(term)>fabs(scale)){
+avr[1]=true;	
+SX[1]=0.0;
+CX[1]=0.0;
+}else{
+SX[1]=sin(term);
+CX[1]=cos(term);
+avr[1]=false;
+}
+
+term=t*suv1.components[7] + (t*(suv1.components[14] + 2*sqrt(2)*suv1.components[21]))/sqrt(3);
+if(fabs(term)>fabs(scale)){
+avr[2]=true;	
+SX[2]=0.0;
+CX[2]=0.0;
+}else{
+SX[2]=sin(term);
+CX[2]=cos(term);
+avr[2]=false;
+}
+
+term=t*suv1.components[7] + (t*suv1.components[14])/sqrt(3) + (t*suv1.components[21])/sqrt(6) + sqrt(2.5)*t*suv1.components[28];
+if(fabs(term)>fabs(scale)){
+avr[3]=true;	
+SX[3]=0.0;
+CX[3]=0.0;
+}else{
+SX[3]=sin(term);
+CX[3]=cos(term);
+avr[3]=false;
+}
+
+term=t*suv1.components[7] + (t*suv1.components[14])/sqrt(3) + (t*suv1.components[21])/sqrt(6) + (t*suv1.components[28])/sqrt(10) + 2*sqrt(0.6)*t*suv1.components[35];
+if(fabs(term)>fabs(scale)){
+avr[4]=true;	
+SX[4]=0.0;
+CX[4]=0.0;
+}else{
+SX[4]=sin(term);
+CX[4]=cos(term);
+avr[4]=false;
+}
+
+term=t*(suv1.components[7] - sqrt(3)*suv1.components[14]);
+if(fabs(term)>fabs(scale)){
+avr[5]=true;	
+SX[5]=0.0;
+CX[5]=0.0;
+}else{
+SX[5]=sin(term);
+CX[5]=cos(term);
+avr[5]=false;
+}
+
+term=t*suv1.components[7] - (t*(suv1.components[14] + 2*sqrt(2)*suv1.components[21]))/sqrt(3);
+if(fabs(term)>fabs(scale)){
+avr[6]=true;	
+SX[6]=0.0;
+CX[6]=0.0;
+}else{
+SX[6]=sin(term);
+CX[6]=cos(term);
+avr[6]=false;
+}
+
+term=t*suv1.components[7] - (t*(2*sqrt(3)*suv1.components[14] + sqrt(6)*suv1.components[21] + 3*sqrt(10)*suv1.components[28]))/6.;
+if(fabs(term)>fabs(scale)){
+avr[7]=true;	
+SX[7]=0.0;
+CX[7]=0.0;
+}else{
+SX[7]=sin(term);
+CX[7]=cos(term);
+avr[7]=false;
+}
+
+term=t*suv1.components[7] - (t*(10*sqrt(3)*suv1.components[14] + 5*sqrt(6)*suv1.components[21] + 3*sqrt(10)*suv1.components[28] + 12*sqrt(15)*suv1.components[35]))/30.;
+if(fabs(term)>fabs(scale)){
+avr[8]=true;	
+SX[8]=0.0;
+CX[8]=0.0;
+}else{
+SX[8]=sin(term);
+CX[8]=cos(term);
+avr[8]=false;
+}
+
+term=(2*t*(suv1.components[14] - sqrt(2)*suv1.components[21]))/sqrt(3);
+if(fabs(term)>fabs(scale)){
+avr[9]=true;	
+SX[9]=0.0;
+CX[9]=0.0;
+}else{
+SX[9]=sin(term);
+CX[9]=cos(term);
+avr[9]=false;
+}
+
+term=(t*(4*sqrt(3)*suv1.components[14] - sqrt(6)*suv1.components[21] - 3*sqrt(10)*suv1.components[28]))/6.;
+if(fabs(term)>fabs(scale)){
+avr[10]=true;	
+SX[10]=0.0;
+CX[10]=0.0;
+}else{
+SX[10]=sin(term);
+CX[10]=cos(term);
+avr[10]=false;
+}
+
+term=(2*t*suv1.components[14])/sqrt(3) - (t*suv1.components[21])/sqrt(6) - (t*suv1.components[28])/sqrt(10) - 2*sqrt(0.6)*t*suv1.components[35];
+if(fabs(term)>fabs(scale)){
+avr[11]=true;	
+SX[11]=0.0;
+CX[11]=0.0;
+}else{
+SX[11]=sin(term);
+CX[11]=cos(term);
+avr[11]=false;
+}
+
+term=sqrt(1.5)*t*suv1.components[21] - sqrt(2.5)*t*suv1.components[28];
+if(fabs(term)>fabs(scale)){
+avr[12]=true;	
+SX[12]=0.0;
+CX[12]=0.0;
+}else{
+SX[12]=sin(term);
+CX[12]=cos(term);
+avr[12]=false;
+}
+
+term=sqrt(1.5)*t*suv1.components[21] - (t*suv1.components[28])/sqrt(10) - 2*sqrt(0.6)*t*suv1.components[35];
+if(fabs(term)>fabs(scale)){
+avr[13]=true;	
+SX[13]=0.0;
+CX[13]=0.0;
+}else{
+SX[13]=sin(term);
+CX[13]=cos(term);
+avr[13]=false;
+}
+
+term=2*sqrt(0.4)*t*suv1.components[28] - 2*sqrt(0.6)*t*suv1.components[35];
+if(fabs(term)>fabs(scale)){
+avr[14]=true;	
+SX[14]=0.0;
+CX[14]=0.0;
+}else{
+SX[14]=sin(term);
+CX[14]=cos(term);
+avr[14]=false;
+}
