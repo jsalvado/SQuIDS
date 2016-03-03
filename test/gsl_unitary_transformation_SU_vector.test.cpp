@@ -1,6 +1,6 @@
 #include <cmath>
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 
 int main(){
 	using namespace squids;

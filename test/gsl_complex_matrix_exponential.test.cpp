@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 

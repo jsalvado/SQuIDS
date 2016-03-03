@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 #include "alloc_counting.h"
 
 int main(){

@@ -1,7 +1,7 @@
 #include <cmath>
 #include <complex>
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_blas.h>
 
