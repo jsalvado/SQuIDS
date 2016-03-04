@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 
 //The inner product of two SU_vectors is defined in terms of the SUTrace operation
 
