@@ -604,18 +604,6 @@ void SU_vector::RotateToB1(const Const& param){
   }
 }
 
-double SUTrace(const SU_vector& suv1,const SU_vector& suv2){
-  double gen_trace = 0.0;
-  double id_trace = 0.0;
-
-  for(unsigned int i=1; i < suv1.Size(); i++)
-    gen_trace += (suv1.components[i])*(suv2.components[i]);
-
-  id_trace = (suv1.components[0])*(suv2.components[0])*double(suv1.dim);
-  return id_trace+2.0*gen_trace;
-}
-
-
 void SU_vector::Transpose(void){
   for(int i=0;i<dim-1;i++){
     for(int j=0;j<i+1;j++){
@@ -623,8 +611,6 @@ void SU_vector::Transpose(void){
     }
   }  
 }
-
-
 
 bool SU_vector::operator==(const SU_vector& other) const{
   if(dim != other.dim) //vectors of different sizes cannot be equal
@@ -641,12 +627,6 @@ bool SU_vector::operator==(const SU_vector& other) const{
       return false;
   }
   return true;
-}
-
-double SU_vector::operator*(const SU_vector &other) const{
-  if(size!=other.size)
-    throw std::runtime_error("Non-matching dimensions in SU_vector inner product");
-  return SUTrace(*this,other);
 }
 
 SU_vector& SU_vector::operator=(const SU_vector& other){
@@ -739,16 +719,4 @@ std::ostream& operator<<(std::ostream& os, const SU_vector& V){
   return os;
 }
 	
-detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
-	if(suv1.dim!=suv2.dim)
-		throw std::runtime_error("Commutator error, non-matching dimensions ");
-	return(detail::iCommutatorProxy{suv1,suv2});
-}
-
-detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
-	if(suv1.dim!=suv2.dim)
-		throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
-	return(detail::ACommutatorProxy{suv1,suv2});
-}
-
 } //namespace squids

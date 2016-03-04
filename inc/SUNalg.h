@@ -47,6 +47,12 @@
 
 namespace squids{
 
+///\brief Returns the trace of the product of the SU_vector matrix representations
+///
+/// Defines a scalar product of SU_vectors.
+template<typename=void>
+double SUTrace(const SU_vector&,const SU_vector&);
+
 ///\brief A vector represented in the SU(n) basis
 ///
 /// An object in SU(n) has n^2 components. By default SU_vector will
@@ -449,7 +455,11 @@ public:
   ///\brief Scalar product of two SU_vectors.
   ///
   /// Equivalent to the trace of the matrix multiplication.
-  double operator*(const SU_vector&) const;
+  double operator*(const SU_vector& other) const{
+    if(size!=other.size)
+      throw std::runtime_error("Non-matching dimensions in SU_vector inner product");
+    return SUTrace(*this,other);
+  }
 
   ///\brief Multiplication by a scalar
   ///\returns An object convertible to an SU_vector
@@ -636,24 +646,49 @@ public:
   friend struct detail::iCommutatorProxy;
   friend struct detail::ACommutatorProxy;
 
-  friend detail::iCommutatorProxy iCommutator(const SU_vector&,const SU_vector&);
-  friend detail::ACommutatorProxy ACommutator(const SU_vector&,const SU_vector&);
-  friend double SUTrace(const SU_vector&,const SU_vector&);
+  friend struct detail::SU_vector_operator_access;
 
   //overloaded output operator
   friend std::ostream& operator<<(std::ostream&, const SU_vector&);
 };
 
-///\brief Returns the trace of the product of the SU_vector matrix representations
-///
-/// Defines a scalar product of SU_vectors.
-double SUTrace(const SU_vector&,const SU_vector&);
+namespace detail{
+//a helper class which gives externally defined operators access to the internals of SU_vector
+struct SU_vector_operator_access{
+  struct view{
+    unsigned int& dim;
+    unsigned int& size;
+    double*& components;
+    view(SU_vector& v):
+    dim(v.dim),size(v.size),components(v.components){}
+  };
+  struct const_view{
+    const unsigned int& dim;
+    const unsigned int& size;
+    const double* components;
+    const_view(const SU_vector& v):
+    dim(v.dim),size(v.size),components(v.components){}
+  };
+  static view make_view(SU_vector& v){ return(view(v)); }
+  static const_view make_view(const SU_vector& v){ return(const_view(v)); }
+};
+} //namespace detail
 
 ///\brief Commutator of two SU_vectors
-detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2);
+template<typename=void>
+detail::iCommutatorProxy iCommutator(const SU_vector& suv1,const SU_vector& suv2){
+  if(suv1.Dim()!=suv2.Dim())
+    throw std::runtime_error("Commutator error, non-matching dimensions ");
+  return(detail::iCommutatorProxy{suv1,suv2});
+}
 
 ///\brief Anticommutator of two SU_vectors
-detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2);
+template<typename=void>
+detail::ACommutatorProxy ACommutator(const SU_vector& suv1,const SU_vector& suv2){
+  if(suv1.Dim()!=suv2.Dim())
+    throw std::runtime_error("Anti Commutator error: non-matching dimensions ");
+  return(detail::ACommutatorProxy{suv1,suv2});
+}
 
 ///\brief Multiplication of an SU_vector by a scalar from the left.
 template<typename=void>

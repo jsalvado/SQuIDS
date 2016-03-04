@@ -160,6 +160,20 @@ namespace detail{
 #undef REQUIRE_EVALUATION_PROXY_TPARAM
 #undef REQUIRE_EVALUATION_PROXY_FPARAM
 
+template<typename>
+double SUTrace(const SU_vector& suv1_, const SU_vector& suv2_){
+  auto suv1=detail::SU_vector_operator_access::make_view(suv1_);
+  auto suv2=detail::SU_vector_operator_access::make_view(suv2_); 
+  double gen_trace = 0.0;
+  double id_trace = 0.0;
+
+  for(unsigned int i=1; i < suv1.size; i++)
+    gen_trace += (suv1.components[i])*(suv2.components[i]);
+
+  id_trace = (suv1.components[0])*(suv2.components[0])*double(suv1.dim);
+  return id_trace+2.0*gen_trace;
+}
+
 } //namespace squids
   
 #endif //SQUIDS_DETAIL_PROXYIMPL_H

@@ -60,6 +60,8 @@ class SU_vector;
 ///which most users should not need to use directly
 namespace detail{
     
+struct SU_vector_operator_access;
+
 #if SQUIDS_USE_VECTOR_EXTENSIONS
   //We will try to use SIMD vectors of 4 doubles.
   //This is both the best size for us (8 is not always applicable), and if size
