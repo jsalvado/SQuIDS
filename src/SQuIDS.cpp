@@ -409,7 +409,8 @@ void SQuIDS::Evolve(double dt){
     
     gsl_odeiv2_driver_free(d);
     if( gsl_status != GSL_SUCCESS ){
-      throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver.");
+      throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver ("
+                               +std::string(gsl_strerror(gsl_status))+")");
     }
   }else{
     t+=dt;
