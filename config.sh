@@ -161,6 +161,15 @@ find_package gsl 1.15
 
 CFLAGS=$CFLAGS
 
+# Recent GCC versions provide a note about the ABI for passing over-aligned objects
+# "The ABI for passing parameters with 32-byte alignment has changed in GCC 4.6"
+# This is irrelevant to us since it is not possible to compile this library with such
+# old gcc versions, and the note keeps frightening users. It needs to be turned off. 
+if $CXX --version | grep -q 'GCC'; then
+	EXTERNAL_CFLAGS='-I${includedir} -Wno-abi'
+	CFLAGS="$CFLAGS -Wno-abi"
+fi
+
 if [ ! -d ./lib/ ]; then
     mkdir lib;
 fi
@@ -176,9 +185,8 @@ Description: Evolves quantum mechanical states
 URL: https://github.com/jsalvado/SQuIDS' >> lib/squids.pc
 echo "Version: $VERSION" >> lib/squids.pc
 echo 'Requires: gsl >= 1.15
-Libs: -L${libdir} -lSQuIDS
-Cflags: -I${includedir}
-' >> lib/squids.pc
+Libs: -L${libdir} -lSQuIDS' >> lib/squids.pc
+echo 'Cflags: -I${includedir}' "${EXTERNAL_CFLAGS}" >> lib/squids.pc
 
 echo "Generating version header..."
 sed -e "s|__SQUIDS_VERSION__|$VERSION_NUM|g" \
