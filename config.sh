@@ -165,7 +165,7 @@ CFLAGS=$CFLAGS
 # "The ABI for passing parameters with 32-byte alignment has changed in GCC 4.6"
 # This is irrelevant to us since it is not possible to compile this library with such
 # old gcc versions, and the note keeps frightening users. It needs to be turned off. 
-if $CXX --version | grep -q 'GCC'; then
+if $CXX --version | grep -q 'Free Software Foundation'; then
 	EXTERNAL_CFLAGS='-I${includedir} -Wno-abi'
 	CFLAGS="$CFLAGS -Wno-abi"
 fi
