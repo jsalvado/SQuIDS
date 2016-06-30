@@ -12,8 +12,8 @@ int main(){
 
   //Check that the time evolution is unitary
   for(unsigned int i=0;i<Ngenerators;i++){
+    SU_vector v1=SU_vector::Generator(dim,i);
     for(unsigned int j=0;j<Ngenerators;j++){
-      SU_vector v1=SU_vector::Generator(dim,i);
       SU_vector v2=SU_vector::Generator(dim,j);
       double sprod=v1*v2;
       for(unsigned int it=0;it<dim;it++){
@@ -26,11 +26,30 @@ int main(){
       }
     }
   }
+  
+  //Check that 'fast' time evolution with a reusable buffer is unitary
+  std::unique_ptr<double[]> evolve_buffer(new double[SU_vector(dim).GetEvolveBufferSize()]);
+  for(unsigned int i=0;i<Ngenerators;i++){
+    SU_vector v1=SU_vector::Generator(dim,i);
+    for(unsigned int j=0;j<Ngenerators;j++){
+      SU_vector v2=SU_vector::Generator(dim,j);
+      double sprod=v1*v2;
+      for(unsigned int it=0;it<dim;it++){
+        SU_vector v3=SU_vector::Projector(dim,it);
+        v3.PrepareEvolve(evolve_buffer.get(),t);
+        double out=sprod-v1.Evolve(evolve_buffer.get())*v2.Evolve(evolve_buffer.get());
+        if(fabs(out)>1e-15){
+          std::cout << "Generators: " << i << "  " << j << "  Fast Evolution Operator: " << it <<
+          "  \t" << out  << std::endl;
+        }
+      }
+    }
+  }
 
   //Check that the rotations are unitary transformations
   for(unsigned int i=0;i<Ngenerators;i++){
+    SU_vector v1=SU_vector::Generator(dim,i);
     for(unsigned int j=0;j<Ngenerators;j++){
-      SU_vector v1=SU_vector::Generator(dim,i);
       SU_vector v2=SU_vector::Generator(dim,j);
       double sprod=v1*v2;
       for(unsigned int ir=1;ir<dim;ir++){
@@ -49,9 +68,9 @@ int main(){
 
   for(unsigned int i=0;i<Ngenerators;i++){
     for(unsigned int j=0;j<Ngenerators;j++){
+      SU_vector v1=(SU_vector::Generator(dim,i)+SU_vector::Generator(dim,j));
       for(unsigned int k=0;k<Ngenerators;k++){
         if(i!=j && j!=k){
-          SU_vector v1=(SU_vector::Generator(dim,i)+SU_vector::Generator(dim,j));
           SU_vector v2=SU_vector::Generator(dim,k);
 
           double spr=v2*v2;
@@ -71,10 +90,10 @@ int main(){
   }
 
   for(unsigned int i=0;i<Ngenerators;i++){
+    SU_vector v1=SU_vector::Generator(dim,i);
     for(unsigned int k=0;k<Ngenerators;k++){
+      SU_vector v2=SU_vector::Generator(dim,k);
       for(unsigned int k2=0;k2<Ngenerators;k2++){
-        SU_vector v1=SU_vector::Generator(dim,i);
-        SU_vector v2=SU_vector::Generator(dim,k);
         SU_vector v22=SU_vector::Generator(dim,k2);
 
         double spr=v22*v2;

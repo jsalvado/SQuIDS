@@ -340,7 +340,28 @@ class SQuIDS {
   ///\param op operator 
   ///\param irho index of rho
   ///\param x value of x
-  double GetExpectationValueD(SU_vector op, unsigned int irho, double x) const;
+  double GetExpectationValueD(const SU_vector& op, unsigned int irho, double x) const;
+  
+  ///This type encapsulates the temporary storage needed by GetExpectationValueD
+  struct expectationValueDBuffer{
+  private:
+    SU_vector state, op;
+    friend class SQuIDS;
+  public:
+    ///Construct temporary storage suitable for problems with the given dimension
+    ///\param dim the problem dimension
+    expectationValueDBuffer(unsigned int dim):
+    state(dim),op(dim){}
+  };
+  
+  ///\brief Returns the expectation value for a given operator for the rho given by irho
+  /// and using linear interpolation in "x"
+  ///\param op operator
+  ///\param irho index of rho
+  ///\param x value of x
+  ///\param buf a buffer containing the necessary temporary storage. Must have
+  ///           been initialized to the same dimension as the problem.
+  double GetExpectationValueD(const SU_vector& op, unsigned int irho, double x, expectationValueDBuffer& buf) const;
 
   ///\brief Returns the initial time of the system
   double Get_t_initial() const{ return(t_ini); }

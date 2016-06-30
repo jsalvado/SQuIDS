@@ -14,6 +14,7 @@ int main(){
 		SU_vector v(6);
 		v.SetAllComponents(1);
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		SU_vector v2=2.*std::move(v);
 		size_t mem_allocated=alloc_counting::mem_allocated/sizeof(double);
 		std::cout << mem_allocated << std::endl;
@@ -25,6 +26,7 @@ int main(){
 		v1.SetAllComponents(1);
 		v2.SetAllComponents(2);
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		SU_vector v3=std::move(v1)+std::move(v2);
 		size_t mem_allocated=alloc_counting::mem_allocated/sizeof(double);
 		std::cout << mem_allocated << std::endl;
@@ -36,6 +38,7 @@ int main(){
 		v1.SetAllComponents(1);
 		v2.SetAllComponents(2);
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		SU_vector v3=std::move(v1)-std::move(v2);
 		size_t mem_allocated=alloc_counting::mem_allocated/sizeof(double);
 		std::cout << mem_allocated << std::endl;
@@ -47,6 +50,7 @@ int main(){
 		v1.SetAllComponents(1);
 		v2.SetAllComponents(2);
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		SU_vector v3=ACommutator(std::move(v1),std::move(v2));
 		size_t mem_allocated=alloc_counting::mem_allocated/sizeof(double);
 		std::cout << mem_allocated << std::endl;

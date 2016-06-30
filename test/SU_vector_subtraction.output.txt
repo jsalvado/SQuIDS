@@ -3,7 +3,7 @@ components are correctly set
 Subtracting vectors with sizes 2 and 3
 Exception: Non-matching dimensions in SU_vector subtraction
 Assigning difference of vectors with sizes 2 and 2 to vector with size 0 (none)
-4 entries allocated
+7 entries allocated
 components are correctly set
 Assigning difference of vectors with sizes 2 and 2 to vector with size 2 (internal)
 0 entries allocated
@@ -13,7 +13,7 @@ Assigning difference of vectors with sizes 2 and 2 to vector with size 2 (extern
 components are correctly set
 Destination memory has not moved: 1
 Assigning difference of vectors with sizes 2 and 2 to vector with size 3 (internal)
-4 entries allocated
+7 entries allocated
 components are correctly set
 Assigning difference of vectors with sizes 2 and 2 to vector with size 3 (external)
 Exception: Non-matching dimensions in assignment to SU_vector with external storage
@@ -29,9 +29,9 @@ components are correctly set
 0 entries allocated
 components are correctly set
 Subtracting 3 vectors with size 2
-4 entries allocated
+7 entries allocated
 components are correctly set
-4 entries allocated
+7 entries allocated
 components are correctly set
 
 Subtracting vectors with sizes 3 and 3
@@ -39,7 +39,7 @@ components are correctly set
 Subtracting vectors with sizes 3 and 2
 Exception: Non-matching dimensions in SU_vector subtraction
 Assigning difference of vectors with sizes 3 and 3 to vector with size 0 (none)
-9 entries allocated
+12 entries allocated
 components are correctly set
 Assigning difference of vectors with sizes 3 and 3 to vector with size 3 (internal)
 0 entries allocated
@@ -49,7 +49,7 @@ Assigning difference of vectors with sizes 3 and 3 to vector with size 3 (extern
 components are correctly set
 Destination memory has not moved: 1
 Assigning difference of vectors with sizes 3 and 3 to vector with size 2 (internal)
-9 entries allocated
+12 entries allocated
 components are correctly set
 Assigning difference of vectors with sizes 3 and 3 to vector with size 2 (external)
 Exception: Non-matching dimensions in assignment to SU_vector with external storage
@@ -65,9 +65,9 @@ components are correctly set
 0 entries allocated
 components are correctly set
 Subtracting 3 vectors with size 3
-9 entries allocated
+12 entries allocated
 components are correctly set
-9 entries allocated
+12 entries allocated
 components are correctly set
 
 Subtracting vectors with sizes 4 and 4
@@ -75,7 +75,7 @@ components are correctly set
 Subtracting vectors with sizes 4 and 3
 Exception: Non-matching dimensions in SU_vector subtraction
 Assigning difference of vectors with sizes 4 and 4 to vector with size 0 (none)
-16 entries allocated
+19 entries allocated
 components are correctly set
 Assigning difference of vectors with sizes 4 and 4 to vector with size 4 (internal)
 0 entries allocated
@@ -85,7 +85,7 @@ Assigning difference of vectors with sizes 4 and 4 to vector with size 4 (extern
 components are correctly set
 Destination memory has not moved: 1
 Assigning difference of vectors with sizes 4 and 4 to vector with size 3 (internal)
-16 entries allocated
+19 entries allocated
 components are correctly set
 Assigning difference of vectors with sizes 4 and 4 to vector with size 3 (external)
 Exception: Non-matching dimensions in assignment to SU_vector with external storage
@@ -101,9 +101,9 @@ components are correctly set
 0 entries allocated
 components are correctly set
 Subtracting 3 vectors with size 4
-16 entries allocated
+19 entries allocated
 components are correctly set
-16 entries allocated
+19 entries allocated
 components are correctly set
 
 Subtracting vectors with sizes 5 and 5
@@ -121,9 +121,9 @@ components are correctly set
 0 entries allocated
 components are correctly set
 Subtracting 3 vectors with size 5
-25 entries allocated
+28 entries allocated
 components are correctly set
-25 entries allocated
+28 entries allocated
 components are correctly set
 
 Subtracting vectors with sizes 6 and 6
@@ -141,8 +141,8 @@ components are correctly set
 0 entries allocated
 components are correctly set
 Subtracting 3 vectors with size 6
-36 entries allocated
+39 entries allocated
 components are correctly set
-36 entries allocated
+39 entries allocated
 components are correctly set
 

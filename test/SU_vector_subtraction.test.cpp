@@ -52,6 +52,7 @@ void test_fused_assign_subtract(unsigned int dim, SU_vector& dest, const std::st
 	v2.SetAllComponents(d2);
 	try{
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		dest=v1-v2;
 		auto allocated=alloc_counting::mem_allocated;
 		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
@@ -94,6 +95,7 @@ void test_fused_assign_subtract_aliased_vectors(unsigned int dim){
 	v3.SetAllComponents(d3);
 	try{ //first operand aliases target
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		v1=v1-v2;
 		auto allocated=alloc_counting::mem_allocated;
 		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
@@ -103,6 +105,7 @@ void test_fused_assign_subtract_aliased_vectors(unsigned int dim){
 	}
 	try{ //second operand aliases target
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		v3=v2-v3;
 		auto allocated=alloc_counting::mem_allocated;
 		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
@@ -123,6 +126,7 @@ void test_fused_assign_subtract_aliased_storage(unsigned int dim){
 		v1.SetAllComponents(d1);
 		v2.SetAllComponents(d2);
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		v3=v1-v2;
 		auto allocated=alloc_counting::mem_allocated;
 		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
@@ -135,6 +139,7 @@ void test_fused_assign_subtract_aliased_storage(unsigned int dim){
 		v1.SetAllComponents(d1);
 		v2.SetAllComponents(d2);
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		v3=v1-v2;
 		auto allocated=alloc_counting::mem_allocated;
 		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
@@ -159,6 +164,7 @@ void test_subtract_vector_proxy(unsigned int dim){
 	try{
 		//test constructing a new vector
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		SU_vector v4((v1-v2)-v3);
 		//a temporary SU_vector must be constructed for v1-v2
 		//but this will then be an r-value whose memory v4 can take
@@ -168,6 +174,7 @@ void test_subtract_vector_proxy(unsigned int dim){
 		
 		//test assigning to a default constructed vector
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		SU_vector v5; //default construct; no backing storage yet
 		v5=(v1-v2)-v3;
 		allocated=alloc_counting::mem_allocated;

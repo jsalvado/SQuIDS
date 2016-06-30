@@ -12,6 +12,7 @@ using squids::SU_vector;
 void exercise_assignment(SU_vector& source, SU_vector& dest, double expectedVal){
 	try{
 		alloc_counting::reset_allocation_counters();
+		SU_vector::clear_mem_cache();
 		dest=source;
 		auto allocated=alloc_counting::mem_allocated;
 		std::cout << allocated/sizeof(double) << " entries allocated" << '\n';

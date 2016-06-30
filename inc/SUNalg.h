@@ -170,8 +170,7 @@ private:
           const_cast<SU_vector&>(proxy.suv1).isinit=false; //complete the theft
       }
       else{
-        components=new double[size];
-        ptr_offset=0;
+        alloc_aligned(dim,size,components,ptr_offset);
         isinit=true;
       }
     }
@@ -197,6 +196,33 @@ private:
       cached=storage_cache[dim].insert(mem_cache_entry{components,ptr_offset});
     if(!cached)
       delete[] (components-ptr_offset);
+  }
+  
+  ///A helper function which fetches a memory block from the cache if possible,
+  ///and otherwise allocates a new block with optimal alignment
+  ///\param dim The dimension of the vector for which the storage is to be allocated
+  ///\param size dim squared
+  ///\param components The pointer to be set to the aligned, allocated memory
+  ///\param ptr_offset The location where the necessary alignment offset should be stored
+  static void alloc_aligned(unsigned int dim, unsigned int size,
+                            double*& components, unsigned char& ptr_offset){
+    mem_cache_entry cache_result=storage_cache[dim].get();
+    if(cache_result.storage){
+      components=cache_result.storage;
+      ptr_offset=cache_result.offset;
+    }
+    else{
+      size_t before=size%2;
+      size_t maxHeadroom=(32/sizeof(double))-1/*+before*/;
+      components=new double[size+maxHeadroom];
+      ptr_offset=(intptr_t)(components+before)%32; //bytes
+      if(ptr_offset){
+        ptr_offset=(32-ptr_offset)/sizeof(double); //convert to units of doubles
+        assert(ptr_offset<=maxHeadroom);
+        components+=ptr_offset;
+      }
+      assert((intptr_t)(components+before)%32 == 0);
+    }
   }
 
 public:
@@ -253,11 +279,16 @@ public:
   SU_vector(ProxyType&& proxy, REQUIRE_EVALUATION_PROXY_FPARAM):
   dim(proxy.suv1.dim),
   size(proxy.suv1.size),
-  components(proxy.mayStealArg1() ? proxy.suv1.components : new double[size]),
-  ptr_offset(proxy.mayStealArg1() ? proxy.suv1.ptr_offset : 0),
   isinit(proxy.mayStealArg1() ? proxy.suv1.isinit : true),
   isinit_d(proxy.mayStealArg1() ? proxy.suv1.isinit_d : false)
   {
+    if(proxy.mayStealArg1()){
+      components=proxy.suv1.components;
+      ptr_offset=proxy.suv1.ptr_offset;
+    }
+    else
+      alloc_aligned(dim,size,components,ptr_offset);
+    
     if(components==proxy.suv1.components && proxy.suv1.isinit)
       const_cast<SU_vector&>(proxy.suv1).isinit=false; //complete the theft
     proxy.compute(detail::vector_wrapper<detail::AssignWrapper>{dim,components});
@@ -396,7 +427,7 @@ public:
   
   ///\brief Precompute operator dependent elements of an evolution
   ///
-  /// Much of the Calculation needed by Evolve depends only on the evaolution
+  /// Much of the calculation needed by Evolve depends only on the evolution
   /// operator and the time. If several SU_vectors will be evolved over the same
   /// time by the same operator, this work can be shared by precomputing these
   /// parts of the calculation into a buffer, which can then be passed several
@@ -650,6 +681,22 @@ public:
 
   //overloaded output operator
   friend std::ostream& operator<<(std::ostream&, const SU_vector&);
+  
+  ///\brief Testing function which discards all cached memory blocks
+  ///In normal use there is no reason to call this function, as it prevents the
+  ///quick reuse of memory which has previously been allocated
+  static void clear_mem_cache(){
+    for(unsigned int dim=1; dim<=SQUIDS_MAX_HILBERT_DIM; dim++){
+      mem_cache_entry cache_result;
+      while(true){
+        cache_result=storage_cache[dim].get();
+        if(cache_result.storage)
+          delete[] (cache_result.storage-cache_result.offset);
+        else
+          break;
+      }
+    }
+  }
 };
 
 namespace detail{

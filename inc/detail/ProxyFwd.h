@@ -52,6 +52,28 @@
   #endif
 #endif
 
+//Determine what name if any to use for thread local storage
+#ifdef __clang__
+  #if __has_feature(cxx_thread_local)
+    #define SQUIDS_THREAD_LOCAL thread_local
+  #endif
+#endif
+#if defined(__GNUC__) && !defined(__clang__)
+  //All gcc versions otherwise able to compile the library should support this
+  #define SQUIDS_THREAD_LOCAL thread_local
+#endif
+#ifdef __INTEL_COMPILER
+  //platform support appears to have been unusably bad until 15.0
+  #if __INTEL_COMPILER >= 1500
+    #define SQUIDS_THREAD_LOCAL thread_local
+  #endif
+#endif
+#ifdef _MSC_VER
+  #if _MSC_VER >= 1900
+    #define SQUIDS_THREAD_LOCAL thread_local
+  #endif
+#endif
+
 namespace squids{
   
 class SU_vector;

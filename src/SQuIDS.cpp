@@ -235,22 +235,34 @@ double SQuIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int 
   return state[i].rho[nrh]*op.Evolve(h0,t-t_ini);
 }
 
-double SQuIDS::GetExpectationValueD(SU_vector op, unsigned int nrh, double xi) const{
-  SU_vector h0=H0(xi,nrh);
-  int xid=-1;
-  for(unsigned int i = 0; i < nx; i++){
-    if ( xi >= x[i] && xi <= x[i+1]){
-      xid = i;
-      break;
-    }
-  }
-  if(xid==-1){
+double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, double xi) const{
+#ifdef SQUIDS_THREAD_LOCAL
+  static SQUIDS_THREAD_LOCAL expectationValueDBuffer buf(nsun);
+#else //slow way, without thread local storage
+  expectationValueDBuffer buf(nsun);
+#endif
+  return(GetExpectationValueD(op,nrh,xi,buf));
+}
+  
+double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, double xi,
+                                    SQuIDS::expectationValueDBuffer& buf) const{
+  //find bracketing state entries
+  auto xit=std::lower_bound(x.begin(),x.end(),xi);
+  if(xit==x.end())
     throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
-  }
-
-  return (state[xid].rho[nrh] +
-	   (state[xid+1].rho[nrh]-
-	    state[xid].rho[nrh])*((xi-x[xid])/(x[xid+1]-x[xid])))*op.Evolve(h0,t-t_ini);
+  if(xit!=x.begin())
+    xit--;
+  size_t xid=std::distance(x.begin(),xit);
+  
+  //linearly interpolate between the two states
+  double f2=((xi-x[xid])/(x[xid+1]-x[xid]));
+  double f1=1-f2;
+  buf.state =f1*state[xid].rho[nrh];
+  buf.state+=f2*state[xid+1].rho[nrh];
+  //compute the evolved operator
+  buf.op=op.Evolve(H0(xi,nrh),t-t_ini);
+  //apply operator to state
+  return buf.state*buf.op;
 }
 
 void SQuIDS::Set_xrange(const std::vector<double>& xs){

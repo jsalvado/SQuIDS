@@ -24,15 +24,11 @@
 #include "SUNalg.h"
 
 #include <ostream>
+#include <complex>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_eigen.h>
-#include <iostream>
-#include <complex>
 #define KRONECKER(i,j)  ( (i)==(j) ? 1 : 0 )
-#define SQ(x)  (( x ) * ( x ))
-
-#include <iomanip>
 
 /*
 -----------------------------------------------------------------------
@@ -87,10 +83,9 @@ isinit_d(false){}
 SU_vector::SU_vector(const SU_vector& V):
 dim(V.dim),
 size(V.size),
-components(new double[size]),
-ptr_offset(0),
 isinit(true),
 isinit_d(false){
+  alloc_aligned(dim,size,components,ptr_offset);
   std::copy(V.components,V.components+size,components);
 }
 
@@ -123,13 +118,12 @@ isinit_d(true)
 SU_vector::SU_vector(unsigned int d):
 dim(d),
 size(dim*dim),
-components(new double[size]),
-ptr_offset(0),
 isinit(true),
 isinit_d(false)
 {
   if(dim>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
+  alloc_aligned(dim,size,components,ptr_offset);
   std::fill(components,components+size,0.0);
 };
 
@@ -177,30 +171,10 @@ isinit_d(false)
 };
   
 SU_vector SU_vector::make_aligned(unsigned int dim, bool zero_fill){
-  size_t size=dim*dim;
-  size_t before=size%2;
-  size_t maxHeadroom=(32/sizeof(double))-1+before;
-  double* storage;
-  size_t offset;
-  mem_cache_entry cache_result=storage_cache[dim].get();
-  if(cache_result.storage){
-    storage=cache_result.storage;
-    offset=cache_result.offset;
-  }
-  else{
-    storage=new double[size+maxHeadroom];
-    offset=(intptr_t)(storage+before)%32;
-    if(offset){
-      offset=(32-offset)/sizeof(double);
-      storage+=offset;
-    }
-  }
-  
   SU_vector v;
   v.dim=dim;
-  v.size=size;
-  v.components=storage;
-  v.ptr_offset=offset;
+  v.size=dim*dim;
+  alloc_aligned(dim,v.size,v.components,v.ptr_offset);
   v.isinit=true;
   v.isinit_d=false;
   if(zero_fill)
@@ -456,6 +430,7 @@ std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>>
 SU_vector::GetEigenSystem(bool order) const{
   gsl_vector * eigenvalues = gsl_vector_alloc(dim);
   gsl_matrix_complex * eigenvectors = gsl_matrix_complex_alloc(dim,dim);
+#define SQ(x) ((x)*(x))
   switch (dim) {
     case 3:
           {
@@ -468,6 +443,7 @@ SU_vector::GetEigenSystem(bool order) const{
       gsl_eigen_hermv(matrix.get(),eigenvalues,eigenvectors,ws);
       gsl_eigen_hermv_free(ws);
   }
+#undef SQ
   // sorting eigenvalues
   if (order)
     gsl_eigen_hermv_sort(eigenvalues,eigenvectors,GSL_EIGEN_SORT_VAL_ASC);
@@ -640,8 +616,7 @@ SU_vector& SU_vector::operator=(const SU_vector& other){
       deallocate_mem();
     dim=other.dim;
     size=other.size;
-    components=new double[size];
-    ptr_offset=0;
+    alloc_aligned(dim,size,components,ptr_offset);
     isinit=true;
   }
 
