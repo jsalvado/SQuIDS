@@ -265,13 +265,14 @@ namespace detail{
   SU_vector EvaluationProxy<Op>::Evolve(const ProxyType& other ,double t) const{
     return(SU_vector(*this).Evolve(other,t));
   }
+  
 } //namespace detail
 
 #undef REQUIRE_EVALUATION_PROXY_CORE
 #undef REQUIRE_EVALUATION_PROXY_TPARAM
 #undef REQUIRE_EVALUATION_PROXY_FPARAM
 
-template<typename>
+template<unsigned int Flags>
 double SUTrace(const SU_vector& suv1_, const SU_vector& suv2_){
   /*auto suv1=detail::SU_vector_operator_access::make_view(suv1_);
   auto suv2=detail::SU_vector_operator_access::make_view(suv2_); 
@@ -316,7 +317,7 @@ double SUTrace(const SU_vector& suv1_, const SU_vector& suv2_){
   
 #if SQUIDS_USE_VECTOR_EXTENSIONS
   //if the data is aligned, take the fast path
-  if((!((intptr_t)suv1c%32) && !((intptr_t)suv2c%32))){
+  if(Flags&detail::AlignedStorage || (!((intptr_t)suv1c%32) && !((intptr_t)suv2c%32))){
     using detail::double_vector4;
     double_vector4 s={0.,0.,0.,0.};
     for(; size>0; size-=4, suv1c+=4, suv2c+=4){

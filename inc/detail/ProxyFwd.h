@@ -1,7 +1,7 @@
 #ifndef SQUIDS_DETAIL_PROXYFWD_H
 #define SQUIDS_DETAIL_PROXYFWD_H
 
-#define REQUIRE_EVALUATION_PROXY_CORE typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>
+#define REQUIRE_EVALUATION_PROXY_CORE typename std::enable_if<squids::detail::isEvaluationProxy<ProxyType>::value>
 #define REQUIRE_EVALUATION_PROXY_TPARAM typename= REQUIRE_EVALUATION_PROXY_CORE
 #define REQUIRE_EVALUATION_PROXY_FPARAM REQUIRE_EVALUATION_PROXY_CORE ::type* =nullptr
 
@@ -208,8 +208,16 @@ struct SU_vector_operator_access;
     constexpr static bool equal_target_size=false;
     ///Both the operands of this operation the location where the results will
     ///be stored are guaranteed to have optimally aligned storage.
-    constexpr static bool aligned_storgae=false;
+    constexpr static bool aligned_storage=false;
   };
+  
+  template<typename T, typename=void>
+  struct isEvaluationProxy : public std::false_type{};
+  
+  template<typename...> using erase_type = void;
+  
+  template<typename T>
+  struct isEvaluationProxy<T,erase_type<decltype(T::IsEvalutionProxy)>> : public std::true_type{};
   
   ///The base class for objects representing arithmetic operations on SU_vectors.
   ///Rather than eagerly performing arithemtic, the calculation's type and operands
@@ -218,6 +226,8 @@ struct SU_vector_operator_access;
   ///This enables a number of operations which reduce copying of data.
   template<typename Op>
   struct EvaluationProxy{
+    enum{IsEvalutionProxy=1};
+    
     const SU_vector& suv1; ///the first operand
     const SU_vector& suv2; ///the second operand
     int flags;
@@ -297,7 +307,7 @@ struct SU_vector_operator_access;
     constexpr static unsigned int vector_arity=1;
     constexpr static bool no_alias_target=false;
     constexpr static bool equal_target_size=false;
-    constexpr static bool aligned_storgae=false;
+    constexpr static bool aligned_storage=false;
   };
   
   ///The result of adding two SU_vectors
@@ -316,7 +326,7 @@ struct SU_vector_operator_access;
     constexpr static unsigned int vector_arity=2;
     constexpr static bool no_alias_target=false;
     constexpr static bool equal_target_size=false;
-    constexpr static bool aligned_storgae=false;
+    constexpr static bool aligned_storage=false;
   };
   
   ///The result of subtracting two SU_vectors
@@ -335,7 +345,7 @@ struct SU_vector_operator_access;
     constexpr static unsigned int vector_arity=2;
     constexpr static bool no_alias_target=false;
     constexpr static bool equal_target_size=false;
-    constexpr static bool aligned_storgae=false;
+    constexpr static bool aligned_storage=false;
   };
   
   ///The result of negating an SU_vector
@@ -354,7 +364,7 @@ struct SU_vector_operator_access;
     constexpr static unsigned int vector_arity=1;
     constexpr static bool no_alias_target=false;
     constexpr static bool equal_target_size=false;
-    constexpr static bool aligned_storgae=false;
+    constexpr static bool aligned_storage=false;
   };
   
   ///The result of multiplying an SU_vector by a scalar
@@ -375,7 +385,7 @@ struct SU_vector_operator_access;
     constexpr static unsigned int vector_arity=1;
     constexpr static bool no_alias_target=false;
     constexpr static bool equal_target_size=false;
-    constexpr static bool aligned_storgae=false;
+    constexpr static bool aligned_storage=false;
   };
   
   ///The result of i times the commutator of two SU_vectors
@@ -452,7 +462,7 @@ struct SU_vector_operator_access;
     constexpr static unsigned int vector_arity=base_traits::vector_arity;
     constexpr static bool no_alias_target=Flags&NoAlias;
     constexpr static bool equal_target_size=Flags&EqualSizes;
-    constexpr static bool aligned_storgae=Flags&AlignedStorage;
+    constexpr static bool aligned_storage=Flags&AlignedStorage;
   };
 }
   

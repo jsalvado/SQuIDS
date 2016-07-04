@@ -50,7 +50,7 @@ namespace squids{
 ///\brief Returns the trace of the product of the SU_vector matrix representations
 ///
 /// Defines a scalar product of SU_vectors.
-template<typename=void>
+template<unsigned int Flags=0>
 double SUTrace(const SU_vector&,const SU_vector&);
 
 ///\brief A vector represented in the SU(n) basis
@@ -489,7 +489,7 @@ public:
   double operator*(const SU_vector& other) const{
     if(size!=other.size)
       throw std::runtime_error("Non-matching dimensions in SU_vector inner product");
-    return SUTrace(*this,other);
+    return SUTrace<>(*this,other);
   }
 
   ///\brief Multiplication by a scalar
