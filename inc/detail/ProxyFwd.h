@@ -1,7 +1,8 @@
 #ifndef SQUIDS_DETAIL_PROXYFWD_H
 #define SQUIDS_DETAIL_PROXYFWD_H
 
-#define REQUIRE_EVALUATION_PROXY_CORE typename std::enable_if<squids::detail::isEvaluationProxy<ProxyType>::value>
+//#define REQUIRE_EVALUATION_PROXY_CORE typename std::enable_if<squids::detail::isEvaluationProxy<ProxyType>::value>
+#define REQUIRE_EVALUATION_PROXY_CORE typename std::enable_if<std::is_base_of<detail::EvaluationProxy<ProxyType>,ProxyType>::value>
 #define REQUIRE_EVALUATION_PROXY_TPARAM typename= REQUIRE_EVALUATION_PROXY_CORE
 #define REQUIRE_EVALUATION_PROXY_FPARAM REQUIRE_EVALUATION_PROXY_CORE ::type* =nullptr
 
