@@ -320,13 +320,25 @@ class SQuIDS {
   void Set_h_max(double opt);
   ///\brief Set the initial runge-kutta step
   void Set_h(double opt);
+  ///\brief Get the minimum runge-kutta step
+  double Get_h_min() const;
+  ///\brief Get the maximum runge-kutta step
+  double Get_h_max() const;
+  ///\brief Get the initial runge-kutta step
+  double Get_h() const;
   ///\brief Set the numerical relative error
   void Set_rel_error(double opt);
   ///\brief Set the numerical absolute error
   void Set_abs_error(double opt);
   ///\brief Set the number of steps when not using adaptive stepping
   void Set_NumSteps(unsigned int opt);
-  
+   ///\brief Get the numerical relative error
+  double Get_rel_error() const;
+  ///\brief Get the numerical absolute error
+  double Get_abs_error() const;
+  ///\brief Get the number of steps when not using adaptive stepping
+  double Get_NumSteps() const;
+
   //***************************************************************
   ///\brief Returns the expectation value for a given operator for a give state irho in a node ix.
   ///\param op operator

@@ -342,6 +342,7 @@ void SQuIDS::Set_h_min(double opt){
     }
   }
 }
+
 void SQuIDS::Set_h_max(double opt){
   h_max=opt;
   if(h>h_max){
@@ -357,6 +358,18 @@ void SQuIDS::Set_h(double opt){
   h=opt;
 }
 
+double SQuIDS::Get_h_min() const{
+  return h_min;
+}
+
+double SQuIDS::Get_h_max() const{
+  return h_max;
+}
+
+double SQuIDS::Get_h() const{
+  return h;
+}
+
 void SQuIDS::Set_rel_error(double opt){
   rel_error=opt;
 }
@@ -367,6 +380,18 @@ void SQuIDS::Set_abs_error(double opt){
 
 void SQuIDS::Set_NumSteps(unsigned int opt){
   nsteps=opt;
+}
+
+double SQuIDS::Get_rel_error() const{
+  return rel_error;
+}
+
+double SQuIDS::Get_abs_error() const{
+  return abs_error;
+}
+
+double SQuIDS::Get_NumSteps() const{
+  return nsteps;
 }
 
 void SQuIDS::Derive(double at){
