@@ -347,13 +347,35 @@ class SQuIDS {
   double GetExpectationValue(SU_vector op, unsigned int irho, unsigned int ix) const;
 
   //***************************************************************
-  ///\brief Returns the expectation value for a given operator for the rho given by irho 
+  ///\brief Returns the expectation value for a given operator for a give state irho in a node ix when
+  /// consindering averaging of oscillations. Oscillations are averaged if the phase is larger than scale
+  /// the bool pointer is true for all scales that are averaged out.
+  ///\param op operator
+  ///\param irho index of rho
+  ///\param ix index in the array "x"
+  ///\param scale scale upon which oscillations will be averaged out
+  ///\param avg bool array which is true for all scales that were averaged out
+  double GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i, double scale, bool* avr) const;
+
+  //***************************************************************
+  ///\brief Returns the expectation value for a given operator for the rho given by irho
   /// and using linear interpolation in "x"
   ///\param op operator 
   ///\param irho index of rho
   ///\param x value of x
   double GetExpectationValueD(const SU_vector& op, unsigned int irho, double x) const;
-  
+
+  //***************************************************************
+  ///\brief Returns the expectation value for a given operator for a give state irho in a node ix when
+  /// consindering averaging of oscillations. Oscillations are averaged if the phase is larger than scale
+  /// the bool pointer is true for all scales that are averaged out. It uses linear interpolation in "x"
+  ///\param op operator
+  ///\param irho index of rho
+  ///\param x value of x
+  ///\param scale scale upon which oscillations will be averaged out
+  ///\param avg bool array which is true for all scales that were averaged out
+  double GetExpectationValueD(const SU_vector& op, unsigned int nrh, double x, double scale, bool* avr) const;
+
   ///This type encapsulates the temporary storage needed by GetExpectationValueD
   struct expectationValueDBuffer{
   private:
@@ -365,7 +387,7 @@ class SQuIDS {
     expectationValueDBuffer(unsigned int dim):
     state(dim),op(dim){}
   };
-  
+
   ///\brief Returns the expectation value for a given operator for the rho given by irho
   /// and using linear interpolation in "x"
   ///\param op operator
@@ -374,6 +396,17 @@ class SQuIDS {
   ///\param buf a buffer containing the necessary temporary storage. Must have
   ///           been initialized to the same dimension as the problem.
   double GetExpectationValueD(const SU_vector& op, unsigned int irho, double x, expectationValueDBuffer& buf) const;
+
+ //***************************************************************
+  ///\brief Returns the expectation value for a given operator for a give state irho in a node ix when
+  /// consindering averaging of oscillations. Oscillations are averaged if the phase is larger than scale
+  /// the bool pointer is true for all scales that are averaged out. It uses linear interpolation in "x"
+  ///\param op operator
+  ///\param irho index of rho
+  ///\param x value of x
+  ///\param scale scale upon which oscillations will be averaged out
+  ///\param avg bool array which is true for all scales that were averaged out
+  double GetExpectationValueD(const SU_vector& op, unsigned int nrh,  double x, expectationValueDBuffer& buf, double scale, bool* avr) const;
 
   ///\brief Returns the initial time of the system
   double Get_t_initial() const{ return(t_ini); }
