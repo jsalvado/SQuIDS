@@ -303,7 +303,8 @@ double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, doubl
   H0(xi,nrh).PrepareEvolve(evol_buf.get(),t-t_ini,scale,avr);
   buf.op=op.Evolve(evol_buf.get());
   //apply operator to state
-  return buf.state*buf.op;
+  return (buf.op*state[xid].rho[nrh])*f1 + (buf.op*state[xid+1].rho[nrh])*f2;
+  //return buf.state*buf.op;
 }
 
 void SQuIDS::Set_xrange(const std::vector<double>& xs){
