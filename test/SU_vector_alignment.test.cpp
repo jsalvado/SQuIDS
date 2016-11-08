@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 
 using squids::SU_vector;
 

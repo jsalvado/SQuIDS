@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include <SQuIDs/SUNalg.h>
+#include <SQuIDS/SUNalg.h>
 #include "alloc_counting.h"
 
 using squids::SU_vector;
