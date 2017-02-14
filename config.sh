@@ -137,7 +137,7 @@ if [ "$RESULT" -ne 0 ];
 then
 	rm -f lib/compiler_test.exe
 	echo "Your C++ compiler ($CXX) is not able to compile this library." >&2
-	echo "Plese set the CXX environment variable to point to a compiler which supports C++11." >&2
+	echo "Please set the CXX environment variable to point to a compiler which supports C++11." >&2
 	echo "Version 4.8.1 or newer of gcc or version 3.3 or newer of clang are recommended." >&2
 	exit 1
 fi
