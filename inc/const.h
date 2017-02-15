@@ -162,9 +162,13 @@ public :
   double GetPhase(unsigned int state1, unsigned int state2) const;
 
   Const();
+#ifndef __PGI //defaulted move constructors frighten pgi
   Const(Const&&)=default;
+#endif
   ~Const();
+#ifndef __PGI //defaulted move assignement frightens pgi
   Const& operator=(Const&&)=default;
+#endif
 
   ///\brief get the complete matrix representing the transformation between bases
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetTransformationMatrix(size_t) const;

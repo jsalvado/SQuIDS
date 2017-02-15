@@ -47,10 +47,20 @@
   #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) do{}while(0) //not available
 #endif
 
+#if defined(__PGI)
+  #define SQUIDS_USE_VECTOR_EXTENSIONS 0
+#endif
 #ifndef SQUIDS_USE_VECTOR_EXTENSIONS
   #if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
     #define SQUIDS_USE_VECTOR_EXTENSIONS 1
   #endif
+#endif
+
+//determine whether we can do atomic operations
+#if !__has_feature(cxx_atomic)
+  #define SQUIDS_USE_STORAGE_CACHE 0
+#else
+  #define SQUIDS_USE_STORAGE_CACHE 1
 #endif
 
 //Determine what name if any to use for thread local storage

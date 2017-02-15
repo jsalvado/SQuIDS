@@ -63,9 +63,9 @@ namespace squids{
 SU_vector implementation
 -----------------------------------------------------------------------
 */
-
+#if SQUIDS_USE_STORAGE_CACHE
 detail::cache<SU_vector::mem_cache_entry,32> SU_vector::storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
-
+#endif
 /*
 -----------------------------------------------------------------------
 Constructors

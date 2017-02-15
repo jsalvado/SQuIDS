@@ -29,6 +29,11 @@
 #error C++11 compiler required. Update your compiler and use the flag -std=c++11
 #endif
 
+//work around strange interaction between pgi and libc++
+#if defined(__PGI)
+  #define _LIBCPP_ASSERT
+#endif
+
 #include <cassert>
 #include <vector>
 #include <iosfwd>
@@ -43,7 +48,9 @@
 #include "SU_inc/dimension.h"
 #include "detail/ProxyFwd.h"
 #include "detail/MatrixExp.h"
-#include "detail/Cache.h"
+#if SQUIDS_USE_STORAGE_CACHE
+  #include "detail/Cache.h"
+#endif
 
 namespace squids{
 
@@ -179,6 +186,7 @@ private:
     return(*this);
   }
   
+#if SQUIDS_USE_STORAGE_CACHE
   struct mem_cache_entry{
     double* storage;
     unsigned char offset;
@@ -187,14 +195,17 @@ private:
   };
   ///A cache of previously used backing storage blocks
   static detail::cache<mem_cache_entry,32> storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
+#endif
   
   ///A helper function which tries to put a memory block into the cache rather
   ///than deleting it.
   void deallocate_mem(){
+#if SQUIDS_USE_STORAGE_CACHE
     bool cached=false;
     if(((intptr_t)(components+dim%2))%32 == 0) //only try to save aligned storage
       cached=storage_cache[dim].insert(mem_cache_entry{components,ptr_offset});
     if(!cached)
+#endif
       delete[] (components-ptr_offset);
   }
   
@@ -206,12 +217,14 @@ private:
   ///\param ptr_offset The location where the necessary alignment offset should be stored
   static void alloc_aligned(unsigned int dim, unsigned int size,
                             double*& components, unsigned char& ptr_offset){
+#if SQUIDS_USE_STORAGE_CACHE
     mem_cache_entry cache_result=storage_cache[dim].get();
     if(cache_result.storage){
       components=cache_result.storage;
       ptr_offset=cache_result.offset;
     }
     else{
+#endif
       size_t before=size%2;
       size_t maxHeadroom=(32/sizeof(double))-1/*+before*/;
       components=new double[size+maxHeadroom];
@@ -222,7 +235,9 @@ private:
         components+=ptr_offset;
       }
       assert((intptr_t)(components+before)%32 == 0);
+#if SQUIDS_USE_STORAGE_CACHE
     }
+#endif
   }
 
 public:
@@ -682,6 +697,7 @@ public:
   //overloaded output operator
   friend std::ostream& operator<<(std::ostream&, const SU_vector&);
   
+#if SQUIDS_USE_STORAGE_CACHE
   ///\brief Testing function which discards all cached memory blocks
   ///In normal use there is no reason to call this function, as it prevents the
   ///quick reuse of memory which has previously been allocated
@@ -697,6 +713,7 @@ public:
       }
     }
   }
+#endif
 };
 
 namespace detail{

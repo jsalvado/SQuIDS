@@ -170,6 +170,17 @@ if $CXX --version | grep -q 'Free Software Foundation'; then
 	CFLAGS="$CFLAGS -Wno-abi"
 fi
 
+if $CXX --version | grep -q 'Portland Group'; then
+	# PGI warns very aggressively about stylistic issues like newlines at the
+	# ends of files an unnecessary break statements. Neatening these things up
+	# is a low priority, so we ask it to just pipe down for now.
+	EXTERNAL_CFLAGS='--diag_suppress1 --diag_suppress111'
+	CFLAGS="--diag_suppress1 --diag_suppress111"
+	# PGI also gets agry if passed darwin-specific linking flags, so we strip
+	# them out
+	DYN_OPT=`echo "$DYN_OPT" | sed -e 's|-compatibility_version $(VERSION)||' -e 's|-current_version $(VERSION)||'`
+fi
+
 if [ ! -d ./lib/ ]; then
     mkdir lib;
 fi
@@ -212,15 +223,17 @@ GSL_LDFLAGS=$GSL_LDFLAGS
 
 CFLAGS:=$CFLAGS "'-O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)'"
 CXXFLAGS:=$CXXFLAGS
-LDFLAGS:=$LDFLAGS "'-Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)' > settings.mk
+LDFLAGS:=$LDFLAGS "'-Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)'"
+
+DYN_SUFFIX:=$DYN_SUFFIX
+DYN_OPT=$DYN_OPT
+"> settings.mk
 
 echo "include settings.mk
 
 VERSION:=$VERSION
 PREFIX:=$PREFIX
 
-DYN_SUFFIX:=$DYN_SUFFIX
-DYN_OPT=$DYN_OPT
 " > Makefile
 echo '
 # Project files
