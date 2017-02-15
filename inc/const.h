@@ -162,11 +162,11 @@ public :
   double GetPhase(unsigned int state1, unsigned int state2) const;
 
   Const();
-#ifndef __PGI //defaulted move constructors frighten pgi
+#if !(__PGI && __APPLE__ && __MACH__) //defaulted move constructors frighten pgi
   Const(Const&&)=default;
 #endif
   ~Const();
-#ifndef __PGI //defaulted move assignement frightens pgi
+#if !(__PGI && __APPLE__ && __MACH__) //defaulted move assignement frightens pgi
   Const& operator=(Const&&)=default;
 #endif
 

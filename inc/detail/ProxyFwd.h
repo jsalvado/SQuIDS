@@ -57,7 +57,7 @@
 #endif
 
 //determine whether we can do atomic operations
-#if !__has_feature(cxx_atomic)
+#ifdef __PGI
   #define SQUIDS_USE_STORAGE_CACHE 0
 #else
   #define SQUIDS_USE_STORAGE_CACHE 1
