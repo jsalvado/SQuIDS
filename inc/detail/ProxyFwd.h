@@ -56,6 +56,15 @@
   #endif
 #endif
 
+#ifndef __has_attribute
+  #define __has_attribute(x) 0
+#endif
+#if __has_attribute(always_inline)
+  #define SQUIDS_ALWAYS_INLINE __attribute__((always_inline))
+#else
+  #define SQUIDS_ALWAYS_INLINE
+#endif
+
 //determine whether we can do atomic operations
 #ifdef __PGI
   #define SQUIDS_USE_STORAGE_CACHE 0

@@ -273,7 +273,7 @@ namespace detail{
 #undef REQUIRE_EVALUATION_PROXY_FPARAM
 
 template<unsigned int Flags>
-double SUTrace(const SU_vector& suv1_, const SU_vector& suv2_){
+SQUIDS_ALWAYS_INLINE double SUTrace(const SU_vector& suv1_, const SU_vector& suv2_){
   /*auto suv1=detail::SU_vector_operator_access::make_view(suv1_);
   auto suv2=detail::SU_vector_operator_access::make_view(suv2_); 
   double gen_trace = 0.0;

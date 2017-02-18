@@ -501,7 +501,7 @@ public:
   ///\brief Scalar product of two SU_vectors.
   ///
   /// Equivalent to the trace of the matrix multiplication.
-  double operator*(const SU_vector& other) const{
+  SQUIDS_ALWAYS_INLINE double operator*(const SU_vector& other) const{
     if(size!=other.size)
       throw std::runtime_error("Non-matching dimensions in SU_vector inner product");
     return SUTrace<>(*this,other);
