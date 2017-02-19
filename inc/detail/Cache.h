@@ -13,6 +13,12 @@ namespace detail{
 ///          copyable. Default constructed instances will be used to communicate
 ///          lack of an object.
 ///\tparam N The maximum number of entries to store in the cache.
+///\todo This class is now messy, since in our use case we don't actually need it
+///      to be shared, so we can give each thread its own cache if the compiler
+///      supports it. In that case, the cache can be much simpler (and somewhat
+///      faster), since it knows it will only ever be accessed by one thread, so
+///      no synchronization is required. This should probably be split into two
+///      separate classes at some point, a simple cache and a shared cache. 
 template<typename T, unsigned int N>
 class cache{
 private:
@@ -31,16 +37,33 @@ private:
   ///The head of a linked list.
   ///Must be compact so that it can be updated atomically.
   struct list_head{
+#ifndef SQUIDS_THREAD_LOCAL
     uint32_t counter; //data structure version number
+#endif
     uint32_t index; //index of head node within entries, max_buffer_size indicates none
   };
-  std::atomic<list_head> free_list;
-  std::atomic<list_head> data_list;
+#ifdef SQUIDS_THREAD_LOCAL
+  using ListType=list_head;
+#else
+  using ListType=std::atomic<list_head>;
+#endif
+  ListType free_list, data_list;
   
   ///Remove the first entry from a linked list, if the list is not empty
   ///\param list The list to modify
   ///\return The address of the popped entry, or nullptr if the list was empty
-  record* pop(std::atomic<list_head>& list){
+  record* pop(ListType& list){
+#ifdef SQUIDS_THREAD_LOCAL
+    list_head orig=list;
+    if(list.index==max_buffer_size) //empty stack
+      return(nullptr);
+    auto next_ptr=entries[list.index].next;
+    if(next_ptr)
+      list.index=next_ptr-entries;
+    else
+      list.index=max_buffer_size;
+    return(entries+orig.index);
+#else
     list_head orig=list.load(), next;
     do{
       if(orig.index==max_buffer_size) //empty stack
@@ -53,12 +76,20 @@ private:
         next.index=max_buffer_size;
     }while(!std::atomic_compare_exchange_weak(&list, &orig, next));
     return(entries+orig.index);
+#endif
   }
   
   ///Append an entry to a linked list
   ///\param list The list to modify
   ///\param The address of the entry to append
-  void push(std::atomic<list_head>& list, record* node){
+  void push(ListType& list, record* node){
+#ifdef SQUIDS_THREAD_LOCAL
+    if(list.index==max_buffer_size)
+      node->next=nullptr;
+    else
+      node->next=entries+list.index;
+    list.index=node-entries;
+#else
     list_head orig=list.load(), next;
     uint32_t idx=node-entries;
     next.index=idx;
@@ -69,6 +100,7 @@ private:
       else
         node->next=entries+orig.index;
     }while(!std::atomic_compare_exchange_weak(&list, &orig, next));
+#endif
   }
   
 public:
@@ -79,9 +111,15 @@ public:
       entries[i].next=ptr;
       ptr=&entries[i];
     }
+#ifdef SQUIDS_THREAD_LOCAL
+    free_list=list_head{max_buffer_size-1};
+    //no entries are in the data list
+    data_list=list_head{max_buffer_size};
+#else
     free_list.store({0,max_buffer_size-1});
     //no entries are in the data list
     data_list.store({0,max_buffer_size});
+#endif
   }
   
   ///Insert an object into the cache if it is not full.

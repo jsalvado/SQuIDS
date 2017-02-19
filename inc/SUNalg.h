@@ -194,7 +194,11 @@ private:
     mem_cache_entry(double* p, uint8_t o):storage(p),offset(o){}
   };
   ///A cache of previously used backing storage blocks
-  static detail::cache<mem_cache_entry,32> storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
+  static
+  #ifdef SQUIDS_THREAD_LOCAL
+  SQUIDS_THREAD_LOCAL //one cache per thread if supported
+  #endif
+  detail::cache<mem_cache_entry,32> storage_cache[SQUIDS_MAX_HILBERT_DIM+1];
 #endif
   
   ///A helper function which tries to put a memory block into the cache rather
