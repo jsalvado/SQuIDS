@@ -150,7 +150,7 @@ private:
 
   ///\brief Internal implementation of optimized assignment
   template<typename WrapperType, typename ProxyType>
-  SU_vector& assignProxy(const ProxyType& proxy){
+  SQUIDS_ALWAYS_INLINE SU_vector& assignProxy(const ProxyType& proxy){
     using traits=detail::operation_traits<ProxyType>;
     
     if(!traits::elementwise && !traits::no_alias_target &&
@@ -614,21 +614,21 @@ public:
 
   ///\brief Optimized assignment from the result of an arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
-  SU_vector& operator=(const ProxyType& proxy){
+  SQUIDS_ALWAYS_INLINE SU_vector& operator=(const ProxyType& proxy){
     return(assignProxy<detail::AssignWrapper>(proxy));
   }
 
   ///\brief Optimized incrementing assignment from the result of an
   /// arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
-  SU_vector& operator+=(const ProxyType& proxy){
+  SQUIDS_ALWAYS_INLINE SU_vector& operator+=(const ProxyType& proxy){
     return(assignProxy<detail::IncrementWrapper>(proxy));
   }
 
   ///\brief Optimized decrementing assignment from the result of an
   /// arithmetic expression
   template<typename ProxyType, REQUIRE_EVALUATION_PROXY_TPARAM>
-  SU_vector& operator-=(const ProxyType& proxy){
+  SQUIDS_ALWAYS_INLINE SU_vector& operator-=(const ProxyType& proxy){
     return(assignProxy<detail::DecrementWrapper>(proxy));
   }
 

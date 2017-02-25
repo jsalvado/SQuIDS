@@ -33,7 +33,7 @@ namespace detail{
   }
   
   template<typename VW, bool Aligned>
-  void FastEvolutionProxy::compute(VW target) const{
+  SQUIDS_ALWAYS_INLINE void FastEvolutionProxy::compute(VW target) const{
     auto& suv3=target; //alias for the name expected by generated code
     size_t offset=suv1.GetEvolveBufferSize()/2;
     const double* CX=coefficients;

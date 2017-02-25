@@ -451,7 +451,7 @@ struct SU_vector_operator_access;
     GuaranteeWrapper(WrappedType op):WrappedType(op){}
     
     template<typename VW>
-    void compute(VW target) const{
+    SQUIDS_ALWAYS_INLINE void compute(VW target) const{
       WrappedType::template compute<VW,bool(Guarantees&AlignedStorage)>(target);
     }
   };
