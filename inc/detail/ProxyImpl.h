@@ -64,25 +64,13 @@ namespace detail{
     //All even squares are multiples of four to begin with, and all odd squares
     //greater than one are one more than a multiple of four, so now size%4==0.
     SQUIDS_COMPILER_ASSUME(size%4==0);
-    
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    //if the data is aligned, take the fast path
-    if(Aligned || (!((intptr_t)suv1c%32) && !((intptr_t)suv2c%32) && !((intptr_t)target.components.components%32))){
-      for(; size>0; size-=4, suv1c+=4, suv2c+=4, target.components.components+=4){
-        //try to convince the compiler to use aligned loads and stores
-        SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
-        SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
-        SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
-        target.apply4(*(double_vector4*)suv1c + *(double_vector4*)suv2c);
-      }
+    if(Aligned){
+      SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
+      SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
+      SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
     }
-    else{ //slow path for unaligned data
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
-      for(unsigned int i=0; i<size; i++)
-        target.components[i] += suv1c[i]+suv2c[i];
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
+    for(unsigned int i=0; i<size; i++)
+      target.components[i] += suv1c[i]+suv2c[i];
   }
   
   template<typename VW, bool Aligned>
@@ -108,25 +96,14 @@ namespace detail{
     //All even squares are multiples of four to begin with, and all odd squares
     //greater than one are one more than a multiple of four, so now size%4==0.
     SQUIDS_COMPILER_ASSUME(size%4==0);
+    if(Aligned){
+      SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
+      SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
+      SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
+    }
     
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    //if the data is aligned, take the fast path
-    if(Aligned || (!((intptr_t)suv1c%32) && !((intptr_t)suv2c%32) && !((intptr_t)target.components.components%32))){
-      for(; size>0; size-=4, suv1c+=4, suv2c+=4, target.components.components+=4){
-        //try to convince the compiler to use aligned loads and stores
-        SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
-        SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
-        SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
-        target.apply4(*(double_vector4*)suv1c - *(double_vector4*)suv2c);
-      }
-    }
-    else{ //slow path for unaligned data
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
-      for(unsigned int i=0; i<size; i++)
-        target.components[i] += suv1c[i]-suv2c[i];
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
+    for(unsigned int i=0; i<size; i++)
+      target.components[i] += suv1c[i]-suv2c[i];
   }
   
   template<typename VW, bool Aligned>
@@ -150,30 +127,19 @@ namespace detail{
     //All even squares are multiples of four to begin with, and all odd squares
     //greater than one are one more than a multiple of four, so now size%4==0.
     SQUIDS_COMPILER_ASSUME(size%4==0);
+    if(Aligned){
+      SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
+      SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
+    }
     
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    //if the data is aligned, take the fast path
-    if(Aligned || (!((intptr_t)suv1c%32) && !((intptr_t)target.components.components%32))){
-      for(; size>0; size-=4, suv1c+=4, target.components.components+=4){
-        //try to convince the compiler to use aligned loads and stores
-        SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
-        SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
-        target.apply4(- *(double_vector4*)suv1c);
-      }
-    }
-    else{ //slow path for unaligned data
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
-      for(unsigned int i=0; i<size; i++)
-        target.components[i] += -suv1c[i];
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
+    for(unsigned int i=0; i<size; i++)
+      target.components[i] += -suv1c[i];
   }
   
   template<typename VW, bool Aligned>
   void MultiplicationProxy::compute(VW target) const{
     //the rest of this is just a convoluted, and hopefully fast way of doing this:
-    //for(unsigned int i=0; i<target.dim*target.dim; i++)
+    //for(unsigned int i=0; i<suv1.size; i++)
     //  target.components[i] += a*suv1.components[i];
     
     double* suv1c=suv1.components;
@@ -192,25 +158,13 @@ namespace detail{
     //All even squares are multiples of four to begin with, and all odd squares
     //greater than one are one more than a multiple of four, so now size%4==0.
     SQUIDS_COMPILER_ASSUME(size%4==0);
+    if(Aligned){
+      SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
+      SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
+    }
     
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    //if the data is aligned, take the fast path
-    if(Aligned || (!((intptr_t)suv1c%32) && !((intptr_t)target.components.components%32))){
-      double_vector4 f={a,a,a,a};
-      for(; size>0; size-=4, suv1c+=4, target.components.components+=4){
-        //try to convince the compiler to use aligned loads and stores
-        SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
-        SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
-        target.apply4(f * *(double_vector4*)suv1c);
-      }
-    }
-    else{ //slow path for unaligned data
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
-      for(unsigned int i=0; i<size; i++)
-        target.components[i] += a*suv1c[i];
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
+    for(unsigned int i=0; i<size; i++)
+      target.components[i] += a*suv1c[i];
   }
   
   template<typename VW, bool Aligned>
@@ -315,27 +269,13 @@ SQUIDS_ALWAYS_INLINE double SUTrace(const SU_vector& suv1_, const SU_vector& suv
   //greater than one are one more than a multiple of four, so now size%4==0.
   SQUIDS_COMPILER_ASSUME(size%4==0);
   
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-  //if the data is aligned, take the fast path
-  if(Flags&detail::AlignedStorage || (!((intptr_t)suv1c%32) && !((intptr_t)suv2c%32))){
-    using detail::double_vector4;
-    double_vector4 s={0.,0.,0.,0.};
-    for(; size>0; size-=4, suv1c+=4, suv2c+=4){
-      //try to convince the compiler to use aligned loads and stores
-      SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
-      SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
-      s+=*(double_vector4*)suv1c * *(double_vector4*)suv2c;
-    }
-    trace+=2*(s[0]+s[1]+s[2]+s[3]);
+  if(Flags&detail::AlignedStorage){
+    SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
+    SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
   }
-  else{ //slow path for unaligned data
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
-    for(unsigned int i=0; i<size; i++)
-      trace+=2*suv1c[i]*suv2c[i];
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-  }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
   
+  for(unsigned int i=0; i<size; i++)
+    trace+=2*suv1c[i]*suv2c[i];
   return trace;
 }
 

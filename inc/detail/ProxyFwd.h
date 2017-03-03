@@ -47,15 +47,6 @@
   #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) do{}while(0) //not available
 #endif
 
-#if defined(__PGI)
-  #define SQUIDS_USE_VECTOR_EXTENSIONS 0
-#endif
-#ifndef SQUIDS_USE_VECTOR_EXTENSIONS
-  #if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
-    #define SQUIDS_USE_VECTOR_EXTENSIONS 1
-  #endif
-#endif
-
 #ifndef __has_attribute
   #define __has_attribute(x) 0
 #endif
@@ -103,19 +94,6 @@ class SU_vector;
 namespace detail{
     
 struct SU_vector_operator_access;
-
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-  //We will try to use SIMD vectors of 4 doubles.
-  //This is both the best size for us (8 is not always applicable), and if size
-  //4 vectors are not available the compiler should legalize them to size 2 or
-  //scalars.
-  #if defined(__GNUC__) || defined(__clang__)
-    typedef double double_vector4 __attribute__((__vector_size__(32)));
-  #endif
-  #if defined(__INTEL_COMPILER)
-    typedef double double_vector4 __attribute__((vector vectorlength(4)));
-  #endif
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
   
   ///All of the SU_vector operations in ../SU_inc/ are generated in terms
   ///of incmrement operations (+=), but we would like to be able to fuse
@@ -132,11 +110,6 @@ struct SU_vector_operator_access;
       *v=nv;
       return(*v);
     }
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    void apply4(double_vector4 rhs){
-      *(double_vector4*)v=rhs;
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
     operator double() const{ return(*v); }
     template<typename T>
     static T& apply(T& target,const T& source){
@@ -151,11 +124,6 @@ struct SU_vector_operator_access;
       *v+=nv;
       return(*v);
     }
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    void apply4(double_vector4 rhs){
-      *(double_vector4*)v=*(double_vector4*)v + rhs;
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
     operator double() const{ return(*v); }
     template<typename T>
     static T& apply(T& target,const T& source){
@@ -170,11 +138,6 @@ struct SU_vector_operator_access;
       *v-=nv;
       return(*v);
     }
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    void apply4(double_vector4 rhs){
-      *(double_vector4*)v=*(double_vector4*)v - rhs;
-    }
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
     operator double() const{ return(*v); }
     template<typename T>
     static T& apply(T& target,const T& source){
@@ -197,9 +160,6 @@ struct SU_vector_operator_access;
     } components;
     vector_wrapper(const unsigned int& dim, double* components):
     dim(dim),components{components}{}
-#if SQUIDS_USE_VECTOR_EXTENSIONS
-    void apply4(double_vector4 rhs){ Wrapper{components.components}.apply4(rhs); };
-#endif //SQUIDS_USE_VECTOR_EXTENSIONS
   };
   
   ///Constant used to indicate that the first argument of a proxy was an
