@@ -130,7 +130,6 @@ class SQuIDS {
   unsigned int size_state;
   
   std::unique_ptr<double[]> system;
-  double* deriv_system; //not owned
   gsl_odeiv2_step_type const* step; //not owned
   gsl_odeiv2_system sys;
   
@@ -142,8 +141,10 @@ class SQuIDS {
   std::unique_ptr<SU_state[]> dstate;
   
   //***************************************************************
-  ///\brief Sets the derivative system pointer for GSL use
-  void set_deriv_system_pointer(double*);
+  ///\brief Sets the evolution state and derivative system pointer for GSL use
+  ///\param sp the backing storage for the state during evolution (estate)
+  ///\param dp the backing storage for the derivative during evolution (dstate)
+  void set_system_pointers(double* sp, double* dp);
   //interface function called by GSL
   friend int RHS(double ,const double*,double*,void*);
  
@@ -160,6 +161,8 @@ class SQuIDS {
   Const params;
   ///the state of the system
   std::unique_ptr<SU_state[]> state;
+  ///the state of the system during an evolution step
+  std::unique_ptr<SU_state[]> estate;
   ///\brief Sets the current time of the system
   ///\param t_ Time to set.
   ///\warning Do not use this function unless you are setting the same time

@@ -107,9 +107,11 @@ void collective::PreDerive(double t){
     progressbar(100*t/period, mu);
   
   //compute the sum of 'polarizations' of all nodes
-  P=state[0].rho[0];
+  //note that here we use the temporary `estate`,
+  //since this is during an evolution step, rather than the general `state`
+  P=estate[0].rho[0];
   for(int ei = 1; ei < nx; ei++)
-    P+=state[ei].rho[0];
+    P+=estate[ei].rho[0];
   //update the strength of self-interactions
   mu = mu_f+(mu_i-mu_f)*(1.0-t/period);
 }

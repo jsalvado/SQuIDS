@@ -89,7 +89,8 @@ nsun(other.nsun),
 nrhos(other.nrhos),
 nscalars(other.nscalars),
 params(std::move(other.params)),
-state(std::move(other.state))
+state(std::move(other.state)),
+estate(std::move(other.estate))
 {
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
@@ -127,33 +128,39 @@ void SQuIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   x.resize(nx);
 
   state.reset(new SU_state[nx]);
+  estate.reset(new SU_state[nx]);
   dstate.reset(new SU_state[nx]);
 
   for(unsigned int ei = 0; ei < nx; ei++){
     state[ei].rho.reset(new SU_vector[nrhos]);
+    estate[ei].rho.reset(new SU_vector[nrhos]);
     dstate[ei].rho.reset(new SU_vector[nrhos]);
   }
 
+  //initially, estate just points to the same memory as state
   for(unsigned int ei = 0; ei < nx; ei++){
     for(unsigned int i=0;i<nrhos;i++){
       state[ei].rho[i]=SU_vector(nsun,&(system[ei*size_state+i*size_rho]));
+      estate[ei].rho[i]=SU_vector(nsun,&(system[ei*size_state+i*size_rho]));
       dstate[ei].rho[i]=SU_vector(nsun,nullptr);
     }
     if(nscalars>0){
       state[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
+      estate[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
     }
   }
 
   is_init=true;
 };
 
-void SQuIDS::set_deriv_system_pointer(double *p){
-  deriv_system=p;
+void SQuIDS::set_system_pointers(double* sp, double* dp){
   for(unsigned int ei = 0; ei < nx; ei++){
     for(unsigned int i=0;i<nrhos;i++){
-      dstate[ei].rho[i].SetBackingStore(&(p[ei*size_state+i*size_rho]));
+      estate[ei].rho[i].SetBackingStore(&(sp[ei*size_state+i*size_rho]));
+      dstate[ei].rho[i].SetBackingStore(&(dp[ei*size_state+i*size_rho]));
     }
-    dstate[ei].scalar=&(p[ei*size_state+nrhos*size_rho]);
+    estate[ei].scalar=&(sp[ei*size_state+nrhos*size_rho]);
+    dstate[ei].scalar=&(dp[ei*size_state+nrhos*size_rho]);
   }
 }
 
@@ -192,6 +199,7 @@ SQuIDS& SQuIDS::operator=(SQuIDS&& other){
   nscalars=other.nscalars;
   params=std::move(other.params);
   state=std::move(other.state);
+  estate=std::move(other.estate);
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
   
@@ -444,13 +452,13 @@ void SQuIDS::Derive(double at){
     for(unsigned int i = 0; i < nrhos; i++){
       // Coherent interaction
       if(CoherentRhoTerms)
-        dstate[ei].rho[i] = iCommutator(state[ei].rho[i],HI(ei,i,t));
+        dstate[ei].rho[i] = iCommutator(estate[ei].rho[i],HI(ei,i,t));
       else
         dstate[ei].rho[i].SetAllComponents(0.);
 
       // Non coherent interaction
       if(NonCoherentRhoTerms)
-        dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),state[ei].rho[i]);
+        dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),estate[ei].rho[i]);
       // Other possible interaction, for example involving the Scalars or non linear terms in rho.
       if(OtherRhoTerms)
         dstate[ei].rho[i] += InteractionsRho(ei,i,t);
@@ -459,7 +467,7 @@ void SQuIDS::Derive(double at){
     for(unsigned int is=0;is<nscalars;is++){
       dstate[ei].scalar[is]=0.;
       if(GammaScalarTerms)
-        dstate[ei].scalar[is] += -state[ei].scalar[is]*GammaScalar(ei,is,t);
+        dstate[ei].scalar[is] += -estate[ei].scalar[is]*GammaScalar(ei,is,t);
       if(OtherScalarTerms)
         dstate[ei].scalar[is] += InteractionsScalar(ei,is,t);
     }
@@ -491,15 +499,23 @@ void SQuIDS::Evolve(double dt){
       throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver ("
                                +std::string(gsl_strerror(gsl_status))+")");
     }
+    
+    //after evolving, make estate alias state again
+    for(unsigned int ei = 0; ei < nx; ei++){
+      for(unsigned int i=0;i<nrhos;i++)
+        estate[ei].rho[i].SetBackingStore(&(system[ei*size_state+i*size_rho]));
+      if(nscalars>0)
+        estate[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
+    }
   }else{
     t+=dt;
     PreDerive(t);
   }
 }
 
-int RHS(double t ,const double *state_dbl_in,double *state_dbl_out,void *par){
-  SQuIDS *dms=static_cast<SQuIDS*>(par);
-  dms->set_deriv_system_pointer(state_dbl_out);
+int RHS(double t, const double* state_dbl_in, double* state_dbl_out, void* par){
+  SQuIDS* dms=static_cast<SQuIDS*>(par);
+  dms->set_system_pointers(const_cast<double*>(state_dbl_in),state_dbl_out);
   dms->Derive(t);
   return 0;
 }
