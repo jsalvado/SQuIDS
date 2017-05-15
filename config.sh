@@ -89,6 +89,9 @@ for instance \`--prefix=\$HOME'.
 
 The following options can be used to maunally specify the 
 locations of dependencies:
+  --with-gsl=DIR          use the copy of GSL in DIR
+                          assuming headers are in DIR/include
+                          and libraries in DIR/lib
   --with-gsl-incdir=DIR   use the copy of gsl in DIR
   --with-gsl-libdir=DIR   use the copy of gsl in DIR
 
@@ -112,11 +115,20 @@ do
 	TMP=`echo "$var" | sed -n 's/^--prefix=\(.*\)$/\1/p'`
 	if [ "$TMP" ]; then PREFIX="$TMP"; continue; fi
 
+	TMP=`echo "$var" | sed -n 's/^--with-gsl=\(.*\)$/\1/p'`
+	if [ "$TMP" ]; then
+		GSL_INCDIR="${TMP}/include";
+		GSL_LIBDIR="${TMP}/lib";
+	continue; fi
+
 	TMP=`echo "$var" | sed -n 's/^--with-gsl-incdir=\(.*\)$/\1/p'`
 	if [ "$TMP" ]; then GSL_INCDIR="$TMP"; continue; fi
 
 	TMP=`echo "$var" | sed -n 's/^--with-gsl-libdir=\(.*\)$/\1/p'`
 	if [ "$TMP" ]; then GSL_LIBDIR="$TMP"; continue; fi
+
+	echo "config.sh: Unknown or malformed option '$var'" 1>&2
+	exit 1
 done
 
 $CXX $CXXFLAGS resources/compiler_test.cpp -o lib/compiler_test.exe >/dev/null 2>&1
