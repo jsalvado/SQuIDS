@@ -1,7 +1,8 @@
-//#include "SUNalg.h"
-#include "SUNalg.h"
-#include <iostream>
 #include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <vector>
 
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_permutation.h>
