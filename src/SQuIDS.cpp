@@ -244,7 +244,7 @@ double SQuIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int 
   return state[i].rho[nrh]*op.Evolve(h0,t-t_ini);
 }
 
-double SQuIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i, double scale, bool* avr) const {
+double SQuIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i, double scale, std::vector<bool>& avr) const {
   SU_vector h0=H0(x[i],nrh);
   std::unique_ptr<double[]> evol_buf(new double[h0.GetEvolveBufferSize()]);
   h0.PrepareEvolve(evol_buf.get(),t-t_ini,scale,avr);
@@ -260,7 +260,7 @@ double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, doubl
   return(GetExpectationValueD(op,nrh,xi,buf));
 }
 
-double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, double xi, double scale, bool* avr) const{
+double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, double xi, double scale, std::vector<bool>& avr) const{
 #ifdef SQUIDS_THREAD_LOCAL
   static SQUIDS_THREAD_LOCAL expectationValueDBuffer buf(nsun);
 #else //slow way, without thread local storage
@@ -292,7 +292,7 @@ double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, doubl
 
 double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, double xi,
                                     SQuIDS::expectationValueDBuffer& buf,
-                                    double scale, bool * avr) const{
+                                    double scale, std::vector<bool>& avr) const{
   //find bracketing state entries
   auto xit=std::lower_bound(x.begin(),x.end(),xi);
   if(xit==x.end())

@@ -358,7 +358,7 @@ class SQuIDS {
   ///\param ix index in the array "x"
   ///\param scale scale upon which oscillations will be averaged out
   ///\param avg bool array which is true for all scales that were averaged out
-  double GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i, double scale, bool* avr) const;
+  double GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i, double scale, std::vector<bool>& avr) const;
 
   //***************************************************************
   ///\brief Returns the expectation value for a given operator for the rho given by irho
@@ -377,7 +377,7 @@ class SQuIDS {
   ///\param x value of x
   ///\param scale scale upon which oscillations will be averaged out
   ///\param avg bool array which is true for all scales that were averaged out
-  double GetExpectationValueD(const SU_vector& op, unsigned int nrh, double x, double scale, bool* avr) const;
+  double GetExpectationValueD(const SU_vector& op, unsigned int nrh, double x, double scale, std::vector<bool>& avr) const;
 
   ///This type encapsulates the temporary storage needed by GetExpectationValueD
   struct expectationValueDBuffer{
@@ -409,7 +409,7 @@ class SQuIDS {
   ///\param x value of x
   ///\param scale scale upon which oscillations will be averaged out
   ///\param avg bool array which is true for all scales that were averaged out
-  double GetExpectationValueD(const SU_vector& op, unsigned int nrh,  double x, expectationValueDBuffer& buf, double scale, bool* avr) const;
+  double GetExpectationValueD(const SU_vector& op, unsigned int nrh,  double x, expectationValueDBuffer& buf, double scale, std::vector<bool>& avr) const;
 
   ///\brief Returns the initial time of the system
   double Get_t_initial() const{ return(t_ini); }
