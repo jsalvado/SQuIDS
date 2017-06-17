@@ -477,6 +477,9 @@ public:
   ///\param buffer The buffer where the intermediate results will be stored.
   ///              Must be at least as large as the result of GetEvolveBufferSize
   ///\param t The time over which the evolution will be performed.
+  ///\param scale Averaging frequency scale. If oscillation frequency is larger
+  ///              than scale the oscillation will be averaged out.
+  ///\param avr Vector of booleans signaling which scales were averaged out.
   void PrepareEvolve(double* buffer, double t, double scale, std::vector<bool>& avr) const{
     auto& suv1=*this;
     size_t offset=GetEvolveBufferSize()/2;
