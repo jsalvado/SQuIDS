@@ -361,6 +361,12 @@ class SQuIDS {
   double GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int i, double scale, std::vector<bool>& avr) const;
 
   //***************************************************************
+  ///\brief Returns the intermediate state using linear interpolation in "x"
+  ///\param irho index of rho
+  ///\param x value of x
+  SU_vector GetIntermediateState(unsigned int irho, double x) const;
+
+  //***************************************************************
   ///\brief Returns the expectation value for a given operator for the rho given by irho
   /// and using linear interpolation in "x"
   ///\param op operator 

@@ -251,6 +251,20 @@ double SQuIDS::GetExpectationValue(SU_vector op, unsigned int nrh, unsigned int 
   return state[i].rho[nrh]*op.Evolve(evol_buf.get());
 }
 
+SU_vector SQuIDS::GetIntermediateState(unsigned int nrh, double xi) const{
+  //find bracketing state entries
+  auto xit=std::lower_bound(x.begin(),x.end(),xi);
+  if(xit==x.end())
+    throw std::runtime_error("SQUIDS::GetExpectationValueD : x value not in the array.");
+  if(xit!=x.begin())
+    xit--;
+  size_t xid=std::distance(x.begin(),xit);
+  //linearly interpolate between the two states
+  double f2=((xi-x[xid])/(x[xid+1]-x[xid]));
+  double f1=1-f2;
+  return f1*state[xid].rho[nrh] + f2*state[xid+1].rho[nrh];
+}
+
 double SQuIDS::GetExpectationValueD(const SU_vector& op, unsigned int nrh, double xi) const{
 #ifdef SQUIDS_THREAD_LOCAL
   static SQUIDS_THREAD_LOCAL expectationValueDBuffer buf(nsun);
