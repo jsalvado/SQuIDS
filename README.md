@@ -1,6 +1,8 @@
 SQuIDS
 ===========
 
+![SQuIDS Logo](/resources/squids_logo.png)
+
 Prerequisites
 -------------
 
@@ -90,7 +92,9 @@ Citation
 If you want cite this work, or want to look at further description
 please refer to
 
->A Simple Quantum Integro-Differential Solver (SQuIDS)
->Carlos A. Arguelles Delgado, Jordi Salvado, Christopher N. Weaver
->arXiv:1412.3832
+*A Simple Quantum Integro-Differential Solver (SQuIDS)*
+
+Carlos A. Arguelles Delgado, Jordi Salvado, Christopher N. Weaver
+
+arXiv:1412.3832 (https://inspirehep.net/record/1334148)
 
