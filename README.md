@@ -1,7 +1,7 @@
 SQuIDS
 ===========
 
-![SQuIDS Logo](/resources/squids_logo.png)
+![SQuIDS Logo](/resources/squids_logo.png =250x)
 
 Prerequisites
 -------------
