@@ -303,11 +303,6 @@ Operations
 -----------------------------------------------------------------------
 */
 
-void SU_vector::SetAllComponents(double x){
-  for(unsigned int i = 0; i < size; i++)
-    components[i] = x;
-}
-
 std::vector<double> SU_vector::GetComponents() const{
   std::vector<double> x ( dim*dim );
   for (unsigned int i = 0; i < dim*dim ; i++)

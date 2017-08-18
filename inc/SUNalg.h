@@ -352,7 +352,10 @@ public:
   ///\brief Overwrite all components with a single value
   ///
   ///\param v The value with which to fill
-  void SetAllComponents(double v);
+  void SetAllComponents(double v){
+    for(unsigned int i=0; i<size; i++)
+      components[i] = v;
+  }
 
   ///\brief Get a copy of the SU_vector's components
   std::vector<double> GetComponents() const;
