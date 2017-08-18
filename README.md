@@ -40,11 +40,11 @@ operating systems:
 Configuration
 -------------
 
-A configure script, config.sh, is provided in the root directory.
+A configure script, configure, is provided in the root directory.
 
 The path for the GSL libraries can be specified running:
 
-	./config.sh --with-gsl-incdir=DIR --with-gsl-libdir=DIR
+	./configure --with-gsl-incdir=DIR --with-gsl-libdir=DIR
 
 if not specified pkg-config will be used to try to find
 the your GSL installation. After successful configuration run:
@@ -61,9 +61,9 @@ Finally, the software can be installed using the command:
 	make install
 
 By default this will attempt to install the library within /usr/local; 
-this can be changed by using the --prefix option when running config.sh:
+this can be changed by using the --prefix option when running configure:
 
-	./config --prefix=$HOME
+	./configure --prefix=$HOME
 
 will select to install the software in the current user's home directory, 
 for example. 
