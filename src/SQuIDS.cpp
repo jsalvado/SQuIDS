@@ -47,7 +47,9 @@ h(std::numeric_limits<double>::epsilon()),
 h_min(std::numeric_limits<double>::min()),
 h_max(std::numeric_limits<double>::max()),
 abs_error(1e-20),
-rel_error(1e-20)
+rel_error(1e-20),
+last_dstate_ptr(nullptr),
+last_estate_ptr(nullptr)
 {
   sys.function = &RHS;
   sys.jacobian = NULL;
@@ -154,13 +156,23 @@ void SQuIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
 };
 
 void SQuIDS::set_system_pointers(double* sp, double* dp){
-  for(unsigned int ei = 0; ei < nx; ei++){
-    for(unsigned int i=0;i<nrhos;i++){
-      estate[ei].rho[i].SetBackingStore(&(sp[ei*size_state+i*size_rho]));
-      dstate[ei].rho[i].SetBackingStore(&(dp[ei*size_state+i*size_rho]));
+  //If the memory we're told to use is the same as in the last call,
+  //we can skip resetting all of the pointers.
+  if(sp!=last_estate_ptr){
+    for(unsigned int ei = 0; ei < nx; ei++){
+      for(unsigned int i=0;i<nrhos;i++)
+        estate[ei].rho[i].SetBackingStore(&(sp[ei*size_state+i*size_rho]));
+      estate[ei].scalar=&(sp[ei*size_state+nrhos*size_rho]);
     }
-    estate[ei].scalar=&(sp[ei*size_state+nrhos*size_rho]);
-    dstate[ei].scalar=&(dp[ei*size_state+nrhos*size_rho]);
+    last_estate_ptr=sp;
+  }
+  if(dp!=last_dstate_ptr){
+    for(unsigned int ei = 0; ei < nx; ei++){
+      for(unsigned int i=0;i<nrhos;i++)
+        dstate[ei].rho[i].SetBackingStore(&(dp[ei*size_state+i*size_rho]));
+      dstate[ei].scalar=&(dp[ei*size_state+nrhos*size_rho]);
+    }
+    last_dstate_ptr=dp;
   }
 }
 

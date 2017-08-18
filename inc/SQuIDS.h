@@ -139,6 +139,8 @@ class SQuIDS {
   double abs_error;
   double rel_error;
   std::unique_ptr<SU_state[]> dstate;
+  double* last_dstate_ptr;
+  double* last_estate_ptr;
   
   //***************************************************************
   ///\brief Sets the evolution state and derivative system pointer for GSL use
