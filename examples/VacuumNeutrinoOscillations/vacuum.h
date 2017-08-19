@@ -32,11 +32,11 @@
 
 #include <iostream>
 #include <float.h>
-#include <math.h>
+#include <cmath>
 #include <complex>
 #include <vector>
 
-#include <SQuIDS.h>
+#include <SQuIDS/SQuIDS.h>
 
 class vacuum: public squids::SQuIDS {
  private:

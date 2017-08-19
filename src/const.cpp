@@ -21,14 +21,14 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-#include "const.h"
+#include <SQuIDS/const.h>
 
 #include <cmath>
 #include <complex>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_blas.h>
 
-#include "SU_inc/dimension.h"
+#include <SQuIDS/SU_inc/dimension.h>
 
 namespace squids{
 

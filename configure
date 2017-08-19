@@ -214,14 +214,14 @@ echo 'Cflags: -I${includedir}' "${EXTERNAL_CFLAGS}" >> lib/squids.pc
 echo "Generating version header..."
 sed -e "s|__SQUIDS_VERSION__|$VERSION_NUM|g" \
     -e "s|__SQUIDS_VERSION_STR__|$VERSION|g" \
-    < resources/version.h.in > inc/version.h
+    < resources/version.h.in > include/SQuIDS/version.h
 
 echo "Generating makefile..."
 
 echo "# Directories
 LIBDIR:=lib
-INCDIR:=inc
-SUINCDIR:=inc/SU_inc
+INCDIR:=include
+SQINCDIR:=include/SQuIDS
 SRCDIR:=src
 
 # Compiler
@@ -233,7 +233,7 @@ LD:=$LD
 GSL_CFLAGS=$GSL_CFLAGS
 GSL_LDFLAGS=$GSL_LDFLAGS
 
-CFLAGS:=$CFLAGS "'-O3 -fPIC -I$(INCDIR) -I$(SUINCDIR) $(GSL_CFLAGS)'"
+CFLAGS:=$CFLAGS "'-O3 -fPIC -I$(INCDIR) $(GSL_CFLAGS)'"
 CXXFLAGS:=$CXXFLAGS
 LDFLAGS:=$LDFLAGS "'-Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)'"
 
@@ -266,16 +266,16 @@ $(STAT_PRODUCT) : $(OBJECTS)
 	@echo Linking `basename $(STAT_PRODUCT)`
 	@$(AR) -rcs $(STAT_PRODUCT) $(OBJECTS)
 
-$(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(INCDIR)/const.h Makefile
+$(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(SQINCDIR)/const.h Makefile
 	@echo Compiling const.cpp to const.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/const.cpp -o $@
-$(LIBDIR)/SQuIDS.o: $(SRCDIR)/SQuIDS.cpp $(INCDIR)/SQuIDS.h $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
+$(LIBDIR)/SQuIDS.o: $(SRCDIR)/SQuIDS.cpp $(SQINCDIR)/SQuIDS.h $(SQINCDIR)/SUNalg.h $(SQINCDIR)/const.h Makefile
 	@echo Compiling SQuIDS.cpp to SQuIDS.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQuIDS.cpp -o $@
-$(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(INCDIR)/SUNalg.h $(INCDIR)/const.h Makefile
+$(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(SQINCDIR)/SUNalg.h $(SQINCDIR)/const.h Makefile
 	@echo Compiling SUNalg.cpp to SUNalg.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SUNalg.cpp -o $@
-$(LIBDIR)/MatrixExp.o: $(SRCDIR)/MatrixExp.cpp $(INCDIR)/SUNalg.h  Makefile
+$(LIBDIR)/MatrixExp.o: $(SRCDIR)/MatrixExp.cpp $(SQINCDIR)/SUNalg.h  Makefile
 	@echo Compiling MatrixExp.cpp to MatrixExp.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/MatrixExp.cpp -o $@
 
@@ -299,12 +299,12 @@ check: $(DYN_PRODUCT) $(STAT_PRODUCT)
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
 	@mkdir -p $(PREFIX)/include/SQuIDS
-	@cp $(INCDIR)/*.h $(PREFIX)/include/SQuIDS
+	@cp $(INCDIR)/SQuIDS/*.h $(PREFIX)/include/SQuIDS
 	@mkdir -p $(PREFIX)/include/SQuIDS/detail
-	@cp $(INCDIR)/detail/*.h $(PREFIX)/include/SQuIDS/detail
+	@cp $(INCDIR)/SQuIDS/detail/*.h $(PREFIX)/include/SQuIDS/detail
 	@mkdir -p $(PREFIX)/include/SQuIDS/SU_inc
-	@cp $(INCDIR)/SU_inc/*.h $(PREFIX)/include/SQuIDS/SU_inc
-	@cp $(INCDIR)/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
+	@cp $(INCDIR)/SQuIDS/SU_inc/*.h $(PREFIX)/include/SQuIDS/SU_inc
+	@cp $(INCDIR)/SQuIDS/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
 	@echo Installing libraries in $(PREFIX)/lib
 	@mkdir -p $(PREFIX)/lib
 	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/lib

@@ -21,7 +21,7 @@
  *         jsalvado@icecube.wisc.edu                                           *
  ******************************************************************************/
 
-#include "SUNalg.h"
+#include <SQuIDS/SUNalg.h>
 
 #include <ostream>
 #include <complex>
@@ -170,7 +170,7 @@ isinit_d(false)
   // the following rules are valid ONLY when the initial
   // matrix is hermitian
 
-#include "MatrixToSUSelect.txt"
+#include <SQuIDS/SU_inc/MatrixToSUSelect.txt>
 };
   
 SU_vector SU_vector::make_aligned(unsigned int dim, bool zero_fill){
@@ -202,7 +202,7 @@ namespace{
   };
 
 void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
-#include "MatrixToSUSelect.txt"
+#include <SQuIDS/SU_inc/MatrixToSUSelect.txt>
 }
 } // close unnamed namespace
 
@@ -315,7 +315,7 @@ SU_vector::GetGSLMatrix() const {
   if( !isinit and !isinit_d)
     throw std::runtime_error("SU_vector::GetGSLMatrix(): SU_vector not initialized.");
   gsl_matrix_complex * matrix = gsl_matrix_complex_alloc(dim,dim);
-#include "SUToMatrixSelect.txt"
+#include <SQuIDS/SU_inc/SUToMatrixSelect.txt>
   return std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>(matrix,gsl_matrix_complex_free);
 }
 
@@ -432,7 +432,7 @@ SU_vector::GetEigenSystem(bool order) const{
   switch (dim) {
     case 3:
           {
-#include "EigenSystemSU3.txt"
+#include <SQuIDS/SU_inc/EigenSystemSU3.txt>
           }
           break;
     default:
@@ -456,7 +456,7 @@ SU_vector SU_vector::Rotate(const gsl_matrix_complex* m) const{
   SU_vector suv_new(dim);
   if ( m->size1 != dim or m->size2 != dim )
     throw std::runtime_error("SU_vector::Rotate(gsl_matrix_complex): matrix dimensions and SU_vector dimensions do not match.");
-#include "unitary_rotation_switcher.h"
+#include <SQuIDS/SU_inc/unitary_rotation_switcher.h>
   return suv_new;
 }
 */
@@ -559,7 +559,7 @@ SU_vector SU_vector::Rotate(unsigned int ii, unsigned int jj, double th, double 
 
   assert(i<j && "Components selected for rotation must be in ascending order");
 
-#include "rotation_switcher.h"
+#include <SQuIDS/SU_inc/rotation_switcher.h>
 
   return suv_rot;
 }
