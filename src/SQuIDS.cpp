@@ -92,7 +92,9 @@ nrhos(other.nrhos),
 nscalars(other.nscalars),
 params(std::move(other.params)),
 state(std::move(other.state)),
-estate(std::move(other.estate))
+estate(std::move(other.estate)),
+last_dstate_ptr(other.last_dstate_ptr),
+last_estate_ptr(other.last_estate_ptr)
 {
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
@@ -116,7 +118,7 @@ void SQuIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
   t_ini=ti;
   t=ti;
 
-  //Allocate memeroy for the system
+  //Allocate memory for the system
   unsigned int numeqn=nx*size_state;
   system.reset(new double[numeqn]);
   sys.dimension = static_cast<size_t>(numeqn);
@@ -151,6 +153,8 @@ void SQuIDS::ini(unsigned int n, unsigned int nsu, unsigned int nrh, unsigned in
       estate[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
     }
   }
+  last_dstate_ptr=nullptr;
+  last_estate_ptr=nullptr;
 
   is_init=true;
 };
@@ -212,6 +216,8 @@ SQuIDS& SQuIDS::operator=(SQuIDS&& other){
   params=std::move(other.params);
   state=std::move(other.state);
   estate=std::move(other.estate);
+  last_dstate_ptr=other.last_dstate_ptr;
+  last_estate_ptr=other.last_estate_ptr;
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
   
