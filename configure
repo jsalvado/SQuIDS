@@ -279,7 +279,7 @@ $(LIBDIR)/MatrixExp.o: $(SRCDIR)/MatrixExp.cpp $(SQINCDIR)/SUNalg.h  Makefile
 	@echo Compiling MatrixExp.cpp to MatrixExp.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/MatrixExp.cpp -o $@
 
-.PHONY: clean install doxygen docs test check
+.PHONY: clean install uninstall doxygen docs test check
 clean:
 	@echo Erasing generated files
 	@rm -f $(LIBDIR)/*.o $(LIBDIR)/*.a $(LIBDIR)/*.so $(LIBDIR)/*.dylib
@@ -311,6 +311,15 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
 	@mkdir -p $(PREFIX)/lib/pkgconfig
 	@cp $(LIBDIR)/squids.pc $(PREFIX)/lib/pkgconfig
+
+uninstall:
+	@echo Removing headers from $(PREFIX)/include/SQuIDS
+	@rm -rf $(PREFIX)/include/SQuIDS
+	@echo Removing libraries from $(PREFIX)/lib
+	@rm -f $(PREFIX)/lib/$(DYN_PRODUCT)
+	@rm -f $(PREFIX)/lib/$(STAT_PRODUCT)
+	@echo Removing config information from $(PREFIX)/lib/pkgconfig
+	@rm -f $(PREFIX)/lib/pkgconfig/squids.pc
 ' >> Makefile
 
 echo "
