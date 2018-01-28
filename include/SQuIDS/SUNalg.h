@@ -426,10 +426,13 @@ public:
   std::pair<std::unique_ptr<gsl_vector,void (*)(gsl_vector*)>,
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)>> GetEigenSystem(bool order = true) const;
 
-  ///\brief Returns the Eigen vector set that diagonalizes
-  /// the given SU_vector
   ///\brief Construct a GSL matrix from a SU_vector
   std::unique_ptr<gsl_matrix_complex,void (*)(gsl_matrix_complex*)> GetGSLMatrix() const;
+  
+  ///\brief Construct a GSL matrix from a SU_vector
+  ///\param m the matrix into which the result is stored
+  ///\pre m must be a square matrix of size this->Dim()
+  void GetGSLMatrix(gsl_matrix_complex* m) const;
 
   ///\brief Compute the time evolution of the SU_vector
   ///

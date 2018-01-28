@@ -11,6 +11,9 @@
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_blas.h>
 
+#include "SQuIDS/detail/MatrixExp.h"
+#include "SQuIDS/detail/ProxyFwd.h"
+
 namespace squids{
 
 namespace math_detail{
@@ -89,8 +92,11 @@ double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
   if (p == 1)
     return one_normest_core(M);
 
-  gsl_matrix_complex * MP = gsl_matrix_complex_alloc(M->size1,M->size2);
-  gsl_matrix_complex * tmp = gsl_matrix_complex_alloc(M->size1,M->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder MP;
+  MP.reset(M->size1,M->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder tmp;
+  tmp.reset(M->size1,M->size2);
+  
   for(unsigned int i=0; i<p-1; i++){
       if(i==0){
         gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,M,M,GSL_COMPLEX_ZERO,MP);
@@ -108,8 +114,6 @@ double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
     gsl_matrix_complex_memcpy(MP,tmp);
 
   double onc = one_normest_core(MP);
-  gsl_matrix_complex_free(MP);
-  gsl_matrix_complex_free(tmp);
   return onc;
 }
 
@@ -303,12 +307,87 @@ void sign_round_up(gsl_matrix_complex * S, const gsl_matrix_complex * Y){
 }
 
 double one_normest_product(const gsl_matrix_complex *A,const gsl_matrix_complex *B){
-  gsl_matrix_complex * product = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder product;
+  product.reset(A->size1,A->size2);
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,B,A,GSL_COMPLEX_ZERO,product);
   double normest = one_normest_core(product);
-  gsl_matrix_complex_free(product);
   return normest;
 }
+  
+struct gsl_rng_holder{
+  const gsl_rng_type* T;
+  gsl_rng* r;
+  gsl_rng_holder():T(gsl_rng_env_setup()),r(gsl_rng_alloc(T)){}
+  ~gsl_rng_holder(){ gsl_rng_free(r); }
+  operator gsl_rng*(){ return r; }
+};
+  
+struct one_normest_core_scratch_space{
+  gsl_matrix_complex* X;
+  gsl_matrix_complex* Y;
+  gsl_matrix_complex* Z;
+  gsl_matrix_complex* S;
+  gsl_matrix_complex* S_old;
+  gsl_vector_complex* w;
+  gsl_vector* h;
+  gsl_vector* mags;
+  std::vector<unsigned int> ind;
+  std::vector<unsigned int> ind_hist;
+  std::vector<unsigned int> used_enties;
+  std::vector<unsigned int> unused_enties;
+  
+  one_normest_core_scratch_space():
+  X(nullptr),Y(nullptr),Z(nullptr),S(nullptr),S_old(nullptr),
+  w(nullptr),h(nullptr),mags(nullptr){}
+  
+  ~one_normest_core_scratch_space(){
+    gsl_matrix_complex_free(X);
+    gsl_matrix_complex_free(Y);
+    gsl_matrix_complex_free(Z);
+    gsl_matrix_complex_free(S);
+    gsl_matrix_complex_free(S_old);
+    gsl_vector_complex_free(w);
+    gsl_vector_free(h);
+    gsl_vector_free(mags);
+  }
+  
+  void reset(unsigned int n, unsigned int t){
+    //matrices are all the same size and can be grouped together
+    if(!X || n!=X->size1 || t!=X->size2){
+      if(X){
+        gsl_matrix_complex_free(X);
+        gsl_matrix_complex_free(Y);
+        gsl_matrix_complex_free(Z);
+        gsl_matrix_complex_free(S);
+        gsl_matrix_complex_free(S_old);
+      }
+      X = gsl_matrix_complex_alloc(n,t);
+      Y = gsl_matrix_complex_alloc(n,t);
+      Z = gsl_matrix_complex_alloc(n,t);
+      S = gsl_matrix_complex_alloc(n,t);
+      S_old = gsl_matrix_complex_alloc(n,t);
+    }
+    //w and h are the same size
+    if(!w || n!=w->size){
+      if(w){
+        gsl_vector_complex_free(w);
+        gsl_vector_free(h);
+      }
+      w = gsl_vector_complex_alloc(n);
+      h = gsl_vector_alloc(n);
+    }
+    if(!mags || t!=mags->size){
+      if(mags)
+        gsl_vector_free(mags);
+      mags = gsl_vector_alloc(t);
+    }
+    ind.resize(n);
+    ind_hist.clear();
+    ind_hist.reserve(n);
+    used_enties.reserve(n);
+    unused_enties.reserve(n);
+  }
+};
 
 double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned int itmax){
   assert(A->size1 == A->size2);
@@ -322,19 +401,25 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
   unsigned int n = A->size1;
   unsigned int nmults = 0;
   unsigned int nresamples = 0;
+  
+  SQUIDS_THREAD_LOCAL gsl_rng_holder r;
+  SQUIDS_THREAD_LOCAL one_normest_core_scratch_space scratch;
+  scratch.reset(n,t);
+  gsl_matrix_complex* X=scratch.X;
+  gsl_matrix_complex* Y=scratch.Y;
+  gsl_matrix_complex* Z=scratch.Z;
+  gsl_matrix_complex* S=scratch.S;
+  gsl_matrix_complex* S_old=scratch.S_old;
+  gsl_vector_complex* w=scratch.w;
+  gsl_vector* h=scratch.h;
+  gsl_vector* mags=scratch.mags;
+  std::vector<unsigned int>& ind=scratch.ind;
+  std::vector<unsigned int>& ind_hist=scratch.ind_hist;
+  std::vector<unsigned int>& used_enties=scratch.used_enties;
+  std::vector<unsigned int>& unused_enties=scratch.unused_enties;
 
-  // random number generator for the sampling
-  const gsl_rng_type * T;
-  gsl_rng * r;
-  gsl_rng_env_setup();
-
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-
-  //gsl_matrix * X = gsl_matrix_alloc(n,t);
-  gsl_matrix_complex * X = gsl_matrix_complex_alloc(n,t);
-  //gsl_matrix_set_all(X,1.0);
   gsl_matrix_complex_set_all(X,GSL_COMPLEX_ONE);
+  gsl_matrix_complex_set_all(S,GSL_COMPLEX_ZERO);
 
   // this produces random X guys
   if (t > 1){
@@ -353,24 +438,11 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
   }
   //gsl_matrix_scale(X,1./n);
   gsl_matrix_complex_scale(X,gsl_complex_rect(1./n,0.));
-  //gsl_matrix * S = gsl_matrix_calloc(n,t);
-  //gsl_matrix * S_old = gsl_matrix_alloc(n,t);
-  gsl_matrix_complex * S = gsl_matrix_complex_calloc(n,t);
-  gsl_matrix_complex * S_old = gsl_matrix_complex_alloc(n,t);
   double est_old=0;
   unsigned int k=0;
   unsigned int ind_best=0;
-  std::vector<unsigned int> ind(n);
-  std::vector<unsigned int> ind_hist;
-  for(unsigned int i=0; i < ind.size(); i++)
+  for(unsigned int i=0; i<n; i++)
     ind[i] = i;
-
-  gsl_matrix_complex * Y = gsl_matrix_complex_alloc(n,t);
-  gsl_matrix_complex * Z = gsl_matrix_complex_alloc(n,t);
-  gsl_vector * h = gsl_vector_alloc(n);
-  //gsl_vector * w = gsl_vector_alloc(n);
-  gsl_vector_complex * w = gsl_vector_complex_alloc(n);
-  gsl_vector * mags = gsl_vector_alloc(t);
 
   double est; unsigned int best_j;
   //std::cout << "start loop of death" << std::endl;
@@ -474,8 +546,8 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
       //  break;
 
       //(5)
-      std::vector<unsigned int> unused_enties;
-      std::vector<unsigned int> used_enties;
+      used_enties.clear();
+      unused_enties.clear();
       for(unsigned int ii : ind){
         bool ii_is_in_indhist = false;
         for(unsigned int jj : ind_hist){
@@ -517,16 +589,6 @@ double one_normest_core(const gsl_matrix_complex *A, unsigned int t, unsigned in
 
   //std::cout << "est: " << est << std::endl;
 
-  gsl_rng_free(r);
-  gsl_vector_free(h);
-  gsl_vector_free(mags);
-  gsl_vector_complex_free(w);
-  gsl_matrix_complex_free(S);
-  gsl_matrix_complex_free(S_old);
-  gsl_matrix_complex_free(X);
-  gsl_matrix_complex_free(Y);
-  gsl_matrix_complex_free(Z);
-
   //std::cout << "END CRAZY Function" << std::endl;
   return est;
 }
@@ -538,7 +600,8 @@ int ell(const gsl_matrix_complex * A,unsigned int m){
  // round up threshold
  double u = pow(2.,-53);
 
- gsl_matrix_complex * absA = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder absA;
+  absA.reset(A->size1,A->size2);
  gsl_matrix_complex_memcpy(absA,A);
  for(unsigned int i = 0; i < absA->size1; i++){
    for(unsigned int j = 0; j < absA->size2; j++){
@@ -548,7 +611,6 @@ int ell(const gsl_matrix_complex * A,unsigned int m){
  }
 
  double est = one_normest_matrix_power(absA,p);
- gsl_matrix_complex_free(absA);
 
  if (not est)
    return 0;
@@ -649,7 +711,8 @@ void pade13(const gsl_matrix_complex *A, const gsl_matrix_complex *id,
                         1187353796428800., 129060195264000., 10559470521600., 670442572800.,
                         33522128640., 1323241920., 40840800., 960960., 16380., 182., 1.};
 
-  gsl_matrix_complex * tmp = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder tmp;
+  tmp.reset(A->size1,A->size2);
 
   // here we will use V as a temp to calculate U
   gsl_matrix_complex_mul(V,A2,gsl_complex_rect(b[9],0.));
@@ -678,18 +741,35 @@ void pade13(const gsl_matrix_complex *A, const gsl_matrix_complex *id,
   gsl_matrix_complex_add(V,A6,gsl_complex_rect(b[6],0.));
   gsl_matrix_complex_add(V,tmp,GSL_COMPLEX_ONE);
 
-  gsl_matrix_complex_free(tmp);
+//  gsl_matrix_complex_free(tmp);
   return;
 }
 
-
+struct gsl_permutation_holder{
+  gsl_permutation* p;
+  gsl_permutation_holder():p(nullptr){}
+  ~gsl_permutation_holder(){ gsl_permutation_free(p); }
+  void reset(unsigned int n){
+    if(!p || n!=p->size){
+      if(p)
+        gsl_permutation_free(p);
+      p = gsl_permutation_alloc(n);
+    }
+  }
+  operator gsl_permutation*(){ return p; }
+  gsl_permutation* operator->(){ return p; }
+};
 
 void solve_P_Q(const gsl_matrix_complex * U, const gsl_matrix_complex *V,
                 gsl_matrix_complex * SPQ){
   // this functions solves the problem (V-U) X = (U+V)
   // not sure what do to here at the moment
-  gsl_matrix_complex * P = gsl_matrix_complex_alloc(U->size1,U->size2);
-  gsl_matrix_complex * Q = gsl_matrix_complex_alloc(U->size1,U->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder P;
+  P.reset(U->size1,U->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder Q;
+  Q.reset(U->size1,U->size2);
+  SQUIDS_THREAD_LOCAL gsl_permutation_holder per;
+  per.reset(U->size1);
   /*
   std::cout << "V" << std::endl;
   gsl_matrix_complex_print(V);
@@ -701,7 +781,6 @@ void solve_P_Q(const gsl_matrix_complex * U, const gsl_matrix_complex *V,
   gsl_matrix_complex_add(P,U,GSL_COMPLEX_ONE);
   gsl_matrix_complex_sub(Q,U,GSL_COMPLEX_ONE);
 
-  gsl_permutation * per = gsl_permutation_alloc(U->size1);
   int sign;
   /*
   std::cout << "Q" << std::endl;
@@ -716,21 +795,38 @@ void solve_P_Q(const gsl_matrix_complex * U, const gsl_matrix_complex *V,
     gsl_vector_complex_view out_column = gsl_matrix_complex_column(SPQ,col);
     gsl_linalg_complex_LU_solve(Q,per,&in_column.vector,&out_column.vector);
   }
-
-  gsl_matrix_complex_free(P);
-  gsl_matrix_complex_free(Q);
-  gsl_permutation_free(per);
 }
 
-void matrix_exponential(gsl_matrix_complex * eA, const gsl_matrix_complex *A){
+void matrix_exponential(gsl_matrix_complex* eA, const gsl_matrix_complex *A){
+  //gsl_matrix_complex_print(A); std::cout << '\n';
+  bool isDiagonal=true;
+  for(unsigned int i = 0; i<A->size1; i++){
+    for(unsigned int j = 0; j<A->size2; j++){
+      if(i!=j){
+        if(gsl_matrix_complex_get(A,i,j).dat[0] || gsl_matrix_complex_get(A,i,j).dat[1])
+          isDiagonal=false;
+      }
+    }
+  }
+  if(isDiagonal){
+    gsl_matrix_complex_set_all(eA,GSL_COMPLEX_ZERO);
+    for(unsigned int i = 0; i<A->size1; i++)
+      gsl_matrix_complex_set(eA,i,i,gsl_complex_exp(gsl_matrix_complex_get(A,i,i)));
+    return; //done!
+  }
+  
   // construct the identity matrix
-  gsl_matrix_complex * id = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder id;
+  id.reset(A->size1,A->size2);
   gsl_matrix_complex_set_identity(id);
   // these matrices are always needed
-  gsl_matrix_complex * U = gsl_matrix_complex_alloc(A->size1,A->size2);
-  gsl_matrix_complex * V = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder U;
+  U.reset(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder V;
+  V.reset(A->size1,A->size2);
   // try Pade order 3.
-  gsl_matrix_complex * A2 = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder A2;
+  A2.reset(A->size1,A->size2);
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,A,A,GSL_COMPLEX_ZERO,A2);
   //gsl_matrix_complex_print(A2);
   double d6 = pow(one_normest_matrix_power(A2,3),1./6.);
@@ -738,31 +834,23 @@ void matrix_exponential(gsl_matrix_complex * eA, const gsl_matrix_complex *A){
   if (eta_1 < 1.495585217958292e-002 and ell(A, 3) == 0){
     pade3(A,id,A2,U,V);
     solve_P_Q(U,V,eA);
-    // free allocated matrices
-    gsl_matrix_complex_free(id);
-    gsl_matrix_complex_free(U);
-    gsl_matrix_complex_free(V);
-    gsl_matrix_complex_free(A2);
     return;
   }
   // try Pade order 5
-  gsl_matrix_complex * A4 = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder A4;
+  A4.reset(A->size1,A->size2);
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,A2,A2,GSL_COMPLEX_ZERO,A4);
   double d4 = pow(exact_1_norm(A4),1./4.);
   double eta_2 = std::max(d4,d6);
   if (eta_2 < 2.539398330063230e-001 and ell(A, 5) == 0){
     pade5(A,id,A2,A4,U,V);
     solve_P_Q(U,V,eA);
-    // free allocated matrices
-    gsl_matrix_complex_free(id);
-    gsl_matrix_complex_free(U);
-    gsl_matrix_complex_free(V);
-    gsl_matrix_complex_free(A2);
-    gsl_matrix_complex_free(A4);
     return;
   }
   // try Pade order 7 and 9
-  gsl_matrix_complex * A6 = gsl_matrix_complex_alloc(A->size1,A->size2);
+  //gsl_matrix_complex * A6 = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder A6;
+  A6.reset(A->size1,A->size2);
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,A2,A4,GSL_COMPLEX_ZERO,A6);
   d6 = pow(exact_1_norm(A6),1./6.);
   double d8 = pow(one_normest_matrix_power(A4,2),1./8.);
@@ -772,12 +860,6 @@ void matrix_exponential(gsl_matrix_complex * eA, const gsl_matrix_complex *A){
     pade7(A,id,A2,A4,A6,U,V);
     solve_P_Q(U,V,eA);
     // free allocated matrices
-    gsl_matrix_complex_free(id);
-    gsl_matrix_complex_free(U);
-    gsl_matrix_complex_free(V);
-    gsl_matrix_complex_free(A2);
-    gsl_matrix_complex_free(A4);
-    gsl_matrix_complex_free(A6);
     return;
   }
 
@@ -785,12 +867,6 @@ void matrix_exponential(gsl_matrix_complex * eA, const gsl_matrix_complex *A){
     pade9(A,id,A2,A4,A6,U,V);
     solve_P_Q(U,V,eA);
     // free allocated matrices
-    gsl_matrix_complex_free(id);
-    gsl_matrix_complex_free(U);
-    gsl_matrix_complex_free(V);
-    gsl_matrix_complex_free(A2);
-    gsl_matrix_complex_free(A4);
-    gsl_matrix_complex_free(A6);
     return;
   }
 
@@ -801,7 +877,8 @@ void matrix_exponential(gsl_matrix_complex * eA, const gsl_matrix_complex *A){
   double theta_13 = 4.25;
   int u = std::ceil(log(eta_5/theta_13)/M_LN2);
   unsigned int s = std::max(u,0);
-  gsl_matrix_complex * B = gsl_matrix_complex_alloc(A->size1,A->size2);
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder B;
+  B.reset(A->size1,A->size2);
   gsl_matrix_complex_memcpy(B,A);
   gsl_matrix_complex_scale(B,gsl_complex_rect(pow(2.,s*(-1.)),0));
   s += ell(B,13);
@@ -857,16 +934,8 @@ void matrix_exponential(gsl_matrix_complex * eA, const gsl_matrix_complex *A){
   std::cout << std::endl;
   */
 
-  gsl_matrix_complex_free(id);
-  gsl_matrix_complex_free(U);
-  gsl_matrix_complex_free(V);
-  gsl_matrix_complex_free(B);
-  gsl_matrix_complex_free(A2);
-  gsl_matrix_complex_free(A4);
-  gsl_matrix_complex_free(A6);
-
   return;
 }
 
-} // close math_detal namespace
+} // close math_detail namespace
 } // close squids namespace
