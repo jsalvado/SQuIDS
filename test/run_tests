@@ -47,7 +47,7 @@ if [ -f env_vars.sh ]; then
 	. ./env_vars.sh
 fi
 
-COMPILE_COMMAND="$CXX -I../include $CFLAGS $CXXFLAGS -g -I./ -L../lib"
+COMPILE_COMMAND="$CXX -I../include $CFLAGS $CXXFLAGS -g -O3 -I./ -L../lib"
 TEST_LIB_FLAGS="$LDFLAGS -lSQuIDS -lgsl -lgslcblas"
 CLEAN_COMMAND_FILE="clean_fail.sed"
 
