@@ -35,11 +35,12 @@
 #endif
 
 #include <cassert>
-#include <vector>
-#include <iosfwd>
 #include <cmath>
+#include <functional>
+#include <iosfwd>
 #include <memory>
 #include <stdexcept>
+#include <vector>
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
@@ -175,6 +176,14 @@ private:
         isinit_d=proxy.suv1.isinit_d;
         if(isinit)
           const_cast<SU_vector&>(proxy.suv1).isinit=false; //complete the theft
+      }
+      else if(proxy.mayStealArg2()){ //if the operation is component-wise and suv2 is an rvalue
+        components=proxy.suv2.components; //take suv2's backing storage
+        ptr_offset=proxy.suv2.ptr_offset;
+        isinit=proxy.suv2.isinit;
+        isinit_d=proxy.suv2.isinit_d;
+        if(isinit)
+          const_cast<SU_vector&>(proxy.suv2).isinit=false; //complete the theft
       }
       else{
         alloc_aligned(dim,size,components,ptr_offset);
@@ -704,6 +713,8 @@ public:
   friend struct detail::MultiplicationProxy;
   friend struct detail::iCommutatorProxy;
   friend struct detail::ACommutatorProxy;
+  template<typename Op>
+  friend struct detail::BinaryElementwiseOpProxy;
 
   friend struct detail::SU_vector_operator_access;
 
@@ -777,6 +788,84 @@ detail::MultiplicationProxy operator*(double x, const SU_vector& v){
 template<typename=void>
 detail::MultiplicationProxy operator*(double x, SU_vector&& v){
   return(detail::MultiplicationProxy{v,x,detail::Arg1Movable});
+}
+  
+///\brief Apply an arbitrary binary operation element-wise to two SU_vectors.
+///\param op the operation to apply
+///\param suv1 the 'left' or first operand
+///\param suv2 the 'right' or second operand
+///\return (an object convertible to) an SU_vector whose components are equal to
+///        the result of applying op to the corresponding elements of suv1 and
+///        suv2.
+template<typename Op>
+detail::BinaryElementwiseOpProxy<Op> ElementwiseOperation(Op op, const SU_vector& suv1, const SU_vector& suv2){
+  if(suv1.Dim()!=suv2.Dim())
+    throw std::runtime_error("Non-matching dimensions in SU_vector element-wise operation");
+  return(detail::BinaryElementwiseOpProxy<Op>{op,suv1,suv2});
+}
+///\brief Apply an arbitrary binary operation element-wise to two SU_vectors.
+///This overload can reuse the storage of the first operand.
+///\param op the operation to apply
+///\param suv1 the 'left' or first operand
+///\param suv2 the 'right' or second operand
+///\return (an object convertible to) an SU_vector whose components are equal to
+///        the result of applying op to the corresponding elements of suv1 and
+///        suv2.
+template<typename Op>
+detail::BinaryElementwiseOpProxy<Op> ElementwiseOperation(Op op, SU_vector&& suv1, const SU_vector& suv2){
+  if(suv1.Dim()!=suv2.Dim())
+    throw std::runtime_error("Non-matching dimensions in SU_vector element-wise operation");
+  return(detail::BinaryElementwiseOpProxy<Op>{op,suv1,suv2,detail::Arg1Movable});
+}
+///\brief Apply an arbitrary binary operation element-wise to two SU_vectors.
+///This overload can reuse the storage of the second operand.
+///\param op the operation to apply
+///\param suv1 the 'left' or first operand
+///\param suv2 the 'right' or second operand
+///\return (an object convertible to) an SU_vector whose components are equal to
+///        the result of applying op to the corresponding elements of suv1 and
+///        suv2.
+template<typename Op>
+detail::BinaryElementwiseOpProxy<Op> ElementwiseOperation(Op op, const SU_vector& suv1, SU_vector&& suv2){
+  if(suv1.Dim()!=suv2.Dim())
+    throw std::runtime_error("Non-matching dimensions in SU_vector element-wise operation");
+  return(detail::BinaryElementwiseOpProxy<Op>{op,suv1,suv2,detail::Arg2Movable});
+}
+///\brief Apply an arbitrary binary operation element-wise to two SU_vectors.
+///This overload can reuse the storage of the first or second operand.
+///\param op the operation to apply
+///\param suv1 the 'left' or first operand
+///\param suv2 the 'right' or second operand
+///\return (an object convertible to) an SU_vector whose components are equal to
+///        the result of applying op to the corresponding elements of suv1 and
+///        suv2.
+template<typename Op>
+detail::BinaryElementwiseOpProxy<Op> ElementwiseOperation(Op op, SU_vector&& suv1, SU_vector&& suv2){
+  if(suv1.Dim()!=suv2.Dim())
+    throw std::runtime_error("Non-matching dimensions in SU_vector element-wise operation");
+  return(detail::BinaryElementwiseOpProxy<Op>{op,suv1,suv2,detail::Arg1Movable|detail::Arg2Movable});
+}
+
+//TODO: It should be possible to do suitable forwarding without four distinct copies of the function!
+///\brief Element-wise product of two SU_vectors
+template<typename=void>
+detail::BinaryElementwiseOpProxy<std::multiplies<double>> ElementwiseProduct(const SU_vector& suv1, const SU_vector& suv2){
+  return(ElementwiseOperation(std::multiplies<double>(),suv1,suv2));
+}
+///\brief Element-wise product of two SU_vectors
+template<typename=void>
+detail::BinaryElementwiseOpProxy<std::multiplies<double>> ElementwiseProduct(SU_vector&& suv1, const SU_vector& suv2){
+  return(ElementwiseOperation(std::multiplies<double>(),std::move(suv1),suv2));
+}
+///\brief Element-wise product of two SU_vectors
+template<typename=void>
+detail::BinaryElementwiseOpProxy<std::multiplies<double>> ElementwiseProduct(const SU_vector& suv1, SU_vector&& suv2){
+  return(ElementwiseOperation(std::multiplies<double>(),suv1,std::move(suv2)));
+}
+///\brief Element-wise product of two SU_vectors
+template<typename=void>
+detail::BinaryElementwiseOpProxy<std::multiplies<double>> ElementwiseProduct(SU_vector&& suv1, SU_vector&& suv2){
+  return(ElementwiseOperation(std::multiplies<double>(),std::move(suv1),std::move(suv2)));
 }
 
 ///\brief Gets the exponential of a GSL complex matrix

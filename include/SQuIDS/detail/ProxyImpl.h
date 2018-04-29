@@ -220,6 +220,39 @@ namespace detail{
     return(SU_vector(*this).Evolve(other,t));
   }
   
+  template<typename Op>
+  template<typename VW, bool Aligned>
+  void BinaryElementwiseOpProxy<Op>::compute(VW target) const{
+    //for(unsigned int i=0; i<target.dim*target.dim; i++)
+    //  target.components[i] += op(suv1.components[i], suv2.components[i]);
+    
+    double* suv1c=this->suv1.components;
+    double* suv2c=this->suv2.components;
+    auto size=this->suv1.size;
+    SQUIDS_COMPILER_ASSUME(size>=1);
+    //if the number of components is odd, handle the first and adjust pointers
+    //to refer to the remainder.
+    if(size%2==1){
+      target.components[0] += op(suv1c[0],suv2c[0]);
+      if(size==1)
+        return;
+      suv1c++;
+      suv2c++;
+      target.components.components++;
+      size--;
+    }
+    //All even squares are multiples of four to begin with, and all odd squares
+    //greater than one are one more than a multiple of four, so now size%4==0.
+    SQUIDS_COMPILER_ASSUME(size%4==0);
+    if(Aligned){
+      SQUIDS_POINTER_IS_ALIGNED(suv1c,32);
+      SQUIDS_POINTER_IS_ALIGNED(suv2c,32);
+      SQUIDS_POINTER_IS_ALIGNED(target.components.components,32);
+    }
+    for(unsigned int i=0; i<size; i++)
+      target.components[i] += op(suv1c[i],suv2c[i]);
+  }
+  
 } //namespace detail
 
 #undef REQUIRE_EVALUATION_PROXY_CORE

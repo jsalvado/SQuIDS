@@ -253,6 +253,11 @@ struct SU_vector_operator_access;
     bool mayStealArg1() const{
       return(flags&detail::Arg1Movable && operation_traits<Op>::elementwise);
     }
+    ///whether the result of the operation can be written directly
+    ///into the storage of the second operand
+    bool mayStealArg2() const{
+      return(flags&detail::Arg2Movable && operation_traits<Op>::elementwise);
+    }
   };
   
   //fwd decls for operation proxies
@@ -444,7 +449,48 @@ struct SU_vector_operator_access;
     constexpr static bool equal_target_size=Flags&EqualSizes;
     constexpr static bool aligned_storage=Flags&AlignedStorage;
   };
-}
+  
+  ///The result of a general element-wise operation on two SU_vectors
+  template<typename Op>
+  struct BinaryElementwiseOpProxy : public EvaluationProxy<BinaryElementwiseOpProxy<Op>>{
+    Op op;
+    
+    ///The application of op to suv1 and suv2
+    BinaryElementwiseOpProxy(Op op, const SU_vector& suv1,const SU_vector& suv2,int flags=0):
+    EvaluationProxy<BinaryElementwiseOpProxy<Op>>{suv1,suv2,flags},op(op){}
+    
+    template<typename VW, bool Aligned=false>
+    void compute(VW target) const;
+  };
+  
+  template<typename Op>
+  struct operation_traits<BinaryElementwiseOpProxy<Op>>{
+    constexpr static bool elementwise=true;
+    constexpr static unsigned int vector_arity=2;
+    constexpr static bool no_alias_target=false;
+    constexpr static bool equal_target_size=false;
+    constexpr static bool aligned_storage=false;
+  };
+
+  template<typename T>
+  struct corresponding_SU_vector{
+    using type=SU_vector;
+  };
+  template<>
+  struct corresponding_SU_vector<const SU_vector&>{
+    using type=const SU_vector&;
+  };
+  template<>
+  struct corresponding_SU_vector<SU_vector&>{
+    using type=SU_vector&;
+  };
+  template<>
+  struct corresponding_SU_vector<SU_vector&&>{
+    using type=SU_vector&&;
+  };
+  
+  
+} //namespace detail
   
 } //namespace SQuIDS
 
