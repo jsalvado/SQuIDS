@@ -124,6 +124,8 @@ size(dim*dim),
 isinit(true),
 isinit_d(false)
 {
+  if(dim==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(dim>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   alloc_aligned(dim,size,components,ptr_offset);
@@ -140,6 +142,8 @@ isinit_d(false)
 {
   if(dim*dim!=size)
     throw std::runtime_error("SU_vector::SU_vector(std::vector<double>): Vector size must be a square");
+  if(dim==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(dim>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::SU_vector(std::vector<double>): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   std::copy(comp.begin(),comp.end(),components);
@@ -155,6 +159,8 @@ isinit_d(false)
 {
   if(m->size1!=m->size2)
     throw std::runtime_error("SU_vector::SU_vector(gsl_matrix_complex*): Matrix must be square");
+  if(dim==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(dim>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::SU_vector(gsl_matrix_complex*): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
 
@@ -207,6 +213,8 @@ void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array
 } // close unnamed namespace
 
 SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
+  if(d==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d)
@@ -226,6 +234,8 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
 }
 
 SU_vector SU_vector::Identity(unsigned int d){
+  if(d==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Identity(unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
 
@@ -243,6 +253,8 @@ SU_vector SU_vector::Identity(unsigned int d){
 }
 
 SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
+  if(d==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d)
@@ -265,6 +277,8 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
 }
 
 SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
+  if(d==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d)
@@ -287,6 +301,8 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
 }
 
 SU_vector SU_vector::Generator(unsigned int d, unsigned int ii){
+  if(d==1)
+    throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Component(unsigned int, unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
   if(ii>=d*d)
