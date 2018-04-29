@@ -21,7 +21,7 @@ int main(){
 	alloc_counting::pattern_fill_allocs=true;
 	alloc_counting::alloc_fill_pattern=0xFF;
 	
-	for(unsigned int i=1; i<=6; i++){
+	for(unsigned int i=2; i<=6; i++){
 		SU_vector v(i);
 		
 		v.SetAllComponents(5);
