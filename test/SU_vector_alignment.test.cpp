@@ -16,7 +16,7 @@ void check_all_components_equal(const SU_vector& v, double expected, std::string
 int main(){
 	double a=1.7, b=2.2, c=3.4;
 	std::string context;
-	for(unsigned int i=1; i<=6; i++){
+	for(unsigned int i=2; i<=6; i++){
 		std::cout << "size " << i << std::endl;
 		//make buffers with some wiggle room
 		std::unique_ptr<double[]> store1(new double[i*i+2*(32/sizeof(double))]);
