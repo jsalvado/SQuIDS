@@ -57,7 +57,7 @@
  
  First, run the included configure script: 
  
-     ./config
+     ./configure
  
  It may be useful to run it with the `--help` flag in order to find out all
  available options. 
