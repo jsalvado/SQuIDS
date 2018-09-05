@@ -42,7 +42,7 @@ void test_move_assign(unsigned int dim){
   const double value=-3.2;
   std::cout << "Move assigning negated vector with dimension " << dim << std::endl;
   alloc_counting::reset_allocation_counters();
-  SU_vector::clear_mem_cache();
+  CLEAR_MEM_CACHE;
   size_t allocated;
   SU_vector v1(dim),v2;
   v1.SetAllComponents(value);
@@ -63,7 +63,7 @@ void test_negate_proxy(unsigned int dim){
   v1.SetAllComponents(d1);
   v2.SetAllComponents(d2);
   alloc_counting::reset_allocation_counters();
-  SU_vector::clear_mem_cache();
+  CLEAR_MEM_CACHE;
   size_t allocated;
   try{
     SU_vector v3=-(std::move(v1)+std::move(v2)); //suppose we no longer care about v1 and v2

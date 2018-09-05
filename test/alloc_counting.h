@@ -48,3 +48,12 @@ void operator delete(void* p) noexcept{
 void operator delete[](void* p) noexcept{
 	free(p);
 }
+
+//A number of tests would like to clear the SU_vector storage cache, but this must be skipped
+//when using a compiler which does not support it.
+//This doesn't realy belong here, but also doesn't seem worth making its own header. 
+#if SQUIDS_USE_STORAGE_CACHE
+        #define CLEAR_MEM_CACHE SU_vector::clear_mem_cache()
+#else
+        #define CLEAR_MEM_CACHE
+#endif

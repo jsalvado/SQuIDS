@@ -20,7 +20,7 @@ void exercise_constructor(unsigned int dim){
 	
 	std::cout << "Internal storage\n";
 	alloc_counting::reset_allocation_counters();
-	SU_vector::clear_mem_cache();
+	CLEAR_MEM_CACHE;
 	SU_vector dest1(source1);
 	auto allocated=alloc_counting::mem_allocated;
 	std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
@@ -37,7 +37,7 @@ void exercise_constructor(unsigned int dim){
 	
 	std::cout << "External storage\n";
 	alloc_counting::reset_allocation_counters();
-	SU_vector::clear_mem_cache();
+	CLEAR_MEM_CACHE;
 	SU_vector dest2(source2);
 	allocated=alloc_counting::mem_allocated;
 	std::cout << allocated/sizeof(double) << " entries allocated" << '\n';
