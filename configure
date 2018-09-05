@@ -182,12 +182,21 @@ if $CXX --version | grep -q 'Free Software Foundation'; then
 	CFLAGS="$CFLAGS -Wno-abi"
 fi
 
+if $CXX --version | grep -q 'Intel Corporation'; then
+	# Recent versions of ICC issue some warnings which are only about whether
+	# optimization hints are working as intended. It would be nice to give it
+	# hints in a form it likes, but right now we would prefer not to frighten
+	# users with it.
+	EXTERNAL_CFLAGS='-I${includedir} -wd2261,3058'
+	CFLAGS="$CFLAGS -wd2261,3058"
+fi
+
 if $CXX --version | grep -q 'Portland Group'; then
 	# PGI warns very aggressively about stylistic issues like newlines at the
 	# ends of files an unnecessary break statements. Neatening these things up
 	# is a low priority, so we ask it to just pipe down for now.
-	EXTERNAL_CFLAGS='--diag_suppress1 --diag_suppress111'
-	CFLAGS="--diag_suppress1 --diag_suppress111"
+	EXTERNAL_CFLAGS='-I${includedir} --diag_suppress1 --diag_suppress111'
+	CFLAGS="$CFLAGS --diag_suppress1 --diag_suppress111"
 	# PGI also gets agry if passed darwin-specific linking flags, so we strip
 	# them out
 	DYN_OPT=`echo "$DYN_OPT" | sed -e 's|-compatibility_version $(VERSION)||' -e 's|-current_version $(VERSION)||'`
