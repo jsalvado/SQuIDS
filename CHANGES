@@ -1,0 +1,17 @@
+Version 1.2
+- Library names have been moved into the `squids` namespace
+- Support for extraction of SU vectors and basis transformations to GSL matrices
+- Implementation of matrix exponentiation for use cases like evolution with non-diagonalized Hamiltonians
+- Implementation of a number of useful matrix operations on SU vectors, including applying arbitrary unitary transformations, extracting real and imaginary components, transposition, and generalized, weighted rotations
+- Support for obtaining the eigensystem which diagonalizes an SU_vector
+- Explicit disallowance of creating or manipulating SU(1) vectors, which are degenerate with scalars
+- A fix to a severe issue in the use of the GSL ODE interface, now giving good output for much less stringent tolerance values
+- Optimization of element-wise operations on SU vectors without the need to allocate temporary storage
+- Redesign of SU vector operations for vectorizability, including optimized allocation of element storage with optimal alignment
+- Implementation of a more efficient version of SU vector time evolution which can share initialization costs across multiple evolutions by the same operator over the same time interval
+- A more precise definition of the meter
+- Improvements to configuration and build system
+- Clean up of capitalization for file and class names
+- Rearrangement of project files to a more standard layout
+- Elimination of memory leaks
+- Limited support for the Intel and Portland Group compilers. These should not be considered guaranteed to work, but have been given minimal testing and appear compile the library correctly. 
