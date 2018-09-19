@@ -320,6 +320,7 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
 	@mkdir -p $(PREFIX)/lib/pkgconfig
 	@cp $(LIBDIR)/squids.pc $(PREFIX)/lib/pkgconfig
+	@./resources/check_install.sh squids "$(PREFIX)"
 
 uninstall:
 	@echo Removing headers from $(PREFIX)/include/SQuIDS
