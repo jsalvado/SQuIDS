@@ -15,3 +15,4 @@ Version 1.2
 - Rearrangement of project files to a more standard layout
 - Elimination of memory leaks
 - Limited support for the Intel and Portland Group compilers. These should not be considered guaranteed to work, but have been given minimal testing and appear compile the library correctly. 
+- Added additional unit converstions to SQuIDS constants

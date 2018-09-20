@@ -78,6 +78,8 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     #===============================================================================
     */
     // Energy
+    EeV = 1.0e18;                   // [eV/EeV]
+    PeV = 1.0e15;                   // [eV/PeV]
     TeV = 1.0e12;                   // [eV/TeV]
     GeV = 1.0e9;                    // [eV/GeV]
     MeV = 1.0e6;                    // [eV/MeV]
@@ -101,6 +103,9 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     AU = 149.60e9*meter;            // [eV^-1/AU]
     ly = 9.4605284e15*meter;        // [eV^-1/ly]
     parsec = 3.08568025e16*meter;   // [eV^-1/parsec]
+    kparsec = 1.e3*parsec;          // [eV^-1/kparsec]
+    Mparsec = 1.e6*parsec;          // [eV^-1/Mparsec]
+    Gparsec = 1.e9*parsec;          // [eV^-1/Gparsec]
     // luminosity
     picobarn = 1.0e-36*pow(cm,2);       // [eV^-2/pb]
     femtobarn = 1.0e-39*pow(cm,2);      // [eV^-2/fb]

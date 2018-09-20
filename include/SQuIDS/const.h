@@ -60,6 +60,8 @@ public :
   double e_charge;
   /////////// units //////////
   // energy
+  double EeV;
+  double PeV;
   double TeV;
   double GeV;
   double MeV;
@@ -83,6 +85,9 @@ public :
   double AU;
   double ly;
   double parsec;
+  double kparsec;
+  double Mparsec;
+  double Gparsec;
   // luminocity
   double picobarn;
   double femtobarn;
