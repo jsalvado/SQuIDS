@@ -24,7 +24,7 @@
     #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) do{}while(0) //not available
   #endif
 #endif
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER)
   //All GCC versions otherwise able to compile the code should support this
   #define SQUIDS_COMPILER_ASSUME(axiom) if(not (axiom)) __builtin_unreachable()
   #define SQUIDS_POINTER_IS_ALIGNED(ptr,alignment) \
@@ -51,16 +51,18 @@
   #define __has_attribute(x) 0
 #endif
 #if __has_attribute(always_inline)
-  #define SQUIDS_ALWAYS_INLINE __attribute__((always_inline))
+  #define SQUIDS_ALWAYS_INLINE __attribute__((always_inline)) inline
 #else
   #define SQUIDS_ALWAYS_INLINE
 #endif
 
 //determine whether we can do atomic operations
 #ifdef __PGI
-  #define SQUIDS_USE_STORAGE_CACHE 0
-#else
-  #define SQUIDS_USE_STORAGE_CACHE 1
+  #if __PGIC__<18
+    #define SQUIDS_USE_STORAGE_CACHE 0
+  #else
+    #define SQUIDS_USE_STORAGE_CACHE 1
+  #endif
 #endif
 
 //Determine what name if any to use for thread local storage
