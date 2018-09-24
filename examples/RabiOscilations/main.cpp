@@ -61,9 +61,9 @@ int main(){
   double del;
 
   // delta time for the prints
-  double dt=0.01;
+  double dt=0.1; //0.01
   // Final time
-  double tf=120;
+  double tf=6000;
 
   // Tuned Rabi system
   R0.init(10,10,0.1);
@@ -74,7 +74,8 @@ int main(){
 
   std::cout << "Rabi system with frequency of 10 initialized." << std::endl;
   std::cout << "give the value for the detuning: " << std::endl;
-  std::cin >> del;
+  //std::cin >> del;
+  del=0.1;
 
   // un-tuned Rabi system
   Rd.init(10,10+del,0.1);
@@ -87,7 +88,7 @@ int main(){
 
   // Evolve and save the evolution
   for(double t=0;t<tf;t+=dt){
-    progressbar(100*t/tf);
+    //progressbar(100*t/tf);
     R0.Evolve(dt);
     file << t << "\t" << R0.GetExpectationValue(R0.d0,0,0) << "  " 
 	 << R0.GetExpectationValue(R0.b0_proj[0],0,0) << "  "
@@ -97,7 +98,7 @@ int main(){
   file.open("rabi_detuned.dat");
   std::cout << std::endl << "Computing detuned rabi" << std::endl;
   for(double t=0;t<tf;t+=dt){
-    progressbar(100*t/tf);
+    //progressbar(100*t/tf);
     Rd.Evolve(dt);
     file << t << "\t" << Rd.GetExpectationValue(Rd.d0,0,0) << "  " 
 	 << Rd.GetExpectationValue(Rd.b0_proj[0],0,0) << "  " 
@@ -107,10 +108,10 @@ int main(){
   
   //Ask whether to run the gnuplot script
   std::string plt;
-  std::cout << std::endl <<  "Done! " << std::endl <<
-   "  Do you want to run the gnuplot script? yes/no" << std::endl;
-  std::cin >> plt;
-  if(plt=="yes" || plt=="y")
-    return system("./plot.plt");
+  std::cout << std::endl <<  "Done! " << std::endl
+  ;// << "  Do you want to run the gnuplot script? yes/no" << std::endl;
+  //std::cin >> plt;
+  //if(plt=="yes" || plt=="y")
+  //  return system("./plot.plt");
   return 0;
 }

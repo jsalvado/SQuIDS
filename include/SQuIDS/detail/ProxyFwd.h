@@ -63,6 +63,8 @@
   #else
     #define SQUIDS_USE_STORAGE_CACHE 1
   #endif
+#else
+  #define SQUIDS_USE_STORAGE_CACHE 1
 #endif
 
 //Determine what name if any to use for thread local storage
