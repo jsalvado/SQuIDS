@@ -19,7 +19,7 @@ if [ "$LOOKUP_PREFIX" != "$INSTALL_PREFIX" ]; then
 	if [ "$LOOKUP_PREFIX" = "$INSTALL_PREFIX" ]; then
 		#That works, so tell the user about it
 		echo "NOTE: This installation is not found by pkg-config by default; use"
-		echo '      export PKG_CONFIG_PATH="'$INSTALL_PREFIX/pkg-config':$PKG_CONFIG_PATH"'
+		echo '      export PKG_CONFIG_PATH="'$INSTALL_PREFIX/pkgconfig':$PKG_CONFIG_PATH"'
 		echo "      if you want it to be."
 	fi
 	
