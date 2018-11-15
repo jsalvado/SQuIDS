@@ -316,29 +316,29 @@ check: $(DYN_PRODUCT) $(STAT_PRODUCT)
 
 install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
-	@mkdir -p $(PREFIX)/include/SQuIDS
-	@cp $(INCDIR)/SQuIDS/*.h $(PREFIX)/include/SQuIDS
-	@mkdir -p $(PREFIX)/include/SQuIDS/detail
-	@cp $(INCDIR)/SQuIDS/detail/*.h $(PREFIX)/include/SQuIDS/detail
-	@mkdir -p $(PREFIX)/include/SQuIDS/SU_inc
-	@cp $(INCDIR)/SQuIDS/SU_inc/*.h $(PREFIX)/include/SQuIDS/SU_inc
-	@cp $(INCDIR)/SQuIDS/SU_inc/*.txt $(PREFIX)/include/SQuIDS/SU_inc
+	@mkdir -p "$(PREFIX)/include/SQuIDS"
+	@cp "$(INCDIR)"/SQuIDS/*.h "$(PREFIX)/include/SQuIDS"
+	@mkdir -p "$(PREFIX)/include/SQuIDS/detail"
+	@cp "$(INCDIR)"/SQuIDS/detail/*.h "$(PREFIX)/include/SQuIDS/detail"
+	@mkdir -p "$(PREFIX)/include/SQuIDS/SU_inc"
+	@cp "$(INCDIR)"/SQuIDS/SU_inc/*.h "$(PREFIX)/include/SQuIDS/SU_inc"
+	@cp "$(INCDIR)"/SQuIDS/SU_inc/*.txt "$(PREFIX)/include/SQuIDS/SU_inc"
 	@echo Installing libraries in $(PREFIX)/$(INSTALL_LIBDIR)
-	@mkdir -p $(PREFIX)/$(INSTALL_LIBDIR)
-	@cp $(DYN_PRODUCT) $(STAT_PRODUCT) $(PREFIX)/$(INSTALL_LIBDIR)
+	@mkdir -p "$(PREFIX)/$(INSTALL_LIBDIR)"
+	@cp "$(DYN_PRODUCT)" "$(STAT_PRODUCT)" "$(PREFIX)/$(INSTALL_LIBDIR)"
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
-	@mkdir -p $(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig
-	@cp $(LIBDIR)/squids.pc $(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig
+	@mkdir -p "$(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig"
+	@cp "$(LIBDIR)/squids.pc" "$(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig"
 	@./resources/check_install.sh squids "$(PREFIX)/$(INSTALL_LIBDIR)"
 
 uninstall:
 	@echo Removing headers from $(PREFIX)/include/SQuIDS
-	@rm -rf $(PREFIX)/include/SQuIDS
+	@rm -rf "$(PREFIX)/include/SQuIDS"
 	@echo Removing libraries from $(PREFIX)/$(INSTALL_LIBDIR)
-	@rm -f $(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT)
-	@rm -f $(PREFIX)/$(INSTALL_LIBDIR)/$(STAT_PRODUCT)
+	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT)"
+	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(STAT_PRODUCT)"
 	@echo Removing config information from $(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig
-	@rm -f $(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig/squids.pc
+	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig/squids.pc"
 ' >> Makefile
 
 echo "
