@@ -503,7 +503,16 @@ public:
     double term;
 #include "SU_inc/PreEvolutionSelectAvg.txt"
   }
-  
+
+  void PrepareEvolve(double* buffer, double t_start, double t_end) const{
+    auto& suv1=*this;
+    size_t offset=GetEvolveBufferSize()/2;
+    double* CX=buffer;
+    double* SX=buffer+offset;
+    double alpha;
+    double range = t_end - t_start;
+#include "SU_inc/PreEvolutionSelectAvgRange.txt"
+  }
   ///\brief Compute the time evolution of the SU_vector
   ///
   ///\param buffer A buffer which has been filled by a previous call to
