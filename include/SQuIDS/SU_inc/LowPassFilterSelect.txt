@@ -19,6 +19,8 @@
  *         jsalvado@icecube.wisc.edu                                           *
  *      Christopher Weaver (University of Wisconsin Madison)                   * 
  *         cweaver@icecube.wisc.edu                                            *
+ *      Alexander Trettin (DESY)                                               *
+ *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
 switch (dim){
   case 2: 

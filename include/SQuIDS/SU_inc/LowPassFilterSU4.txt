@@ -20,7 +20,7 @@
  *      Christopher Weaver (University of Wisconsin Madison)                   *
  *         cweaver@icecube.wisc.edu                                            *
  *      Alexander Trettin (DESY)                                               *
- *         atretin@icecube.wisc.edu                                            *
+ *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
 freq=2*suv1.components[5];
 i=0;
