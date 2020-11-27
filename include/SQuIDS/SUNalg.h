@@ -521,7 +521,8 @@ public:
   /// existing averaging mechanism because this function filters the frequency, not the
   /// number of rotations (i.e. frequency times time). This allows this function to be
   /// used both during evaluation of probabilities from the evolved state as well as
-  /// during the integration of the interaction state equation.
+  /// during the integration of the interaction state equation. A linear ramp can be
+  /// used to soften the cut-off of the filter.
   ///\param buffer  The buffer with evaluated sine/cosine values from PrepareEvolve.
   ///\param cutoff  Cut-off frequency of the filter. Sine and cosine evaluations 
   ///               with input frequencies higher than this will be set to zero
@@ -535,8 +536,6 @@ public:
     double* SX=buffer+offset;
     double freq;
     int i;
-    // first writing frequencies into buffer, then converting into scale factors
-    // in-place
 #include "SU_inc/LowPassFilterSelect.txt"    
   }
   
