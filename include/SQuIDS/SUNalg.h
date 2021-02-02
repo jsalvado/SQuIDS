@@ -530,7 +530,7 @@ public:
   ///               greater than zero allows for a gradual transition to cut-off, rather
   ///               than applying a hard step function.
   void LowPassFilter(double* buffer, double cutoff, double scale) const{
-    if (fabs(scale) > fabs(cutoff))
+    if (std::abs(scale) > std::abs(cutoff))
       throw std::runtime_error("Linear ramp scale cannot be larger than cutoff.");
     auto& suv1=*this;
     size_t offset=GetEvolveBufferSize()/2;
@@ -559,7 +559,7 @@ public:
   ///               value of greater than zero allows for a gradual transition to
   ///               cut-off, rather than applying a hard step function.
   void AvgRampFilter(double* buffer, double t, double cutoff, double scale) const{
-    if (fabs(scale) > fabs(cutoff))
+    if (std::abs(scale) > std::abs(cutoff))
       throw std::runtime_error("Linear ramp scale cannot be larger than cutoff.");
     auto& suv1=*this;
     size_t offset=GetEvolveBufferSize()/2;
