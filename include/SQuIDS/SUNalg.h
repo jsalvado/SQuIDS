@@ -534,9 +534,35 @@ public:
     size_t offset=GetEvolveBufferSize()/2;
     double* CX=buffer;
     double* SX=buffer+offset;
-    double freq;
+    double term;
     int i;
 #include "SU_inc/LowPassFilterSelect.txt"    
+  }
+
+  ///\brief Compute averaging filter for pre-computed sine and cosine evaluations.
+  ///
+  /// This function applies an averaging filter to the pre-evolution buffer computed by
+  /// PrepareEvolve to filter out high frequencies in the same manner as the averaging
+  /// mechanism, meaning that it applies a cut-off to the number of rotations rather
+  /// than frequency. The difference to the already existing mechanism is that this
+  /// filter can be applied as a post-processing step (like the low-pass filter), which
+  /// means that it can also be applied after averaging over a distance. This filter is
+  /// NOT appropriate for the RHS of the state density evolution! Use the low-pass
+  /// filter instead for that purpose.
+  ///\param buffer  The buffer with evaluated sine/cosine values from PrepareEvolve.
+  ///\param cutoff  Cut-off frequency of the filter. Sine and cosine evaluations 
+  ///               with input (frequencies * time) higher than this will be set to zero
+  ///\param scale   Distance in (frequency * time) between cut-off and pass-through. A
+  ///               value of greater than zero allows for a gradual transition to
+  ///               cut-off, rather than applying a hard step function.
+  void AvgRampFilter(double* buffer, double cutoff, double scale) const{
+    auto& suv1=*this;
+    size_t offset=GetEvolveBufferSize()/2;
+    double* CX=buffer;
+    double* SX=buffer+offset;
+    double term;
+    int i;
+#include "SU_inc/AvgRampFilterSelect.txt"
   }
   
   
