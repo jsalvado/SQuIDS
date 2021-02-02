@@ -23,13 +23,13 @@
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
  // greater than cutoff implies setting to zero
- if (fabs(freq) > fabs(cutoff)){
+ if (fabs(term) > fabs(cutoff)){
     SX[i] = 0;
     CX[i] = 0;
  // If we are below the cutoff, but above the threshold where we begin to apply the 
  // filter gradually, we do that.
- }else if(fabs(freq) > fabs(cutoff) - fabs(scale)){
-    SX[i] *= (fabs(cutoff) - fabs(freq))/fabs(scale);
-    CX[i] *= (fabs(cutoff) - fabs(freq))/fabs(scale);
+ }else if(fabs(term) > fabs(cutoff) - fabs(scale)){
+    SX[i] *= (fabs(cutoff) - fabs(term))/fabs(scale);
+    CX[i] *= (fabs(cutoff) - fabs(term))/fabs(scale);
  }
  // if neither of the cases above applied, we do nothing
