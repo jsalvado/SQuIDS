@@ -530,6 +530,8 @@ public:
   ///               greater than zero allows for a gradual transition to cut-off, rather
   ///               than applying a hard step function.
   void LowPassFilter(double* buffer, double cutoff, double scale) const{
+    if (fabs(scale) > fabs(cutoff))
+      throw std::runtime_error("Linear ramp scale cannot be larger than cutoff.");
     auto& suv1=*this;
     size_t offset=GetEvolveBufferSize()/2;
     double* CX=buffer;
@@ -550,12 +552,15 @@ public:
   /// NOT appropriate for the RHS of the state density evolution! Use the low-pass
   /// filter instead for that purpose.
   ///\param buffer  The buffer with evaluated sine/cosine values from PrepareEvolve.
+  ///\param t       Evolution time.
   ///\param cutoff  Cut-off frequency of the filter. Sine and cosine evaluations 
   ///               with input (frequencies * time) higher than this will be set to zero
   ///\param scale   Distance in (frequency * time) between cut-off and pass-through. A
   ///               value of greater than zero allows for a gradual transition to
   ///               cut-off, rather than applying a hard step function.
-  void AvgRampFilter(double* buffer, double cutoff, double scale) const{
+  void AvgRampFilter(double* buffer, double t, double cutoff, double scale) const{
+    if (fabs(scale) > fabs(cutoff))
+      throw std::runtime_error("Linear ramp scale cannot be larger than cutoff.");
     auto& suv1=*this;
     size_t offset=GetEvolveBufferSize()/2;
     double* CX=buffer;
