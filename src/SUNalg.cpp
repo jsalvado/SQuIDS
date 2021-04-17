@@ -86,10 +86,12 @@ isinit_d(false){}
 SU_vector::SU_vector(const SU_vector& V):
 dim(V.dim),
 size(V.size),
-isinit(true),
+isinit(V.isinit || V.isinit_d),
 isinit_d(false){
-  alloc_aligned(dim,size,components,ptr_offset);
-  std::copy(V.components,V.components+size,components);
+  if(isinit){
+    alloc_aligned(dim,size,components,ptr_offset);
+    std::copy(V.components,V.components+size,components);
+  }
 }
 
 SU_vector::SU_vector(SU_vector&& V):

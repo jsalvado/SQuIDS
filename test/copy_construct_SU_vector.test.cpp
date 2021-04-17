@@ -54,9 +54,21 @@ void exercise_constructor(unsigned int dim){
 	std::cout << '\n';
 }
 
+void copy_empty(){
+	SU_vector v1; //owns and refers to no memory
+	CLEAR_MEM_CACHE;
+	alloc_counting::reset_allocation_counters();
+	SU_vector v2(v1); //should not allocate
+	auto allocated=alloc_counting::mem_allocated;
+	if(allocated)
+		std::cout << allocated << " bytes allocated when no allocation should occur\n";
+}
+
 int main(){
 	alloc_counting::pattern_fill_allocs=true;
 	alloc_counting::alloc_fill_pattern=0xFF;
 	for(unsigned int i=2; i<=6; i++)
 		exercise_constructor(i);
+	
+	copy_empty();
 }
