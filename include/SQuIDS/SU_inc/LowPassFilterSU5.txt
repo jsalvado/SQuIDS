@@ -22,33 +22,33 @@
  *      Alexander Trettin (DESY)                                               *
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
-freq=2*suv1.components[6];
+term=2*suv1.components[6];
 i=0;
-#include "ApplyLowPassFilter.txt"
-freq=(suv1.components[6] + sqrt(3)*suv1.components[12]);
+#include "ApplyLowPassRamp.txt"
+term=(suv1.components[6] + sqrt(3)*suv1.components[12]);
 i=1;
-#include "ApplyLowPassFilter.txt"
-freq=suv1.components[6] + ((suv1.components[12] + 2*sqrt(2)*suv1.components[18]))/sqrt(3);
+#include "ApplyLowPassRamp.txt"
+term=suv1.components[6] + ((suv1.components[12] + 2*sqrt(2)*suv1.components[18]))/sqrt(3);
 i=2;
-#include "ApplyLowPassFilter.txt"
-freq=suv1.components[6] + (suv1.components[12])/sqrt(3) + (suv1.components[18])/sqrt(6) + sqrt(2.5)*suv1.components[24];
+#include "ApplyLowPassRamp.txt"
+term=suv1.components[6] + (suv1.components[12])/sqrt(3) + (suv1.components[18])/sqrt(6) + sqrt(2.5)*suv1.components[24];
 i=3;
-#include "ApplyLowPassFilter.txt"
-freq=(suv1.components[6] - sqrt(3)*suv1.components[12]);
+#include "ApplyLowPassRamp.txt"
+term=(suv1.components[6] - sqrt(3)*suv1.components[12]);
 i=4;
-#include "ApplyLowPassFilter.txt"
-freq=suv1.components[6] - ((suv1.components[12] + 2*sqrt(2)*suv1.components[18]))/sqrt(3);
+#include "ApplyLowPassRamp.txt"
+term=suv1.components[6] - ((suv1.components[12] + 2*sqrt(2)*suv1.components[18]))/sqrt(3);
 i=5;
-#include "ApplyLowPassFilter.txt"
-freq=suv1.components[6] - ((2*sqrt(3)*suv1.components[12] + sqrt(6)*suv1.components[18] + 3*sqrt(10)*suv1.components[24]))/6.;
+#include "ApplyLowPassRamp.txt"
+term=suv1.components[6] - ((2*sqrt(3)*suv1.components[12] + sqrt(6)*suv1.components[18] + 3*sqrt(10)*suv1.components[24]))/6.;
 i=6;
-#include "ApplyLowPassFilter.txt"
-freq=(2*(suv1.components[12] - sqrt(2)*suv1.components[18]))/sqrt(3);
+#include "ApplyLowPassRamp.txt"
+term=(2*(suv1.components[12] - sqrt(2)*suv1.components[18]))/sqrt(3);
 i=7;
-#include "ApplyLowPassFilter.txt"
-freq=((4*sqrt(3)*suv1.components[12] - sqrt(6)*suv1.components[18] - 3*sqrt(10)*suv1.components[24]))/6.;
+#include "ApplyLowPassRamp.txt"
+term=((4*sqrt(3)*suv1.components[12] - sqrt(6)*suv1.components[18] - 3*sqrt(10)*suv1.components[24]))/6.;
 i=8;
-#include "ApplyLowPassFilter.txt"
-freq=sqrt(1.5)*suv1.components[18] - sqrt(2.5)*suv1.components[24];
+#include "ApplyLowPassRamp.txt"
+term=sqrt(1.5)*suv1.components[18] - sqrt(2.5)*suv1.components[24];
 i=9;
-#include "ApplyLowPassFilter.txt"
+#include "ApplyLowPassRamp.txt"

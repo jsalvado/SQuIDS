@@ -22,12 +22,12 @@
  *      Alexander Trettin (DESY)                                               *
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
-freq=2*suv1.components[4];
+term=2*suv1.components[4];
 i=0;
-#include "ApplyLowPassFilter.txt"
-freq=(suv1.components[4] + sqrt(3)*suv1.components[8]);
+#include "ApplyLowPassRamp.txt"
+term=(suv1.components[4] + sqrt(3)*suv1.components[8]);
 i=1;
-#include "ApplyLowPassFilter.txt"
-freq=(suv1.components[4] - sqrt(3)*suv1.components[8]);
+#include "ApplyLowPassRamp.txt"
+term=(suv1.components[4] - sqrt(3)*suv1.components[8]);
 i=2;
-#include "ApplyLowPassFilter.txt"
+#include "ApplyLowPassRamp.txt"

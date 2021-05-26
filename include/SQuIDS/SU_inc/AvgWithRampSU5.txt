@@ -11,25 +11,53 @@
  *                                                                             *
  *   You should have received a copy of the GNU General Public License         *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
- *                                                                             *
+ *                                                                             *   
  *   Authors:                                                                  *
- *      Carlos Arguelles (University of Wisconsin Madison)                     *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
  *         carguelles@icecube.wisc.edu                                         *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
- *      Christopher Weaver (University of Wisconsin Madison)                   *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
  *         cweaver@icecube.wisc.edu                                            *
  *      Alexander Trettin (DESY)                                               *
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
- // greater than cutoff implies setting to zero
- if (fabs(freq) > fabs(cutoff)){
-    SX[i] = 0;
-    CX[i] = 0;
- // If we are below the cutoff, but above the threshold where we begin to apply the 
- // filter gradually, we do that.
- }else if(fabs(freq) > fabs(cutoff) - fabs(scale)){
-    SX[i] *= (fabs(cutoff) - fabs(freq))/fabs(scale);
-    CX[i] *= (fabs(cutoff) - fabs(freq))/fabs(scale);
- }
- // if neither of the cases above applied, we do nothing
+term=2*t*suv1.components[6];
+i = 0;
+#include "ApplyLowPassRamp.txt"
+
+term=t*(suv1.components[6] + sqrt(3)*suv1.components[12]);
+i = 1;
+#include "ApplyLowPassRamp.txt"
+
+term=t*suv1.components[6] + (t*(suv1.components[12] + 2*sqrt(2)*suv1.components[18]))/sqrt(3);
+i = 2;
+#include "ApplyLowPassRamp.txt"
+
+term=t*suv1.components[6] + (t*suv1.components[12])/sqrt(3) + (t*suv1.components[18])/sqrt(6) + sqrt(2.5)*t*suv1.components[24];
+i = 3;
+#include "ApplyLowPassRamp.txt"
+
+term=t*(suv1.components[6] - sqrt(3)*suv1.components[12]);
+i = 4;
+#include "ApplyLowPassRamp.txt"
+
+term=t*suv1.components[6] - (t*(suv1.components[12] + 2*sqrt(2)*suv1.components[18]))/sqrt(3);
+i = 5;
+#include "ApplyLowPassRamp.txt"
+
+term=t*suv1.components[6] - (t*(2*sqrt(3)*suv1.components[12] + sqrt(6)*suv1.components[18] + 3*sqrt(10)*suv1.components[24]))/6.;
+i = 6;
+#include "ApplyLowPassRamp.txt"
+
+term=(2*t*(suv1.components[12] - sqrt(2)*suv1.components[18]))/sqrt(3);
+i = 7;
+#include "ApplyLowPassRamp.txt"
+
+term=(t*(4*sqrt(3)*suv1.components[12] - sqrt(6)*suv1.components[18] - 3*sqrt(10)*suv1.components[24]))/6.;
+i = 8;
+#include "ApplyLowPassRamp.txt"
+
+term=sqrt(1.5)*t*suv1.components[18] - sqrt(2.5)*t*suv1.components[24];
+i = 9;
+#include "ApplyLowPassRamp.txt"

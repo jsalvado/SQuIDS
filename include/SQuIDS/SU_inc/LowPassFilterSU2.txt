@@ -22,6 +22,6 @@
  *      Alexander Trettin (DESY)                                               *
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
-freq=2*suv1.components[3];
+term=2*suv1.components[3];
 i = 0;
-#include "ApplyLowPassFilter.txt"
+#include "ApplyLowPassRamp.txt"
