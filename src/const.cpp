@@ -42,10 +42,10 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     # MATH
     #===============================================================================
     */
-    pi=3.14159265358979;	    // Pi
-    piby2=1.57079632679490;         // Pi/2
-    sqrt2=1.41421356237310;         // Sqrt[2]
-    ln2 = log(2.0);                 // log[2]
+    pi=3.14159265358979323846;      // Pi
+    piby2=1.5707963267948966192;    // Pi/2
+    sqrt2=1.4142135623730950488;    // Sqrt[2]
+    ln2=0.69314718055994530942;     // log[2]
     
     /*
     #===============================================================================
@@ -65,12 +65,13 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     # # PHYSICAL CONSTANTS
     #===============================================================================
     */
-    GF = 1.16639e-23;	            // [eV^-2] Fermi Constant 
-    Na = 6.0221415e+23;		    // [mol cm^-3] Avogadro Number
-    sw_sq = 0.2312;                 // [dimensionless] sin(th_weinberg) ^2
-    G  = 6.67300e-11;               // [m^3 kg^-1 s^-2]
-    alpha = 1.0/137.0;              // [dimensionless] fine-structure constant 
+    GF = 1.1663787e-23;             // [eV^-2] Fermi Constant
+    Na = 6.02214076e+23;            // [mol cm^-3] Avogadro Number
+    sw_sq = 0.23121;                // [dimensionless] sin(th_weinberg) ^2
+    G  = 6.67430e-11;               // [m^3 kg^-1 s^-2]
+    alpha = 1/137.035999084;        // [dimensionless] fine-structure constant 
     e_charge = sqrt(4.*pi*alpha);
+    k = 1.380649e-23;               // [J/K] Boltzmann constant
     
     /*
     #===============================================================================
@@ -85,24 +86,24 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     MeV = 1.0e6;                    // [eV/MeV]
     keV = 1.0e3;                    // [eV/keV]
     eV  = 1.0;                      // [eV/eV]
-    Joule = 1/1.60225e-19;          // [eV/J]
+    Joule = 1/1.602176634e-19;      // [eV/J]
     // Mass
-    kg = 5.62e35;                   // [eV/kg]
+    kg = 5.6095886038044519379e+35; // [eV/kg]
     gr = 1e-3*kg;                   // [eV/g] 
     // Time
-    sec = 1.523e15;                 // [eV^-1/s]
+    sec = 1.5192674478786262013e15; // [eV^-1/s]
     hour = 3600.0*sec;              // [eV^-1/h]
     day = 24.0*hour;                // [eV^-1/d]
     year = 365.0*day;               // [eV^-1/yr]
     // Distance
-    meter = 5.06773093741e6;        // [eV^-1/m]
+    meter = 5.0677307161563957731e6;// [eV^-1/m]
     cm = 1.0e-2*meter;              // [eV^-1/cm]
     km = 1.0e3*meter;               // [eV^-1/km]
     fermi = 1.0e-15*meter;          // [eV^-1/fm]
     angstrom = 1.0e-10*meter;       // [eV^-1/A]
-    AU = 149.60e9*meter;            // [eV^-1/AU]
-    ly = 9.4605284e15*meter;        // [eV^-1/ly]
-    parsec = 3.08568025e16*meter;   // [eV^-1/parsec]
+    AU = 1.49597870700e11*meter;    // [eV^-1/AU]
+    ly = 9.46073e15*meter;          // [eV^-1/ly]
+    parsec = 3.08567758149e16*meter;// [eV^-1/parsec]
     kparsec = 1.e3*parsec;          // [eV^-1/kparsec]
     Mparsec = 1.e6*parsec;          // [eV^-1/Mparsec]
     Gparsec = 1.e9*parsec;          // [eV^-1/Gparsec]
@@ -113,25 +114,23 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     Pascal = Joule/pow(meter,3);        // [eV^4/Pa]
     atm = 101325.0*Pascal;          // [eV^4/atm]
     // Temperature
-    Kelvin = 1/1.1604505e4;         // [eV/K]
+    Kelvin = k*Joule;               // [eV/K]
     // Electromagnetic units
-    C = 6.24150965e18*e_charge;
+    C = e_charge*Joule;
     A = C/sec;
     T = kg/(A*sec*sec);
     // Angle
     degree = pi/180.0;              // [rad/degree]
     
     // initializing matrices
-    
-  
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM-1; i++)
         gsl_matrix_set(de.get(),i,0,0.0);
-  
+    
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
         for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM; j++)
             gsl_matrix_set(th.get(),i,j,0.0);
     }
-  
+    
     for(unsigned int i=0; i<SQUIDS_MAX_HILBERT_DIM; i++){
         for(unsigned int j=0; j<SQUIDS_MAX_HILBERT_DIM; j++)
             gsl_matrix_set(dcp.get(),i,j,0.0);
@@ -144,15 +143,17 @@ de(gsl_matrix_alloc(SQUIDS_MAX_HILBERT_DIM-1,1),gsl_matrix_free)
     sterile2 = 4;
     sterile3 = 5;
     
-    tau_mass = 1776.82*MeV;
-    tau_lifetime = 2.906e-13*sec;
+    tau_mass = 1776.86*MeV;
+    tau_lifetime = 2.903e-13*sec;
     
-    muon_lifetime = 2.196e-6*sec;
-    muon_mass = 105.658*MeV;
-    electron_mass = 0.5109*MeV;
-
-    proton_mass = 938.272*MeV;
-    neutron_mass = 939.565*MeV;
+    muon_lifetime = 2.1969811e-6*sec;
+    muon_mass = 105.6583745*MeV;
+    electron_mass = 0.5109989461*MeV;
+    
+    proton_mass = 938.272081*MeV;
+    neutron_mass = 939.565413*MeV;
+    w_mass = 80.379*GeV;
+    z_mass = 91.1876*GeV;
 }
 
 Const::~Const(){}

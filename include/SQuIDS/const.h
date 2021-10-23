@@ -52,12 +52,20 @@ public :
   double earthradius;
   double sunradius;
   ///// physics constants/////
+  ///The Fermi coupling constant
   double GF;
+  ///The Avogadro constant
   double Na;
+  ///The weak mixing angle
   double sw_sq;
+  ///The gravitational constant
   double G;
+  ///The fine-structure constant
   double alpha;
+  ///The electron charge
   double e_charge;
+  ///The Boltzmann constant
+  double k;
   /////////// units //////////
   // energy
   double EeV;
@@ -119,6 +127,8 @@ public :
 
   double proton_mass;
   double neutron_mass;
+  double w_mass;
+  double z_mass;
 
   ///\brief set the mixing angle between two states of the system
   ///
