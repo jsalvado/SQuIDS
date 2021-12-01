@@ -11,32 +11,33 @@
  *                                                                             *
  *   You should have received a copy of the GNU General Public License         *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
- *                                                                             *
+ *                                                                             *   
  *   Authors:                                                                  *
- *      Carlos Arguelles (University of Wisconsin Madison)                     *
+ *      Carlos Arguelles (University of Wisconsin Madison)                     * 
  *         carguelles@icecube.wisc.edu                                         *
  *      Jordi Salvado (University of Wisconsin Madison)                        *
  *         jsalvado@icecube.wisc.edu                                           *
- *      Christopher Weaver (University of Wisconsin Madison)                   *
+ *      Christopher Weaver (University of Wisconsin Madison)                   * 
  *         cweaver@icecube.wisc.edu                                            *
  *      Alexander Trettin (DESY)                                               *
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
-term=2*suv1.components[5];
-i=0;
-#include "ApplyLowPassRamp.txt"
-term=(suv1.components[5] + sqrt(3)*suv1.components[10]);
-i=1;
-#include "ApplyLowPassRamp.txt"
-term=suv1.components[5] + ((suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3);
-i=2;
-#include "ApplyLowPassRamp.txt"
-term=(suv1.components[5] - sqrt(3)*suv1.components[10]);
-i=3;
-#include "ApplyLowPassRamp.txt"
-term=suv1.components[5] - ((suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3);
-i=4;
-#include "ApplyLowPassRamp.txt"
-term=(2*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3);
-i=5;
-#include "ApplyLowPassRamp.txt"
+switch (dim){
+  case 2: 
+    #include "AvgWithRampSU2.txt"
+    break;
+  case 3: 
+    #include "AvgWithRampSU3.txt"
+    break;
+  case 4: 
+    #include "AvgWithRampSU4.txt"
+    break;
+  case 5: 
+    #include "AvgWithRampSU5.txt"
+    break;
+  case 6: 
+    #include "AvgWithRampSU6.txt"
+    break;
+  default:
+    throw std::runtime_error("SU_vector Evolution Error: Only dimensions up to " SQUIDS_MAX_HILBERT_DIM_STR " are supported");
+}

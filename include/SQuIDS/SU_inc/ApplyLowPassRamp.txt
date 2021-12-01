@@ -22,21 +22,14 @@
  *      Alexander Trettin (DESY)                                               *
  *         atrettin@icecube.wisc.edu                                           *
  ******************************************************************************/
-term=2*suv1.components[5];
-i=0;
-#include "ApplyLowPassRamp.txt"
-term=(suv1.components[5] + sqrt(3)*suv1.components[10]);
-i=1;
-#include "ApplyLowPassRamp.txt"
-term=suv1.components[5] + ((suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3);
-i=2;
-#include "ApplyLowPassRamp.txt"
-term=(suv1.components[5] - sqrt(3)*suv1.components[10]);
-i=3;
-#include "ApplyLowPassRamp.txt"
-term=suv1.components[5] - ((suv1.components[10] + 2*sqrt(2)*suv1.components[15]))/sqrt(3);
-i=4;
-#include "ApplyLowPassRamp.txt"
-term=(2*(suv1.components[10] - sqrt(2)*suv1.components[15]))/sqrt(3);
-i=5;
-#include "ApplyLowPassRamp.txt"
+ // greater than cutoff implies setting to zero
+ if (fabs(term) > fabs(cutoff)){
+    SX[i] = 0;
+    CX[i] = 0;
+ // If we are below the cutoff, but above the threshold where we begin to apply the 
+ // filter gradually, we do that.
+ }else if(fabs(term) > fabs(cutoff) - fabs(scale)){
+    SX[i] *= (fabs(cutoff) - fabs(term))/fabs(scale);
+    CX[i] *= (fabs(cutoff) - fabs(term))/fabs(scale);
+ }
+ // if neither of the cases above applied, we do nothing
