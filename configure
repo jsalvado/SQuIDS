@@ -43,12 +43,10 @@ PREFIX=/usr/local
 INSTALL_LIBDIR=lib
 
 VERSION_NUM=100300
-VERSION=`echo $VERSION_NUM | awk '{
-	major = int($1/100000);
-	minor = int($1/100)%1000;
-	patch = $1%100;
-	print major"."minor"."patch;
-}'`
+VERSION_MAJOR=$(echo $VERSION_NUM | awk '{print int($1/100000)}')
+VERSION_MINOR=$(echo $VERSION_NUM | awk '{print int($1/100)%1000}')
+VERSION_PATCH=$(echo $VERSION_NUM | awk '{print $1%100}')
+VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
 
 OS_NAME=`uname -s`
 
@@ -61,12 +59,18 @@ if [ "$OS_NAME" = Darwin ]; then
 	GUESS_CXX=clang++
 	GUESS_LD=clang++
 	DYN_SUFFIX=.dylib
-	DYN_OPT='-dynamiclib -compatibility_version $(VERSION) -current_version $(VERSION)'
+	DYN_SUFFIX_FULL_VERSION='.$(VERSION)${DYN_SUFFIX}'
+	DYN_SUFFIX_MAJOR_VERSION='.$(VERSION_MAJOR)${DYN_SUFFIX}'
+	DYN_OPT='-dynamiclib -compatibility_version $(COMPAT_VERSION) -current_version $(VERSION)'
 elif [ "$OS_NAME" = FreeBSD ]; then
 	DYN_SUFFIX=.so
+	DYN_SUFFIX_FULL_VERSION='${DYN_SUFFIX}.$(VERSION)'
+	DYN_SUFFIX_MAJOR_VERSION='${DYN_SUFFIX}.$(VERSION_MAJOR)'
 	DYN_OPT='-shared'
 else
 	DYN_SUFFIX=.so
+	DYN_SUFFIX_FULL_VERSION='${DYN_SUFFIX}.$(VERSION)'
+	DYN_SUFFIX_MAJOR_VERSION='${DYN_SUFFIX}.$(VERSION_MAJOR)'
 	DYN_OPT='-shared -Wl,-soname,$(shell basename $(DYN_PRODUCT))'
 fi
 
@@ -207,7 +211,7 @@ if $CXX --version | grep -q 'Portland Group'; then
 	CFLAGS="$CFLAGS --diag_suppress1 --diag_suppress111"
 	# PGI also gets agry if passed darwin-specific linking flags, so we strip
 	# them out
-	DYN_OPT=`echo "$DYN_OPT" | sed -e 's|-compatibility_version $(VERSION)||' -e 's|-current_version $(VERSION)||'`
+	DYN_OPT=`echo "$DYN_OPT" | sed -e 's|-compatibility_version $(COMPAT_VERSION)||' -e 's|-current_version $(VERSION)||'`
 fi
 
 if [ ! -d ./lib/ ]; then
@@ -240,7 +244,13 @@ LIBDIR:=lib
 INCDIR:=include
 SQINCDIR:=include/SQuIDS
 SRCDIR:=src
+PREFIX:=$PREFIX
 INSTALL_LIBDIR:=$INSTALL_LIBDIR
+
+# Version
+VERSION:=$VERSION
+VERSION_MAJOR:=$VERSION_MAJOR
+COMPAT_VERSION:=${VERSION_MAJOR}.${VERSION_MINOR}
 
 # Compiler
 CC:=$CC
@@ -256,33 +266,36 @@ CXXFLAGS:=$CXXFLAGS
 LDFLAGS:=$LDFLAGS "'-Wl,-rpath -Wl,$(LIBDIR) -L$(LIBDIR) $(GSL_LDFLAGS)'"
 
 DYN_SUFFIX:=$DYN_SUFFIX
+DYN_SUFFIX_FULL_VERSION:=$DYN_SUFFIX_FULL_VERSION
+DYN_SUFFIX_MAJOR_VERSION:=$DYN_SUFFIX_MAJOR_VERSION
 DYN_OPT=$DYN_OPT
 "> settings.mk
 
-echo "include settings.mk
+echo 'include settings.mk
 
-VERSION:=$VERSION
-PREFIX:=$PREFIX
-
-" > Makefile
-echo '
 # Project files
 NAME:=SQuIDS
-STAT_PRODUCT:=$(LIBDIR)/lib$(NAME).a
-DYN_PRODUCT:=$(LIBDIR)/lib$(NAME)$(DYN_SUFFIX)
+STAT_PRODUCT:=lib$(NAME).a
+DYN_PRODUCT_FULL_VER:=lib$(NAME)$(DYN_SUFFIX_FULL_VERSION)
+DYN_PRODUCT_MAJ_VER:=lib$(NAME)$(DYN_SUFFIX_MAJOR_VERSION)
+DYN_PRODUCT:=lib$(NAME)$(DYN_SUFFIX)
 
 OBJECTS:= $(LIBDIR)/const.o $(LIBDIR)/SUNalg.o $(LIBDIR)/SQuIDS.o $(LIBDIR)/MatrixExp.o
 
 # Compilation rules
-all: $(STAT_PRODUCT) $(DYN_PRODUCT)
+all: $(LIBDIR)/$(STAT_PRODUCT) $(LIBDIR)/$(DYN_PRODUCT)
 
-$(DYN_PRODUCT) : $(OBJECTS)
-	@echo Linking `basename $(DYN_PRODUCT)`
-	@$(CXX) $(DYN_OPT) $(LDFLAGS) -o $(DYN_PRODUCT) $(OBJECTS)
+$(LIBDIR)/$(DYN_PRODUCT) : $(OBJECTS)
+	@echo Linking $(DYN_PRODUCT)
+	@rm -f "$(LIBDIR)/$(DYN_PRODUCT)" "$(LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
+	@$(CXX) $(DYN_OPT) $(LDFLAGS) -o "$(LIBDIR)/$(DYN_PRODUCT_FULL_VER)" $(OBJECTS)
+	@[ $$(uname -s) != Darwin ] || install_name_tool -id "$(DYN_PRODUCT_MAJ_VER)" "$(LIBDIR)/$(DYN_PRODUCT_FULL_VER)"
+	@ln -s "$(DYN_PRODUCT_FULL_VER)" "$(LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
+	@ln -s "$(DYN_PRODUCT_FULL_VER)" "$(LIBDIR)/$(DYN_PRODUCT)"
 
-$(STAT_PRODUCT) : $(OBJECTS)
-	@echo Linking `basename $(STAT_PRODUCT)`
-	@$(AR) -rcs $(STAT_PRODUCT) $(OBJECTS)
+$(LIBDIR)/$(STAT_PRODUCT) : $(OBJECTS)
+	@echo Linking $(STAT_PRODUCT)
+	@$(AR) -rcs $(LIBDIR)/$(STAT_PRODUCT) $(OBJECTS)
 
 $(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(SQINCDIR)/const.h Makefile
 	@echo Compiling const.cpp to const.o
@@ -307,14 +320,14 @@ doxygen:
 docs:
 	@doxygen src/doxyfile
 
-test: $(DYN_PRODUCT) $(STAT_PRODUCT)
+test: $(LIBDIR)/$(DYN_PRODUCT) $(LIBDIR)/$(STAT_PRODUCT)
 	@cd test ; \
 	./run_tests
-check: $(DYN_PRODUCT) $(STAT_PRODUCT)
+check: $(LIBDIR)/$(DYN_PRODUCT) $(LIBDIR)/$(STAT_PRODUCT)
 	@cd test ; \
 	./run_tests
 
-install: $(DYN_PRODUCT) $(STAT_PRODUCT)
+install: $(LIBDIR)/$(DYN_PRODUCT) $(LIBDIR)/$(STAT_PRODUCT)
 	@echo Installing headers in $(PREFIX)/include/SQuIDS
 	@mkdir -p "$(PREFIX)/include/SQuIDS"
 	@cp "$(INCDIR)"/SQuIDS/*.h "$(PREFIX)/include/SQuIDS"
@@ -325,7 +338,12 @@ install: $(DYN_PRODUCT) $(STAT_PRODUCT)
 	@cp "$(INCDIR)"/SQuIDS/SU_inc/*.txt "$(PREFIX)/include/SQuIDS/SU_inc"
 	@echo Installing libraries in $(PREFIX)/$(INSTALL_LIBDIR)
 	@mkdir -p "$(PREFIX)/$(INSTALL_LIBDIR)"
-	@cp "$(DYN_PRODUCT)" "$(STAT_PRODUCT)" "$(PREFIX)/$(INSTALL_LIBDIR)"
+	@cp "$(LIBDIR)/$(STAT_PRODUCT)" "$(PREFIX)/$(INSTALL_LIBDIR)"
+	@cp "$(LIBDIR)/$(DYN_PRODUCT_FULL_VER)" "$(PREFIX)/$(INSTALL_LIBDIR)"
+	@[ $$(uname -s) != Darwin ] || install_name_tool -id "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT_MAJ_VER)" "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT_FULL_VER)"
+	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT)" "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
+	@ln -s "$(DYN_PRODUCT_FULL_VER)" "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
+	@ln -s "$(DYN_PRODUCT_FULL_VER)" "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT)"
 	@echo Installing config information in $(PREFIX)/lib/pkgconfig
 	@mkdir -p "$(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig"
 	@cp "$(LIBDIR)/squids.pc" "$(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig"
@@ -336,10 +354,12 @@ uninstall:
 	@rm -rf "$(PREFIX)/include/SQuIDS"
 	@echo Removing libraries from $(PREFIX)/$(INSTALL_LIBDIR)
 	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT)"
+	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
+	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(DYN_PRODUCT_FULL_VER)"
 	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/$(STAT_PRODUCT)"
 	@echo Removing config information from $(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig
 	@rm -f "$(PREFIX)/$(INSTALL_LIBDIR)/pkgconfig/squids.pc"
-' >> Makefile
+' > Makefile
 
 echo "
 export CXX=\"${CXX}\"
