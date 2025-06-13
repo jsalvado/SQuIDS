@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Determine the directory in which the user is running configure,
+# and the source directory where it lives
+WORKING_DIR=$((command -v realpath > /dev/null && realpath $(pwd)) || pwd)
+cd -- $(dirname $0)
+SOURCE_DIR=$((command -v realpath > /dev/null && realpath $(pwd)) || pwd)
+cd -- "${WORKING_DIR}"
+
 check_pkgconfig(){
 	if [ "$CHECKED_PKGCONFIG" ]; then return; fi
 	echo "Looking for pkg-config..."
@@ -240,6 +247,9 @@ sed -e "s|__SQUIDS_VERSION__|$VERSION_NUM|g" \
 echo "Generating makefile..."
 
 echo "# Directories
+SQUIDS_DIR=${SOURCE_DIR}
+BUILD_DIR=${WORKING_DIR}
+
 LIBDIR:=lib
 INCDIR:=include
 SQINCDIR:=include/SQuIDS
@@ -289,7 +299,7 @@ $(LIBDIR)/$(DYN_PRODUCT) : $(OBJECTS)
 	@echo Linking $(DYN_PRODUCT)
 	@rm -f "$(LIBDIR)/$(DYN_PRODUCT)" "$(LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
 	@$(CXX) $(DYN_OPT) $(LDFLAGS) -o "$(LIBDIR)/$(DYN_PRODUCT_FULL_VER)" $(OBJECTS)
-	@[ $$(uname -s) != Darwin ] || install_name_tool -id "$(DYN_PRODUCT_MAJ_VER)" "$(LIBDIR)/$(DYN_PRODUCT_FULL_VER)"
+	@[ $$(uname -s) != Darwin ] || install_name_tool -id "$(SQUIDS_DIR)/$(LIBDIR)/$(DYN_PRODUCT_MAJ_VER)" "$(LIBDIR)/$(DYN_PRODUCT_FULL_VER)"
 	@ln -s "$(DYN_PRODUCT_FULL_VER)" "$(LIBDIR)/$(DYN_PRODUCT_MAJ_VER)"
 	@ln -s "$(DYN_PRODUCT_FULL_VER)" "$(LIBDIR)/$(DYN_PRODUCT)"
 
