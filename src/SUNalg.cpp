@@ -55,7 +55,26 @@ void gsl_matrix_complex_normalize( gsl_matrix_complex * m) {
     }
   }
 }
+
+struct sq_array_2D{
+  unsigned int d;
+  double* data;
+
+  struct index_proxy{
+    double* data;
+    double& operator[](unsigned int j) const{
+      return(data[j]);
+    }
+  };
+  index_proxy operator[](unsigned int i) const{
+    return(index_proxy{data+d*i});
+  }
+};
+
+void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
+#include <SQuIDS/SU_inc/MatrixToSUSelect.txt>
 }
+} // close unnamed namespace
 
 namespace squids{
 /*
@@ -168,7 +187,10 @@ isinit_d(false)
 
   std::fill(components,components+size,0.0);
 
-  double m_real[dim][dim]; double m_imag[dim][dim];
+  std::unique_ptr<double[]> real_buf(new double[dim*dim]);
+  std::unique_ptr<double[]> imag_buf(new double[dim*dim]);
+  sq_array_2D m_real{dim,real_buf.get()};
+  sq_array_2D m_imag{dim,imag_buf.get()};
   for(unsigned int i=0; i<dim; i++){
     for(unsigned int j=0; j<dim; j++){
       m_real[i][j] = GSL_REAL(gsl_matrix_complex_get(m,i,j));
@@ -193,27 +215,6 @@ SU_vector SU_vector::make_aligned(unsigned int dim, bool zero_fill){
   return(v);
 }
 
-namespace{
-  struct sq_array_2D{
-    unsigned int d;
-    double* data;
-
-    struct index_proxy{
-      double* data;
-      double operator[](unsigned int j) const{
-        return(data[j]);
-      }
-    };
-    index_proxy operator[](unsigned int i) const{
-      return(index_proxy{data+d*i});
-    }
-  };
-
-void ComponentsFromMatrices(double* components, unsigned int dim, const sq_array_2D& m_real, const sq_array_2D& m_imag){
-#include <SQuIDS/SU_inc/MatrixToSUSelect.txt>
-}
-} // close unnamed namespace
-
 SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
   if(d==1)
     throw std::runtime_error("SU_vector::SU_vector(unsigned int): Invalid size: dimension 1 is not supported");
@@ -222,7 +223,10 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
   if(ii>=d)
     throw std::runtime_error("SU_vector::Projector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
 
-  double m_real[d][d]; double m_imag[d][d];
+  std::unique_ptr<double[]> real_buf(new double[d*d]);
+  std::unique_ptr<double[]> imag_buf(new double[d*d]);
+  sq_array_2D m_real{d,real_buf.get()};
+  sq_array_2D m_imag{d,imag_buf.get()};
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
       m_real[i][j] = KRONECKER(i,j)*KRONECKER(i,ii);
@@ -231,7 +235,7 @@ SU_vector SU_vector::Projector(unsigned int d, unsigned int ii){
   }
 
   SU_vector v=make_aligned(d);
-  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  ComponentsFromMatrices(v.components,d,m_real,m_imag);
   return(v);
 }
 
@@ -241,7 +245,10 @@ SU_vector SU_vector::Identity(unsigned int d){
   if(d>SQUIDS_MAX_HILBERT_DIM)
     throw std::runtime_error("SU_vector::Identity(unsigned int): Invalid size: only up to SU(" SQUIDS_MAX_HILBERT_DIM_STR ") is supported");
 
-  double m_real[d][d]; double m_imag[d][d];
+  std::unique_ptr<double[]> real_buf(new double[d*d]);
+  std::unique_ptr<double[]> imag_buf(new double[d*d]);
+  sq_array_2D m_real{d,real_buf.get()};
+  sq_array_2D m_imag{d,imag_buf.get()};
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
       m_real[i][j] = KRONECKER(i,j);
@@ -250,7 +257,7 @@ SU_vector SU_vector::Identity(unsigned int d){
   }
 
   SU_vector v=make_aligned(d);
-  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  ComponentsFromMatrices(v.components,d,m_real,m_imag);
   return(v);
 }
 
@@ -262,7 +269,10 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
   if(ii>=d)
     throw std::runtime_error("SU_vector::PosProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
 
-  double m_real[d][d]; double m_imag[d][d];
+  std::unique_ptr<double[]> real_buf(new double[d*d]);
+  std::unique_ptr<double[]> imag_buf(new double[d*d]);
+  sq_array_2D m_real{d,real_buf.get()};
+  sq_array_2D m_imag{d,imag_buf.get()};
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
       if(i<ii)
@@ -274,7 +284,7 @@ SU_vector SU_vector::PosProjector(unsigned int d, unsigned int ii){
   }
 
   SU_vector v=make_aligned(d);
-  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  ComponentsFromMatrices(v.components,d,m_real,m_imag);
   return(v);
 }
 
@@ -286,7 +296,10 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
   if(ii>=d)
     throw std::runtime_error("SU_vector::NegProjector(unsigned int, unsigned int): Invalid component: must be smaller than dimension");
 
-  double m_real[d][d]; double m_imag[d][d];
+  std::unique_ptr<double[]> real_buf(new double[d*d]);
+  std::unique_ptr<double[]> imag_buf(new double[d*d]);
+  sq_array_2D m_real{d,real_buf.get()};
+  sq_array_2D m_imag{d,imag_buf.get()};
   for(unsigned int i=0; i<d; i++){
     for(unsigned int j=0; j<d; j++){
       if(d-i<ii)
@@ -298,7 +311,7 @@ SU_vector SU_vector::NegProjector(unsigned int d, unsigned int ii){
   }
 
   SU_vector v=make_aligned(d);
-  ComponentsFromMatrices(v.components,d,sq_array_2D{d,m_real[0]},sq_array_2D{d,m_imag[0]});
+  ComponentsFromMatrices(v.components,d,m_real,m_imag);
   return(v);
 }
 
