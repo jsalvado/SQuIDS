@@ -2,9 +2,9 @@
 
 # Determine the directory in which the user is running configure,
 # and the source directory where it lives
-WORKING_DIR=$((command -v realpath > /dev/null && realpath $(pwd)) || pwd)
+WORKING_DIR=$( (command -v realpath > /dev/null && realpath $(pwd)) || pwd)
 cd -- $(dirname $0)
-SOURCE_DIR=$((command -v realpath > /dev/null && realpath $(pwd)) || pwd)
+SOURCE_DIR=$( (command -v realpath > /dev/null && realpath $(pwd)) || pwd)
 cd -- "${WORKING_DIR}"
 
 check_pkgconfig(){
