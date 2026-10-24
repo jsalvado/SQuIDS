@@ -100,7 +100,8 @@ last_estate_ptr(other.last_estate_ptr),
 ode_method(other.ode_method),
 step_controller(other.step_controller),
 native_rk(std::move(other.native_rk)),
-stats(other.stats)
+stats(other.stats),
+pool(std::move(other.pool))
 {
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
@@ -228,6 +229,7 @@ SQuIDS& SQuIDS::operator=(SQuIDS&& other){
   step_controller=other.step_controller;
   native_rk=std::move(other.native_rk);
   stats=other.stats;
+  pool=std::move(other.pool);
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
   
@@ -396,6 +398,15 @@ void SQuIDS::Set_GSL_step(gsl_odeiv2_step_type const* opt){
   step = opt;
 }
 
+void SQuIDS::Set_NumThreads(unsigned int n){
+  if(n <= 1) pool.reset();
+  else if(!pool || pool->Size() != n) pool = detail::SharedWorkerPool(n);
+}
+
+unsigned int SQuIDS::Get_NumThreads() const{
+  return pool ? pool->Size() : 1;
+}
+
 void SQuIDS::Set_ODEMethod(ODEMethod opt){
   if(opt!=ODEMethod::GSL)
     detail::GetTableau(opt); // throws for an unknown method
@@ -516,31 +527,37 @@ double SQuIDS::Get_NumSteps() const{
 void SQuIDS::Derive(double at){
   t=at;
   PreDerive(at);
-  for(unsigned int ei = 0; ei < nx; ei++){
-    // Density matrix
-    for(unsigned int i = 0; i < nrhos; i++){
-      // Coherent interaction
-      if(CoherentRhoTerms)
-        dstate[ei].rho[i] = iCommutator(estate[ei].rho[i],HI(ei,i,t));
-      else
-        dstate[ei].rho[i].SetAllComponents(0.);
+  auto nodes = [this](unsigned int begin, unsigned int end, unsigned int){
+    for(unsigned int ei = begin; ei < end; ei++){
+      // Density matrix
+      for(unsigned int i = 0; i < nrhos; i++){
+        // Coherent interaction
+        if(CoherentRhoTerms)
+          dstate[ei].rho[i] = iCommutator(estate[ei].rho[i],HI(ei,i,t));
+        else
+          dstate[ei].rho[i].SetAllComponents(0.);
 
-      // Non coherent interaction
-      if(NonCoherentRhoTerms)
-        dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),estate[ei].rho[i]);
-      // Other possible interaction, for example involving the Scalars or non linear terms in rho.
-      if(OtherRhoTerms)
-        dstate[ei].rho[i] += InteractionsRho(ei,i,t);
+        // Non coherent interaction
+        if(NonCoherentRhoTerms)
+          dstate[ei].rho[i] -= ACommutator(GammaRho(ei,i,t),estate[ei].rho[i]);
+        // Other possible interaction, for example involving the Scalars or non linear terms in rho.
+        if(OtherRhoTerms)
+          dstate[ei].rho[i] += InteractionsRho(ei,i,t);
+      }
+      //Scalars
+      for(unsigned int is=0;is<nscalars;is++){
+        dstate[ei].scalar[is]=0.;
+        if(GammaScalarTerms)
+          dstate[ei].scalar[is] += -estate[ei].scalar[is]*GammaScalar(ei,is,t);
+        if(OtherScalarTerms)
+          dstate[ei].scalar[is] += InteractionsScalar(ei,is,t);
+      }
     }
-    //Scalars
-    for(unsigned int is=0;is<nscalars;is++){
-      dstate[ei].scalar[is]=0.;
-      if(GammaScalarTerms)
-        dstate[ei].scalar[is] += -estate[ei].scalar[is]*GammaScalar(ei,is,t);
-      if(OtherScalarTerms)
-        dstate[ei].scalar[is] += InteractionsScalar(ei,is,t);
-    }
-  }
+  };
+  if(pool)
+    pool->Run(nx, nodes);
+  else
+    nodes(0, nx, 0);
 }
 
 void SQuIDS::Evolve(double dt){
