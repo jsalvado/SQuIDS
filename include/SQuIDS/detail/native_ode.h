@@ -266,14 +266,16 @@ private:
       for(size_t q=0; q<enz.size(); q++)
         e += enz[q].second*K[enz[q].first*n+i];
       const double sc = atol+rtol*std::max(std::abs(y[i]), std::abs(ynew[i]));
-      m = std::max(m, std::abs(h*e)/sc);
+      const double r = std::abs(h*e)/sc;
+      if(!(r <= m)) m = r; // unlike std::max, this keeps a NaN
       if(tab.e3){
         double e3 = 0;
         for(size_t q=0; q<e3nz.size(); q++)
           e3 += e3nz[q].second*K[e3nz[q].first*n+i];
-        m3 = std::max(m3, std::abs(h*e3)/sc);
+        const double r3 = std::abs(h*e3)/sc;
+        if(!(r3 <= m3)) m3 = r3;
       }
-      if(!std::isfinite(m))
+      if(!std::isfinite(m) || !std::isfinite(m3))
         return std::numeric_limits<double>::infinity();
     }
     if(tab.e3){

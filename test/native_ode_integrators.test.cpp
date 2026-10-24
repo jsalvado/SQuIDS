@@ -3,6 +3,7 @@
 // matter. Prints nothing when all checks pass.
 #include <cmath>
 #include <iostream>
+#include <limits>
 #include <SQuIDS/SQuIDS.h>
 
 using squids::SU_vector;
@@ -69,6 +70,25 @@ int main(){
                   << " in pieces: deviation " << b.Deviation(T) << std::endl;
       if(a.Get_IntegrationStats().rhs_evaluations == 0)
         std::cout << "method " << static_cast<int>(m) << ": no evaluations counted" << std::endl;
+    }
+  }
+  // a right-hand side that turns into NaN must make Evolve fail, not return NaN
+  {
+    class Poisoned : public Rotor {
+    public:
+      SU_vector HI(unsigned int ix, unsigned int irho, double t) const {
+        SU_vector h = Rotor::HI(ix, irho, t);
+        if(t > 10.0) h = h*std::numeric_limits<double>::quiet_NaN();
+        return h;
+      }
+    };
+    for(ODEMethod m : methods){
+      Poisoned p;
+      p.Set_ODEMethod(m); p.Set_rel_error(1e-8); p.Set_abs_error(1e-8);
+      bool threw = false;
+      try{ p.Evolve(T); } catch(std::runtime_error&){ threw = true; }
+      if(!threw)
+        std::cout << "method " << static_cast<int>(m) << " accepted NaN derivatives" << std::endl;
     }
   }
   // fixed-step mode
