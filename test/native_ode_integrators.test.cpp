@@ -91,6 +91,19 @@ int main(){
         std::cout << "method " << static_cast<int>(m) << " accepted NaN derivatives" << std::endl;
     }
   }
+  // evaluating the right-hand side on several threads gives identical results
+  for(unsigned int threads : {2u, 3u}){
+    Rotor serial, parallel;
+    serial.Set_ODEMethod(ODEMethod::Vern7); parallel.Set_ODEMethod(ODEMethod::Vern7);
+    serial.Set_rel_error(1e-10); serial.Set_abs_error(1e-10);
+    parallel.Set_rel_error(1e-10); parallel.Set_abs_error(1e-10);
+    parallel.Set_NumThreads(threads);
+    serial.Evolve(T); parallel.Evolve(T);
+    if(parallel.Get_NumThreads() != threads)
+      std::cout << "Get_NumThreads: " << parallel.Get_NumThreads() << " != " << threads << std::endl;
+    if(serial.Deviation(T) != parallel.Deviation(T))
+      std::cout << threads << " threads: results differ from the serial evaluation" << std::endl;
+  }
   // fixed-step mode
   Rotor f;
   f.Set_ODEMethod(ODEMethod::Vern9); f.Set_AdaptiveStep(false); f.Set_NumSteps(400);

@@ -92,6 +92,7 @@
 
 #include "SUNalg.h"
 #include "detail/native_ode.h"
+#include "detail/worker_pool.h"
 
 #include <iosfwd>
 #include <vector>
@@ -147,6 +148,7 @@ class SQuIDS {
   StepController step_controller;
   detail::NativeRK native_rk;
   IntegrationStats stats;
+  std::shared_ptr<detail::WorkerPool> pool;
   
   //***************************************************************
   ///\brief Sets the evolution state and derivative system pointer for GSL use
@@ -187,6 +189,14 @@ class SQuIDS {
   ///\brief True when the coherent term is the only active right-hand-side term.
   ///
   /// Then every node evolves independently of the others.
+  ///\brief Runs f(begin, end, thread) on pieces of [0, n) on the threads set by
+  /// Set_NumThreads (serially, as f(0, n, 0), with one thread).
+  void ParallelFor(unsigned int n, const detail::WorkerPool::Job& f){
+    if(pool) pool->Run(n, f);
+    else f(0, n, 0);
+  }
+  ///\brief Number of threads ParallelFor uses.
+  unsigned int ParallelThreads() const { return pool ? pool->Size() : 1; }
   bool OnlyCoherentRhoTerms() const{
     return CoherentRhoTerms && !NonCoherentRhoTerms && !OtherRhoTerms
            && !GammaScalarTerms && !OtherScalarTerms;
@@ -345,6 +355,16 @@ class SQuIDS {
   IntegrationStats Get_IntegrationStats() const;
   ///\brief Zeroes the counters returned by Get_IntegrationStats.
   void Reset_IntegrationStats();
+
+  ///\brief Evaluates the right-hand side on n threads (default 1).
+  ///
+  /// The loop over nodes in Derive is split across threads, so HI, GammaRho,
+  /// InteractionsRho, GammaScalar and InteractionsScalar must be safe to call
+  /// concurrently for different nodes (true for SQuIDS and nuSQuIDS; check
+  /// your own overrides). Results are identical to the serial evaluation.
+  void Set_NumThreads(unsigned int n);
+  ///\brief Number of threads used to evaluate the right-hand side.
+  unsigned int Get_NumThreads() const;
 
   ///\brief Turns on and off adaptive runge-kutta stepping
   ///\param opt If true: uses adaptive stepping, else: it does not.

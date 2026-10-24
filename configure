@@ -310,7 +310,7 @@ $(LIBDIR)/$(STAT_PRODUCT) : $(OBJECTS)
 $(LIBDIR)/const.o: $(SRCDIR)/const.cpp $(SQINCDIR)/const.h Makefile
 	@echo Compiling const.cpp to const.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/const.cpp -o $@
-$(LIBDIR)/SQuIDS.o: $(SRCDIR)/SQuIDS.cpp $(SQINCDIR)/SQuIDS.h $(SQINCDIR)/SUNalg.h $(SQINCDIR)/const.h $(SQINCDIR)/detail/native_ode.h $(SQINCDIR)/detail/rk_tableaus.h Makefile
+$(LIBDIR)/SQuIDS.o: $(SRCDIR)/SQuIDS.cpp $(SQINCDIR)/SQuIDS.h $(SQINCDIR)/SUNalg.h $(SQINCDIR)/const.h $(SQINCDIR)/detail/native_ode.h $(SQINCDIR)/detail/rk_tableaus.h $(SQINCDIR)/detail/worker_pool.h Makefile
 	@echo Compiling SQuIDS.cpp to SQuIDS.o
 	@$(CXX) $(CXXFLAGS) -c $(CFLAGS) $(SRCDIR)/SQuIDS.cpp -o $@
 $(LIBDIR)/SUNalg.o: $(SRCDIR)/SUNalg.cpp $(SQINCDIR)/SUNalg.h $(SQINCDIR)/const.h Makefile
