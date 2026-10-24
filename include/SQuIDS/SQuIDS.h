@@ -91,6 +91,7 @@
 #endif
 
 #include "SUNalg.h"
+#include "detail/native_ode.h"
 
 #include <iosfwd>
 #include <vector>
@@ -141,12 +142,19 @@ class SQuIDS {
   std::unique_ptr<SU_state[]> dstate;
   double* last_dstate_ptr;
   double* last_estate_ptr;
+
+  ODEMethod ode_method;
+  StepController step_controller;
+  detail::NativeRK native_rk;
+  IntegrationStats stats;
   
   //***************************************************************
   ///\brief Sets the evolution state and derivative system pointer for GSL use
   ///\param sp the backing storage for the state during evolution (estate)
   ///\param dp the backing storage for the derivative during evolution (dstate)
   void set_system_pointers(double* sp, double* dp);
+  ///\brief Points estate back at the canonical state storage after an evolution
+  void realias_estate_to_system();
   //interface function called by GSL
   friend int RHS(double ,const double*,double*,void*);
  
@@ -170,6 +178,19 @@ class SQuIDS {
   ///\warning Do not use this function unless you are setting the same time
   /// as the time to the system has already being evolved at.
   void Set_t(double t_) { t = t_; }
+  ///\brief Adds work done by a derived class's own integration to Get_IntegrationStats.
+  void Add_IntegrationStats(const IntegrationStats& s){
+    stats.rhs_evaluations += s.rhs_evaluations;
+    stats.accepted_steps += s.accepted_steps;
+    stats.rejected_steps += s.rejected_steps;
+  }
+  ///\brief True when the coherent term is the only active right-hand-side term.
+  ///
+  /// Then every node evolves independently of the others.
+  bool OnlyCoherentRhoTerms() const{
+    return CoherentRhoTerms && !NonCoherentRhoTerms && !OtherRhoTerms
+           && !GammaScalarTerms && !OtherScalarTerms;
+  }
  public:
   //****************
   //Constructors
@@ -303,6 +324,27 @@ class SQuIDS {
   ///\brief Sets the GSL stepper function (numerical method)
   ///\param opt GSL step function
   void Set_GSL_step(gsl_odeiv2_step_type const* opt);
+
+  ///\brief Selects the integration method.
+  ///
+  /// ODEMethod::GSL (the default) uses the GSL odeiv2 driver with the stepper
+  /// given to Set_GSL_step. Any other value uses the native embedded
+  /// Runge-Kutta integrator with that method; rel_error, abs_error, h_min,
+  /// h_max and Set_AdaptiveStep keep their meaning.
+  void Set_ODEMethod(ODEMethod opt);
+  ///\brief Returns the integration method.
+  ODEMethod Get_ODEMethod() const;
+  ///\brief Selects the step size controller used by the native integrator.
+  void Set_StepController(StepController opt);
+  ///\brief Returns the step size controller used by the native integrator.
+  StepController Get_StepController() const;
+  ///\brief Work done by Evolve since construction or the last Reset_IntegrationStats.
+  ///
+  /// rhs_evaluations is counted for every method; the step counts are
+  /// filled in for both the GSL and the native integrators.
+  IntegrationStats Get_IntegrationStats() const;
+  ///\brief Zeroes the counters returned by Get_IntegrationStats.
+  void Reset_IntegrationStats();
 
   ///\brief Turns on and off adaptive runge-kutta stepping
   ///\param opt If true: uses adaptive stepping, else: it does not.
