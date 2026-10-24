@@ -87,10 +87,20 @@ double exact_1_norm(const gsl_matrix_complex *M){
 	
 double one_normest_core(const gsl_matrix_complex *A, unsigned int t = 2, unsigned int itmax = 5);
 
+double exact_1_norm(const gsl_matrix_complex * A);
+
+// The randomized 1-norm estimator (Higham-Tisseur with t=2 columns) can
+// underestimate the norm of small matrices, which makes the scaling-and-squaring
+// exponential below pick too little scaling and lose accuracy (~1e-6 relative
+// errors were observed for 3x3 arguments). For small matrices the power is formed
+// explicitly anyway and its exact 1-norm is cheaper than estimating it.
+static const unsigned int exact_norm_max_size = 32;
+
 double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
   assert(M->size1 == M->size2);
+  const bool exact = M->size1 <= exact_norm_max_size;
   if (p == 1)
-    return one_normest_core(M);
+    return exact ? exact_1_norm(M) : one_normest_core(M);
 
   SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder MP;
   MP.reset(M->size1,M->size2);
@@ -113,8 +123,7 @@ double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
   if(p%2!=0 and p>2)
     gsl_matrix_complex_memcpy(MP,tmp);
 
-  double onc = one_normest_core(MP);
-  return onc;
+  return exact ? exact_1_norm(MP) : one_normest_core(MP);
 }
 
 void resample_column(unsigned int i, gsl_matrix *X,const gsl_rng* rng){
@@ -310,8 +319,10 @@ double one_normest_product(const gsl_matrix_complex *A,const gsl_matrix_complex 
   SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder product;
   product.reset(A->size1,A->size2);
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,B,A,GSL_COMPLEX_ZERO,product);
-  double normest = one_normest_core(product);
-  return normest;
+  // exact for small matrices; the estimator also requires dimension > 2
+  if(product->size1 <= exact_norm_max_size)
+    return exact_1_norm(product);
+  return one_normest_core(product);
 }
   
 struct gsl_rng_holder{
@@ -687,11 +698,19 @@ void pade9(const gsl_matrix_complex *A, const gsl_matrix_complex *id,
   std::vector<double> b {17643225600., 8821612800., 2075673600., 302702400.,
                          30270240.,2162160., 110880., 3960., 90., 1.};
 
+  // The degree 9 approximant needs A^8: U = A(b9 A^8 + b7 A^6 + ... + b1 I) and
+  // V = b8 A^8 + b6 A^6 + ... + b0 I. Leaving it out made exp(A) wrong at the
+  // 1e-7 level for 0.95 < |A| <= 2.1, the range where this degree is selected.
+  SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder A8;
+  A8.reset(A->size1,A->size2);
+  gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,A6,A2,GSL_COMPLEX_ZERO,A8);
+
   // here we will use V as a temp to calculate U
   gsl_matrix_complex_mul(V,id,gsl_complex_rect(b[1],0.));
   gsl_matrix_complex_add(V,A2,gsl_complex_rect(b[3],0.));
   gsl_matrix_complex_add(V,A4,gsl_complex_rect(b[5],0.));
   gsl_matrix_complex_add(V,A6,gsl_complex_rect(b[7],0.));
+  gsl_matrix_complex_add(V,A8,gsl_complex_rect(b[9],0.));
   // this function sets the U matrix value
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,A,V,GSL_COMPLEX_ZERO,U);
 
@@ -700,6 +719,7 @@ void pade9(const gsl_matrix_complex *A, const gsl_matrix_complex *id,
   gsl_matrix_complex_add(V,A2,gsl_complex_rect(b[2],0.));
   gsl_matrix_complex_add(V,A4,gsl_complex_rect(b[4],0.));
   gsl_matrix_complex_add(V,A6,gsl_complex_rect(b[6],0.));
+  gsl_matrix_complex_add(V,A8,gsl_complex_rect(b[8],0.));
 
   return;
 }
