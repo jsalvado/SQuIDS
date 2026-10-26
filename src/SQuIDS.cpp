@@ -49,7 +49,9 @@ h_max(std::numeric_limits<double>::max()),
 abs_error(1e-20),
 rel_error(1e-20),
 last_dstate_ptr(nullptr),
-last_estate_ptr(nullptr)
+last_estate_ptr(nullptr),
+ode_method(ODEMethod::GSL),
+step_controller(StepController::I)
 {
   sys.function = &RHS;
   sys.jacobian = NULL;
@@ -94,7 +96,11 @@ params(std::move(other.params)),
 state(std::move(other.state)),
 estate(std::move(other.estate)),
 last_dstate_ptr(other.last_dstate_ptr),
-last_estate_ptr(other.last_estate_ptr)
+last_estate_ptr(other.last_estate_ptr),
+ode_method(other.ode_method),
+step_controller(other.step_controller),
+native_rk(std::move(other.native_rk)),
+stats(other.stats)
 {
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
@@ -218,6 +224,10 @@ SQuIDS& SQuIDS::operator=(SQuIDS&& other){
   estate=std::move(other.estate);
   last_dstate_ptr=other.last_dstate_ptr;
   last_estate_ptr=other.last_estate_ptr;
+  ode_method=other.ode_method;
+  step_controller=other.step_controller;
+  native_rk=std::move(other.native_rk);
+  stats=other.stats;
   sys.params=this;
   other.is_init=false; //other is no longer usable, since we stole its contents
   
@@ -386,6 +396,33 @@ void SQuIDS::Set_GSL_step(gsl_odeiv2_step_type const* opt){
   step = opt;
 }
 
+void SQuIDS::Set_ODEMethod(ODEMethod opt){
+  if(opt!=ODEMethod::GSL)
+    detail::GetTableau(opt); // throws for an unknown method
+  ode_method=opt;
+  native_rk.Reset();
+}
+
+ODEMethod SQuIDS::Get_ODEMethod() const{
+  return ode_method;
+}
+
+void SQuIDS::Set_StepController(StepController opt){
+  step_controller=opt;
+}
+
+StepController SQuIDS::Get_StepController() const{
+  return step_controller;
+}
+
+IntegrationStats SQuIDS::Get_IntegrationStats() const{
+  return stats;
+}
+
+void SQuIDS::Reset_IntegrationStats(){
+  stats=IntegrationStats();
+}
+
 void SQuIDS::Set_AdaptiveStep(bool opt){
   adaptive_step=opt;
 }
@@ -508,36 +545,58 @@ void SQuIDS::Derive(double at){
 
 void SQuIDS::Evolve(double dt){
   if(AnyNumerics){
-    int gsl_status = GSL_SUCCESS;
-
-    // initial time
-    
-    // ODE system error control
-    gsl_odeiv2_driver* d = gsl_odeiv2_driver_alloc_y_new(&sys,step,h,abs_error,rel_error);
-    gsl_odeiv2_driver_set_hmin(d,h_min);
-    gsl_odeiv2_driver_set_hmax(d,h_max);
-    gsl_odeiv2_driver_set_nmax(d,0);
-    
     double* gsl_sys = system.get();
-    
-    if(adaptive_step){
-      gsl_status = gsl_odeiv2_driver_apply(d, &t, t+dt, gsl_sys);
+
+    if(ode_method==ODEMethod::GSL){
+      int gsl_status = GSL_SUCCESS;
+
+      // ODE system error control
+      gsl_odeiv2_driver* d = gsl_odeiv2_driver_alloc_y_new(&sys,step,h,abs_error,rel_error);
+      gsl_odeiv2_driver_set_hmin(d,h_min);
+      gsl_odeiv2_driver_set_hmax(d,h_max);
+      gsl_odeiv2_driver_set_nmax(d,0);
+
+      if(adaptive_step){
+        gsl_status = gsl_odeiv2_driver_apply(d, &t, t+dt, gsl_sys);
+      }else{
+        gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, dt/nsteps , nsteps , gsl_sys);
+      }
+      stats.accepted_steps += d->e->count;
+      stats.rejected_steps += d->e->failed_steps;
+
+      gsl_odeiv2_driver_free(d);
+      if( gsl_status != GSL_SUCCESS ){
+        throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver ("
+                                 +std::string(gsl_strerror(gsl_status))+")");
+      }
+      realias_estate_to_system();
     }else{
-      gsl_status = gsl_odeiv2_driver_apply_fixed_step(d, &t, dt/nsteps , nsteps , gsl_sys);
-    }
-    
-    gsl_odeiv2_driver_free(d);
-    if( gsl_status != GSL_SUCCESS ){
-      throw std::runtime_error("SQUIDS::Evolve: Error in GSL ODE solver ("
-                               +std::string(gsl_strerror(gsl_status))+")");
-    }
-    
-    //after evolving, make estate alias state again
-    for(unsigned int ei = 0; ei < nx; ei++){
-      for(unsigned int i=0;i<nrhos;i++)
-        estate[ei].rho[i].SetBackingStore(&(system[ei*size_state+i*size_rho]));
-      if(nscalars>0)
-        estate[ei].scalar=&(system[ei*size_state+nrhos*size_rho]);
+      const double t_end = t+dt;
+      auto rhs = [this](double tt, const double* in, double* out){
+        set_system_pointers(const_cast<double*>(in), out);
+        Derive(tt);
+      };
+      IntegrationStats run;
+      auto fold = [this,&run](){
+        stats.rhs_evaluations += run.rhs_evaluations;
+        stats.accepted_steps += run.accepted_steps;
+        stats.rejected_steps += run.rejected_steps;
+      };
+      try{
+        native_rk.Integrate(detail::GetTableau(ode_method), rhs, t, t_end, gsl_sys,
+                            sys.dimension, abs_error, rel_error, h_min, h_max,
+                            step_controller, adaptive_step ? 0u : nsteps, run);
+      }catch(...){
+        fold();
+        realias_estate_to_system();
+        throw;
+      }
+      fold();
+      t = t_end;
+      realias_estate_to_system();
+      // leave time-dependent state consistent with t, as the GSL path does
+      // (its last evaluation is always f(t_end, y_end))
+      PreDerive(t);
     }
   }else{
     t+=dt;
@@ -545,10 +604,24 @@ void SQuIDS::Evolve(double dt){
   }
 }
 
+void SQuIDS::realias_estate_to_system(){
+  //after evolving, make estate alias state again
+  double* sp = system.get();
+  for(unsigned int ei = 0; ei < nx; ei++){
+    for(unsigned int i=0;i<nrhos;i++)
+      estate[ei].rho[i].SetBackingStore(&(sp[ei*size_state+i*size_rho]));
+    if(nscalars>0)
+      estate[ei].scalar=&(sp[ei*size_state+nrhos*size_rho]);
+  }
+  // keep set_system_pointers' cache truthful
+  last_estate_ptr=sp;
+}
+
 int RHS(double t, const double* state_dbl_in, double* state_dbl_out, void* par){
   SQuIDS* dms=static_cast<SQuIDS*>(par);
   dms->set_system_pointers(const_cast<double*>(state_dbl_in),state_dbl_out);
   dms->Derive(t);
+  dms->stats.rhs_evaluations++;
   return 0;
 }
   
