@@ -84,13 +84,11 @@ double exact_1_norm(const gsl_matrix_complex *M){
   }
   return norm;
 }
-	
-double one_normest_core(const gsl_matrix_complex *A, unsigned int t = 2, unsigned int itmax = 5);
 
 double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
   assert(M->size1 == M->size2);
   if (p == 1)
-    return one_normest_core(M);
+    return exact_1_norm(M);
 
   SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder MP;
   MP.reset(M->size1,M->size2);
@@ -113,7 +111,7 @@ double one_normest_matrix_power(const gsl_matrix_complex * M, unsigned int p){
   if(p%2!=0 and p>2)
     gsl_matrix_complex_memcpy(MP,tmp);
 
-  double onc = one_normest_core(MP);
+  double onc = exact_1_norm(MP);
   return onc;
 }
 
@@ -310,7 +308,7 @@ double one_normest_product(const gsl_matrix_complex *A,const gsl_matrix_complex 
   SQUIDS_THREAD_LOCAL gsl_matrix_complex_holder product;
   product.reset(A->size1,A->size2);
   gsl_blas_zgemm(CblasNoTrans,CblasNoTrans,GSL_COMPLEX_ONE,B,A,GSL_COMPLEX_ZERO,product);
-  double normest = one_normest_core(product);
+  double normest = exact_1_norm(product);
   return normest;
 }
   
